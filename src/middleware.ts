@@ -2,6 +2,12 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
+  // Skip middleware for webhook endpoints
+  const { pathname } = request.nextUrl;
+  if (pathname.startsWith('/api/stripe-webhook') || pathname.startsWith('/api/webhooks/')) {
+    return NextResponse.next();
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -33,8 +39,6 @@ export async function middleware(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  const { pathname } = request.nextUrl;
 
   // Protected routes: /dashboard and /dashboard/*
   const isProtectedRoute = pathname.startsWith('/dashboard');
