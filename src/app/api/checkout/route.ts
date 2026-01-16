@@ -61,7 +61,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    // Get app URL - use Vercel URL in production or localhost in dev
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ||
+                   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
     // Get lifetime price ID
     const priceId = process.env.STRIPE_LIFETIME_PRICE_ID;
