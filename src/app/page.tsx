@@ -34,7 +34,9 @@ export default async function HomePage() {
       <nav className="border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <div className="text-2xl font-bold text-blue-600">Prooflayer</div>
+            <div className="flex items-center gap-2">
+              <img src="/logo.png" alt="ProofLayer" className="h-8 w-auto" />
+            </div>
             <div className="flex items-center space-x-4">
               {user ? (
                 <Link
@@ -82,12 +84,12 @@ export default async function HomePage() {
             Limited Offer: ${currentPrice} Lifetime Deal • Only {spotsLeft} Spots Left
           </div>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-6">
-            Collect beautiful testimonials.<br />
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Display them anywhere.</span><br />
-            <span className="text-gray-600">Pay once.</span>
+            Collect video & text testimonials.<br />
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Embed them anywhere.</span><br />
+            <span className="text-gray-600">Pay once, own forever.</span>
           </h1>
           <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-            The simple alternative to monthly subscriptions. Prooflayer lets you gather and embed client reviews in minutes.
+            The simple alternative to expensive monthly tools. Collect video and written testimonials, display them beautifully, all with a single lifetime payment.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -317,6 +319,18 @@ export default async function HomePage() {
             Everything you need
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-white p-6 rounded-xl shadow-sm border-2 border-purple-200">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-lg font-semibold text-gray-900">Video Testimonials</h3>
+                <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-bold rounded-full">NEW</span>
+              </div>
+              <p className="text-gray-600">Record or upload videos directly. No external links needed.</p>
+            </div>
             <div className="bg-white p-6 rounded-xl shadow-sm">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                 <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -538,8 +552,8 @@ export default async function HomePage() {
           </h2>
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-xl border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Can I host video testimonials?</h3>
-              <p className="text-gray-600">You can embed YouTube/Loom links. Native video hosting coming soon based on user feedback.</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Can I collect video testimonials?</h3>
+              <p className="text-gray-600">Yes! Your customers can record videos directly in their browser or upload video files. Videos are automatically hosted and played inline.</p>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Is this really a one-time payment?</h3>
@@ -578,9 +592,11 @@ export default async function HomePage() {
       {/* Footer */}
       <footer className="py-12 px-4 border-t border-gray-100">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
-          <div className="text-xl font-bold text-blue-600 mb-4 md:mb-0">Prooflayer</div>
+          <div className="flex items-center gap-2 mb-4 md:mb-0">
+            <img src="/logo.png" alt="ProofLayer" className="h-6 w-auto" />
+          </div>
           <div className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} Prooflayer. All rights reserved.
+            © {new Date().getFullYear()} ProofLayer. All rights reserved.
           </div>
         </div>
       </footer>
