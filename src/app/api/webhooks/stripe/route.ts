@@ -34,9 +34,13 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    console.log('Webhook event received:', event.type);
+
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
       const userId = session.metadata?.userId;
+
+      console.log('Checkout session completed for userId:', userId);
 
       if (!userId) {
         console.error('No userId in session metadata');
@@ -47,7 +51,9 @@ export async function POST(request: NextRequest) {
       }
 
       // One-time payment (Lifetime) - this is the only option now
-      await prisma.entitlement.update({
+      console.log('Attempting to upgrade user to LIFETIME...');
+
+      const updated = await prisma.entitlement.update({
         where: { userId },
         data: {
           plan: 'LIFETIME',
@@ -56,7 +62,7 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      console.log(`User ${userId} upgraded to LIFETIME`);
+      console.log(`✓ User ${userId} successfully upgraded to LIFETIME. New plan:`, updated.plan);
     }
 
     // Note: No subscription webhooks needed since we only offer one-time lifetime payments
