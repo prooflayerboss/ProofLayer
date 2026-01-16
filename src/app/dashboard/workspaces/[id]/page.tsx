@@ -2,6 +2,7 @@ import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ensureUserExists } from '@/actions/user';
 import { getWorkspace } from '@/actions/workspaces';
+import CopyUrlButton from './copy-url-button';
 
 export default async function WorkspaceDetailPage({
   params,
@@ -56,6 +57,48 @@ export default async function WorkspaceDetailPage({
           </p>
         </div>
       </div>
+
+      {/* Wall of Love - Shareable Page */}
+      {workspace.slug && (
+        <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl border border-purple-200 p-6 mb-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Wall of Love - Shareable Page
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Share this public page with clients or embed it on your site. Perfect for non-technical users who can't use embed codes!
+              </p>
+              <div className="bg-white rounded-lg p-3 border border-gray-200 mb-3">
+                <div className="flex items-center gap-2">
+                  <code className="flex-1 text-sm text-gray-700 break-all">
+                    {appUrl}/w/{workspace.slug}
+                  </code>
+                  <CopyUrlButton url={`${appUrl}/w/${workspace.slug}`} />
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <a
+                  href={`/w/${workspace.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1"
+                >
+                  Preview Page
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Forms Section */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">

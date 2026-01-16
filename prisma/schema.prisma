@@ -76,6 +76,7 @@ model Workspace {
   userId    String   @map("user_id")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name      String
+  slug      String?  @unique // URL-friendly slug for public wall of love page
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

@@ -7,6 +7,19 @@ import { PLAN_LIMITS } from '@/lib/constants';
 import { ensureUserExists } from './user';
 
 /**
+ * Generate a URL-friendly slug from a workspace name
+ */
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .substring(0, 50); // Limit length
+}
+
+/**
  * Create a new workspace for the current user.
  * Accepts FormData from a form submission.
  * Enforces plan limits.
@@ -46,11 +59,30 @@ export async function createWorkspace(formData: FormData) {
   }
 
   try {
+    let slug = generateSlug(name);
+
+    // Ensure slug is unique by appending number if needed
+    let counter = 1;
+    let isUnique = false;
+    while (!isUnique) {
+      const existing = await prisma.workspace.findUnique({
+        where: { slug: counter > 1 ? `${slug}-${counter}` : slug },
+      });
+
+      if (!existing) {
+        if (counter > 1) slug = `${slug}-${counter}`;
+        isUnique = true;
+      } else {
+        counter++;
+      }
+    }
+
     await prisma.$transaction(async (tx) => {
       await tx.workspace.create({
         data: {
           userId: user.id,
           name: name.trim(),
+          slug,
         },
       });
 
