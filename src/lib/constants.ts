@@ -6,20 +6,35 @@ export const PLAN_LIMITS = {
     price: 0,
     interval: null,
   },
-  MONTHLY: {
-    maxWorkspaces: 3,
-    maxSubmissions: 1500,
-    showBadge: false,
-    price: 19,
-    interval: 'month' as const,
-  },
   LIFETIME: {
-    maxWorkspaces: 3,
-    maxSubmissions: 1500,
+    maxWorkspaces: 999, // Unlimited
+    maxSubmissions: 999999, // Unlimited
     showBadge: false,
-    price: 199,
+    price: 49, // Launch price - will update in Stripe for tiered pricing
     interval: 'lifetime' as const,
   },
 } as const;
 
 export type PlanType = keyof typeof PLAN_LIMITS;
+
+// Pricing tiers for LTD launch strategy
+export const LTD_PRICING = {
+  BETA: {
+    price: 49,
+    limit: 25,
+    label: 'Beta Price',
+    description: 'First 25 founding members',
+  },
+  LAUNCH: {
+    price: 69,
+    limit: 50,
+    label: 'Launch Price',
+    description: 'Next 50 early adopters',
+  },
+  STANDARD: {
+    price: 199,
+    limit: null,
+    label: 'Standard Price',
+    description: 'Regular lifetime access',
+  },
+} as const;

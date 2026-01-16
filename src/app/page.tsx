@@ -1,6 +1,12 @@
 import Link from 'next/link';
 
 export default function HomePage() {
+  // In real implementation, this would come from database
+  // For now, hardcode to BETA pricing
+  const currentPrice = 49;
+  const spotsLeft = 25;
+  const priceTier = 'BETA';
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       {/* Navigation */}
@@ -19,7 +25,7 @@ export default function HomePage() {
                 href="/signup"
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
               >
-                Start Free
+                Get Started
               </Link>
             </div>
           </div>
@@ -29,20 +35,27 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="pt-20 pb-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+            </span>
+            Limited Offer: ${currentPrice} Lifetime Deal • Only {spotsLeft} Spots Left
+          </div>
           <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 leading-tight mb-6">
-            Collect testimonials
-            <span className="text-blue-600"> that convert</span>
+            Collect beautiful testimonials.<br />
+            <span className="text-blue-600">Display them anywhere.</span><br />
+            <span className="text-gray-600">Pay once.</span>
           </h1>
           <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
-            The easiest way for agencies and freelancers to collect, manage, and showcase 
-            client testimonials. Beautiful widgets for any website.
+            The simple alternative to monthly subscriptions. Prooflayer lets you gather and embed client reviews in minutes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/signup"
               className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/30"
             >
-              Start Collecting Free →
+              Get Lifetime Access for ${currentPrice} →
             </Link>
             <a
               href="#how-it-works"
@@ -51,24 +64,83 @@ export default function HomePage() {
               See How It Works
             </a>
           </div>
-          <p className="mt-4 text-sm text-gray-500">
-            Free plan available • No credit card required
+          <p className="mt-6 text-sm text-gray-500">
+            <span className="line-through text-gray-400">$199</span>{' '}
+            <span className="font-semibold text-blue-600">${currentPrice} Founding Member Price</span>
+            {' '}• 14-Day Money Back Guarantee
           </p>
         </div>
       </section>
 
+      {/* Problem Section */}
+      <section className="py-16 px-4 bg-white border-y border-gray-100">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-4">
+            Stop pasting screenshots into paint.
+          </h2>
+          <p className="text-xl text-gray-600 text-center max-w-2xl mx-auto">
+            Managing reviews is messy. Screenshots look unprofessional. Monthly tools cost $300/year.<br />
+            <span className="font-semibold text-gray-900">Prooflayer fixes the mess without the monthly fee.</span>
+          </p>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="how-it-works" className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center text-gray-900 mb-4">
+            How It Works
+          </h2>
+          <p className="text-xl text-gray-600 text-center mb-16 max-w-2xl mx-auto">
+            Three simple steps. No monthly subscription required.
+          </p>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Step 1 */}
+            <div className="text-center p-6">
+              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <span className="text-2xl font-bold text-blue-600">1</span>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Create your form</h3>
+              <p className="text-gray-600">
+                Get a custom link in seconds. Share it with clients—they fill it in 30 seconds.
+              </p>
+            </div>
+            {/* Step 2 */}
+            <div className="text-center p-6">
+              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <span className="text-2xl font-bold text-blue-600">2</span>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Approve the best ones</h3>
+              <p className="text-gray-600">
+                Review submissions in your dashboard. One click to approve or reject.
+              </p>
+            </div>
+            {/* Step 3 */}
+            <div className="text-center p-6">
+              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <span className="text-2xl font-bold text-blue-600">3</span>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Embed on your site</h3>
+              <p className="text-gray-600">
+                Copy one line of code. Beautiful testimonial widgets on any website.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Use Cases */}
-      <section className="py-12 border-y border-gray-100 bg-white">
-        <div className="max-w-5xl mx-auto px-4 text-center">
+      <section className="py-16 px-4 border-y border-gray-100 bg-white">
+        <div className="max-w-5xl mx-auto text-center">
           <p className="text-gray-600 mb-8 font-medium">Perfect for</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="flex flex-col items-center">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
                 <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
-              <span className="text-gray-900 font-semibold">Agencies</span>
+              <span className="text-gray-900 font-semibold">Webflow Developers</span>
             </div>
             <div className="flex flex-col items-center">
               <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
@@ -81,10 +153,10 @@ export default function HomePage() {
             <div className="flex flex-col items-center">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-3">
                 <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
-              <span className="text-gray-900 font-semibold">SaaS Products</span>
+              <span className="text-gray-900 font-semibold">Agencies</span>
             </div>
             <div className="flex flex-col items-center">
               <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-3">
@@ -93,50 +165,6 @@ export default function HomePage() {
                 </svg>
               </div>
               <span className="text-gray-900 font-semibold">Consultants</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section id="how-it-works" className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center text-gray-900 mb-4">
-            How It Works
-          </h2>
-          <p className="text-xl text-gray-600 text-center mb-16 max-w-2xl mx-auto">
-            Get beautiful testimonials on your website in minutes, not hours.
-          </p>
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Step 1 */}
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-blue-600">1</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Create a Form</h3>
-              <p className="text-gray-600">
-                Set up a testimonial collection form in seconds. Customize it to match your brand.
-              </p>
-            </div>
-            {/* Step 2 */}
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-blue-600">2</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Collect & Approve</h3>
-              <p className="text-gray-600">
-                Share your form link with clients. Review and approve testimonials from your dashboard.
-              </p>
-            </div>
-            {/* Step 3 */}
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-blue-600">3</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Embed Anywhere</h3>
-              <p className="text-gray-600">
-                Copy one line of code and display beautiful testimonial widgets on any website.
-              </p>
             </div>
           </div>
         </div>
@@ -186,15 +214,6 @@ export default function HomePage() {
               <p className="text-gray-600">Collect and display star ratings with testimonials.</p>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-sm">
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Photo Support</h3>
-              <p className="text-gray-600">Let clients upload their photo for more authentic testimonials.</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-sm">
               <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
                 <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -203,152 +222,126 @@ export default function HomePage() {
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Spam Protection</h3>
               <p className="text-gray-600">Built-in protection against spam and fake submissions.</p>
             </div>
+            <div className="bg-white p-6 rounded-xl shadow-sm">
+              <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Import Existing</h3>
+              <p className="text-gray-600">Manually add testimonials from LinkedIn, email, or Slack.</p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Pricing */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center text-gray-900 mb-4">
-            Simple Pricing
+      <section className="py-20 px-4 bg-gradient-to-br from-blue-600 to-blue-700">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="bg-yellow-400 text-yellow-900 inline-block px-4 py-2 rounded-full text-sm font-bold mb-6">
+            LIMITED FOUNDING MEMBER OFFER
+          </div>
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+            Lifetime Deal
           </h2>
-          <p className="text-xl text-gray-600 text-center mb-16">
-            Start free, upgrade when you need more.
+          <p className="text-xl text-blue-100 mb-12">
+            Pay once, use forever. No monthly fees. No limits.
           </p>
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Free Plan */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-8">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Trial</h3>
-              <p className="text-gray-600 mb-6">Perfect for getting started</p>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">$0</span>
-                <span className="text-gray-600">/forever</span>
+
+          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-2xl max-w-2xl mx-auto">
+            <div className="text-center mb-8">
+              <div className="text-gray-500 text-sm mb-2">Founding Member Price</div>
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <span className="text-3xl text-gray-400 line-through">$199</span>
+                <span className="text-6xl font-bold text-gray-900">${currentPrice}</span>
               </div>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center text-gray-600">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  1 workspace
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  25 testimonials
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  All widget styles
-                </li>
-                <li className="flex items-center text-gray-400">
-                  <svg className="w-5 h-5 text-gray-300 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  Prooflayer badge shown
-                </li>
-              </ul>
-              <Link
-                href="/signup"
-                className="block text-center bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
-              >
-                Get Started Free
-              </Link>
+              <div className="text-blue-600 font-semibold">One-time payment • Forever access</div>
             </div>
 
-            {/* Monthly Plan */}
-            <div className="bg-white border-2 border-gray-300 rounded-2xl p-8">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Monthly</h3>
-              <p className="text-gray-600 mb-6">For growing businesses</p>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">$19</span>
-                <span className="text-gray-600">/month</span>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
+              <div className="flex items-center justify-center gap-2 text-yellow-900 font-semibold">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                </svg>
+                Only {spotsLeft} founding member spots left
               </div>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center text-gray-600">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  3 workspaces
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  1,500 testimonials/mo
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  All widget styles
-                </li>
-                <li className="flex items-center text-gray-600">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  No badge - white label
-                </li>
-              </ul>
-              <Link
-                href="/signup"
-                className="block text-center bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
-              >
-                Subscribe Monthly
-              </Link>
             </div>
 
-            {/* Lifetime Plan */}
-            <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-8 text-white relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full">
-                BEST VALUE
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Lifetime</h3>
-              <p className="text-blue-100 mb-6">One-time payment, forever</p>
-              <div className="mb-6">
-                <span className="text-4xl font-bold">$199</span>
-                <span className="text-blue-200">/once</span>
-              </div>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-blue-200 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  3 workspaces
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-blue-200 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  1,500 testimonials/mo
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-blue-200 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  All widget styles
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-blue-200 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  No badge - white label
-                </li>
-              </ul>
-              <Link
-                href="/signup"
-                className="block text-center bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
-              >
-                Get Lifetime Access
-              </Link>
+            <ul className="space-y-4 mb-8 text-left">
+              <li className="flex items-start gap-3">
+                <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-gray-700"><span className="font-semibold">Unlimited workspaces</span> - Create forms for all your projects</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-gray-700"><span className="font-semibold">Unlimited testimonials</span> - No monthly limits</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-gray-700"><span className="font-semibold">Customizable widgets</span> - Grid & carousel layouts</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-gray-700"><span className="font-semibold">No "Powered by" badge</span> - White label ready</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-gray-700"><span className="font-semibold">All future updates</span> - Free forever</span>
+              </li>
+            </ul>
+
+            <Link
+              href="/signup"
+              className="block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg mb-4"
+            >
+              Get Lifetime Access - ${currentPrice}
+            </Link>
+
+            <p className="text-sm text-gray-500">
+              14-Day Money Back Guarantee • Secure Payment via Stripe
+            </p>
+          </div>
+
+          <p className="text-blue-100 mt-8 text-sm">
+            Price increases to $69 after first 25 members • Then $199 standard
+          </p>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-20 px-4">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-6">
+            <div className="bg-white p-6 rounded-xl border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Can I host video testimonials?</h3>
+              <p className="text-gray-600">You can embed YouTube/Loom links. Native video hosting coming soon based on user feedback.</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Is this really a one-time payment?</h3>
+              <p className="text-gray-600">Yes. You pay once, you own the account forever. No hidden fees, no monthly charges.</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Will it work on my website builder?</h3>
+              <p className="text-gray-600">Yes! Prooflayer works with Webflow, WordPress, Wix, Squarespace, and any site that accepts HTML/JavaScript embeds.</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">What if I'm not happy with it?</h3>
+              <p className="text-gray-600">14-day money back guarantee, no questions asked. Just email us and we'll refund you immediately.</p>
             </div>
           </div>
-          <p className="text-center text-gray-600 mt-8">
-            All plans include unlimited forms, approval workflow, and spam protection.
-          </p>
         </div>
       </section>
 
@@ -359,13 +352,13 @@ export default function HomePage() {
             Ready to collect amazing testimonials?
           </h2>
           <p className="text-xl text-gray-400 mb-10">
-            Join hundreds of agencies and freelancers using Prooflayer.
+            Join the founding members shaping Prooflayer. Only {spotsLeft} spots left at ${currentPrice}.
           </p>
           <Link
             href="/signup"
             className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
           >
-            Start Free Today →
+            Claim Your Lifetime Deal →
           </Link>
         </div>
       </section>
