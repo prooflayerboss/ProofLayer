@@ -2,8 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { PLAN_LIMITS } from '@/lib/constants';
+import type { PlanType } from '@/lib/constants';
 
-const steps = [
+const getSteps = (plan: PlanType) => {
+  const limits = PLAN_LIMITS[plan];
+  const workspaceLimit = limits.maxWorkspaces === 999 ? 'unlimited' : limits.maxWorkspaces.toString();
+
+  return [
   {
     title: 'Welcome to Prooflayer! 👋',
     description: 'The simple way to collect and display beautiful testimonials without monthly fees.',
@@ -66,7 +72,8 @@ const steps = [
         </div>
         <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
           <p className="text-sm text-yellow-800">
-            <strong>Tip:</strong> You can create up to {'{workspace_limit}'} workspaces on your current plan.
+            <strong>Tip:</strong> You can create up to {workspaceLimit} workspace{workspaceLimit === '1' ? '' : 's'} on your current plan.
+            {plan === 'TRIAL' && ' Upgrade to get more!'}
           </p>
         </div>
       </div>
@@ -156,11 +163,14 @@ const steps = [
     ),
   },
 ];
+};
 
-export default function OnboardingModal({ userId }: { userId: string }) {
+export default function OnboardingModal({ userId, plan }: { userId: string; plan: PlanType }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isOpen, setIsOpen] = useState(true);
   const router = useRouter();
+
+  const steps = getSteps(plan);
 
   const handleComplete = async () => {
     try {

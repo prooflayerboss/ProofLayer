@@ -28,7 +28,7 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      {isFirstTime && <OnboardingModal userId={user.id} />}
+      {isFirstTime && <OnboardingModal userId={user.id} plan={plan} />}
 
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">
