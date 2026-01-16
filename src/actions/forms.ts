@@ -65,6 +65,8 @@ export async function createForm(formData: FormData) {
 
   const name = formData.get('name') as string;
   const workspaceId = formData.get('workspaceId') as string;
+  const allowText = formData.get('allowText') === 'on';
+  const allowVideo = formData.get('allowVideo') === 'on';
 
   if (!name || name.trim().length === 0) {
     return { success: false, error: 'Form name is required.' };
@@ -72,6 +74,11 @@ export async function createForm(formData: FormData) {
 
   if (!workspaceId) {
     return { success: false, error: 'Workspace ID is required.' };
+  }
+
+  // At least one testimonial type must be enabled
+  if (!allowText && !allowVideo) {
+    return { success: false, error: 'You must allow at least one testimonial type (text or video).' };
   }
 
   // Verify workspace ownership
@@ -96,6 +103,8 @@ export async function createForm(formData: FormData) {
         name: name.trim(),
         slug,
         isActive: true,
+        allowText,
+        allowVideo,
       },
     });
 

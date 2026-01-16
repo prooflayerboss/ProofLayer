@@ -71,6 +71,16 @@ export default async function NewFormPage({
               </p>
             </div>
 
+            {/* Hidden inputs to always enable both text and video */}
+            <input type="hidden" name="allowText" value="on" />
+            <input type="hidden" name="allowVideo" value="on" />
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-sm text-blue-800">
+                <strong>Note:</strong> Your form will accept both text and video testimonials. Customers can choose which format works best for them.
+              </p>
+            </div>
+
             <div className="flex items-center space-x-4">
               <button
                 type="submit"

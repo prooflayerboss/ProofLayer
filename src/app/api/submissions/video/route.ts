@@ -5,12 +5,20 @@ import { PLAN_LIMITS } from '@/lib/constants';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { formId, workspaceId, name, company, role, testimonial, rating, submissionType } = body;
+    const { formId, workspaceId, name, company, role, rating, videoUrl } = body;
 
     // Validate required fields
-    if (!formId || !name || !testimonial) {
+    if (!formId || !name || !videoUrl) {
       return NextResponse.json(
         { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    // Validate video URL format (should be from Uploadthing)
+    if (!videoUrl.includes('uploadthing') && !videoUrl.includes('utfs.io')) {
+      return NextResponse.json(
+        { error: 'Invalid video URL' },
         { status: 400 }
       );
     }
@@ -38,6 +46,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if form allows video
+    if (!form.allowVideo) {
+      return NextResponse.json(
+        { error: 'This form does not accept video testimonials' },
+        { status: 403 }
+      );
+    }
+
     // Check submission limits
     const user = form.workspace.user;
     const plan = user.entitlement?.plan || 'TRIAL';
@@ -51,6 +67,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Video is already uploaded to Uploadthing
+    // Extract thumbnail from Uploadthing URL (they provide this automatically)
+    // Format: https://utfs.io/f/abc123.mp4 -> thumbnail at https://utfs.io/f/abc123-thumbnail.jpg
+    const videoThumbnail = videoUrl.replace(/\.(mp4|mov|webm)$/i, '-thumbnail.jpg');
+
     // Create submission and increment counter
     await prisma.$transaction(async (tx) => {
       await tx.submission.create({
@@ -59,9 +80,12 @@ export async function POST(request: NextRequest) {
           name,
           company: company || null,
           role: role || null,
-          testimonial,
-          rating: rating || null,
-          submissionType: submissionType || 'TEXT',
+          testimonial: `Video testimonial from ${name}`, // Placeholder text for video testimonials
+          rating: rating ? parseInt(rating) : null,
+          videoUrl,
+          videoThumbnail, // Uploadthing provides thumbnails
+          videoDuration: null, // Can be extracted client-side if needed
+          submissionType: 'VIDEO',
           status: 'PENDING',
         },
       });
@@ -72,11 +96,11 @@ export async function POST(request: NextRequest) {
       });
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, videoUrl });
   } catch (error) {
-    console.error('Submission error:', error);
+    console.error('Video submission error:', error);
     return NextResponse.json(
-      { error: 'Failed to submit testimonial' },
+      { error: 'Failed to submit video testimonial' },
       { status: 500 }
     );
   }

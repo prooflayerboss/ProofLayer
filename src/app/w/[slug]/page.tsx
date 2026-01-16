@@ -36,6 +36,9 @@ export default async function WallOfLovePage({ params }: { params: { slug: strin
       testimonial: sub.testimonial,
       rating: sub.rating,
       photoUrl: sub.photoUrl,
+      videoUrl: sub.videoUrl,
+      videoThumbnail: sub.videoThumbnail,
+      submissionType: sub.submissionType,
       createdAt: sub.createdAt,
     }))
   );
@@ -44,16 +47,33 @@ export default async function WallOfLovePage({ params }: { params: { slug: strin
   const plan = workspace.user.entitlement?.plan || 'TRIAL';
   const showBadge = PLAN_LIMITS[plan].showBadge;
 
+  // Use custom branding or fallback to defaults
+  const headline = workspace.headline || workspace.name;
+  const description = workspace.description || 'Client testimonials and reviews';
+  const logoUrl = workspace.logoUrl;
+  const primaryColor = workspace.primaryColor || '#3B82F6';
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {/* Logo */}
+          {logoUrl && (
+            <div className="flex justify-center mb-4">
+              <img
+                src={logoUrl}
+                alt={workspace.name}
+                className="h-12 w-auto object-contain"
+              />
+            </div>
+          )}
+
           <h1 className="text-3xl font-bold text-gray-900 text-center">
-            {workspace.name}
+            {headline}
           </h1>
           <p className="text-gray-600 text-center mt-2">
-            Client testimonials and reviews
+            {description}
           </p>
         </div>
       </div>
@@ -90,7 +110,12 @@ export default async function WallOfLovePage({ params }: { params: { slug: strin
                   className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    <div
+                      className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden"
+                      style={{
+                        backgroundColor: testimonial.photoUrl ? 'transparent' : `${primaryColor}20`,
+                      }}
+                    >
                       {testimonial.photoUrl ? (
                         <img
                           src={testimonial.photoUrl}
@@ -98,7 +123,10 @@ export default async function WallOfLovePage({ params }: { params: { slug: strin
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="text-blue-600 font-semibold">
+                        <span
+                          className="font-semibold"
+                          style={{ color: primaryColor }}
+                        >
                           {initials}
                         </span>
                       )}
@@ -132,9 +160,21 @@ export default async function WallOfLovePage({ params }: { params: { slug: strin
                     </div>
                   )}
 
-                  <p className="text-gray-700 leading-relaxed">
-                    {testimonial.testimonial}
-                  </p>
+                  {testimonial.submissionType === 'VIDEO' && testimonial.videoUrl ? (
+                    <div className="mb-3">
+                      <video
+                        src={testimonial.videoUrl}
+                        controls
+                        className="w-full rounded-lg"
+                        poster={testimonial.videoThumbnail || undefined}
+                        preload="metadata"
+                      />
+                    </div>
+                  ) : (
+                    <p className="text-gray-700 leading-relaxed">
+                      {testimonial.testimonial}
+                    </p>
+                  )}
                 </div>
               );
             })}
@@ -150,7 +190,8 @@ export default async function WallOfLovePage({ params }: { params: { slug: strin
                 href="https://prooflayer.app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-700 font-medium"
+                className="font-medium hover:opacity-80 transition-opacity"
+                style={{ color: primaryColor }}
               >
                 Prooflayer
               </a>

@@ -1,49 +1,124 @@
 'use client';
 
 import { useState } from 'react';
+import VideoUploader from './video-uploader';
 
 export default function TestimonialForm({
   formId,
   workspaceId,
+  allowText,
+  allowVideo,
 }: {
   formId: string;
   workspaceId: string;
+  allowText: boolean;
+  allowVideo: boolean;
 }) {
+  // Common fields
   const [name, setName] = useState('');
   const [company, setCompany] = useState('');
   const [role, setRole] = useState('');
-  const [testimonial, setTestimonial] = useState('');
   const [rating, setRating] = useState(5);
+
+  // Text testimonial fields
+  const [testimonial, setTestimonial] = useState('');
+
+  // Video testimonial fields
+  const [videoUrl, setVideoUrl] = useState<string>('');
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const handleUploadComplete = (url: string) => {
+    setVideoUrl(url);
+    setVideoPreview(url);
+    setError('');
+    setUploadProgress(100);
+  };
+
+  const handleUploadError = (errorMessage: string) => {
+    setError(errorMessage);
+    setUploadProgress(0);
+  };
+
+  const handleUploadProgress = (progress: number) => {
+    setUploadProgress(progress);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
+    setUploadProgress(0);
 
     try {
-      const response = await fetch('/api/submissions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          formId,
-          workspaceId,
-          name,
-          company,
-          role,
-          testimonial,
-          rating,
-        }),
-      });
+      // Determine submission type based on what the user provided
+      const hasVideo = !!videoUrl;
+      const hasText = !!testimonial.trim();
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || 'Something went wrong');
+      // Validation: user must provide at least one type of testimonial
+      if (!hasVideo && !hasText) {
+        if (allowText && allowVideo) {
+          setError('Please provide either a text testimonial or upload a video');
+        } else if (allowVideo) {
+          setError('Please upload a video');
+        } else {
+          setError('Please write a testimonial');
+        }
         setLoading(false);
         return;
+      }
+
+      // If they provided a video, submit as video testimonial
+      if (hasVideo) {
+        const response = await fetch('/api/submissions/video', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            formId,
+            workspaceId,
+            name,
+            company,
+            role,
+            rating,
+            videoUrl,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setError(data.error || 'Failed to submit video');
+          setLoading(false);
+          return;
+        }
+      } else {
+        // Otherwise submit as text testimonial
+        const response = await fetch('/api/submissions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            formId,
+            workspaceId,
+            name,
+            company,
+            role,
+            testimonial,
+            rating,
+            submissionType: 'TEXT',
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setError(data.error || 'Something went wrong');
+          setLoading(false);
+          return;
+        }
       }
 
       setSubmitted(true);
@@ -62,7 +137,9 @@ export default function TestimonialForm({
           </svg>
         </div>
         <h2 className="text-xl font-semibold text-gray-900 mb-2">Thank you!</h2>
-        <p className="text-gray-600">Your testimonial has been submitted for review.</p>
+        <p className="text-gray-600">
+          Your testimonial has been submitted for review.
+        </p>
       </div>
     );
   }
@@ -72,6 +149,15 @@ export default function TestimonialForm({
       {error && (
         <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">
           {error}
+        </div>
+      )}
+
+      {/* Show helpful message if both are enabled */}
+      {allowText && allowVideo && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <p className="text-sm text-blue-800">
+            You can submit either a written testimonial, a video testimonial, or both!
+          </p>
         </div>
       )}
 
@@ -119,20 +205,66 @@ export default function TestimonialForm({
         </div>
       </div>
 
-      <div>
-        <label htmlFor="testimonial" className="block text-sm font-medium text-gray-700 mb-1">
-          Your Testimonial *
-        </label>
-        <textarea
-          id="testimonial"
-          value={testimonial}
-          onChange={(e) => setTestimonial(e.target.value)}
-          required
-          rows={4}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-          placeholder="Share your experience..."
-        />
-      </div>
+      {/* Text testimonial field */}
+      {allowText && (
+        <div>
+          <label htmlFor="testimonial" className="block text-sm font-medium text-gray-700 mb-1">
+            Written Testimonial {!allowVideo && '*'}
+          </label>
+          <textarea
+            id="testimonial"
+            value={testimonial}
+            onChange={(e) => setTestimonial(e.target.value)}
+            required={allowText && !allowVideo}
+            rows={4}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            placeholder="Share your experience..."
+          />
+        </div>
+      )}
+
+      {/* Video testimonial field */}
+      {allowVideo && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Video Testimonial {!allowText && '*'}
+          </label>
+
+          {!videoPreview ? (
+            <VideoUploader
+              onUploadComplete={handleUploadComplete}
+              onUploadError={handleUploadError}
+              onUploadProgress={handleUploadProgress}
+            />
+          ) : (
+            <div className="space-y-3">
+              <div className="relative bg-black rounded-lg overflow-hidden">
+                <video
+                  src={videoPreview}
+                  controls
+                  className="w-full"
+                  style={{ maxHeight: '300px' }}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setVideoUrl('');
+                  setVideoPreview(null);
+                  setUploadProgress(0);
+                }}
+                className="text-sm text-red-600 hover:text-red-700 font-medium"
+              >
+                Remove video
+              </button>
+            </div>
+          )}
+
+          <p className="text-xs text-gray-500 mt-2">
+            Tip: Keep your video under 2 minutes for best engagement
+          </p>
+        </div>
+      )}
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -158,12 +290,36 @@ export default function TestimonialForm({
         </div>
       </div>
 
+      {uploadProgress > 0 && uploadProgress < 100 && (
+        <div className="bg-blue-50 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-blue-900">Uploading video...</span>
+            <span className="text-sm text-blue-700">{uploadProgress}%</span>
+          </div>
+          <div className="w-full bg-blue-200 rounded-full h-2">
+            <div
+              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${uploadProgress}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {uploadProgress === 100 && videoPreview && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-2">
+          <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="text-sm font-medium text-green-800">Video uploaded successfully! You can now submit your testimonial.</span>
+        </div>
+      )}
+
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || (uploadProgress > 0 && uploadProgress < 100)}
         className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
-        {loading ? 'Submitting...' : 'Submit Testimonial'}
+        {loading ? 'Submitting...' : (uploadProgress > 0 && uploadProgress < 100) ? 'Uploading video...' : 'Submit Testimonial'}
       </button>
     </form>
   );

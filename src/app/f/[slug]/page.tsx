@@ -39,7 +39,12 @@ export default async function PublicFormPage({
             </p>
           </div>
 
-          <TestimonialForm formId={form.id} workspaceId={form.workspaceId} />
+          <TestimonialForm
+            formId={form.id}
+            workspaceId={form.workspaceId}
+            allowText={form.allowText}
+            allowVideo={form.allowVideo}
+          />
         </div>
 
         <p className="text-center text-sm text-gray-400 mt-6">

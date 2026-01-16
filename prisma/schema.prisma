@@ -72,13 +72,20 @@ enum Plan {
 // WORKSPACES
 // ===========================
 model Workspace {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name      String
-  slug      String?  @unique // URL-friendly slug for public wall of love page
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  slug         String?  @unique // URL-friendly slug for public wall of love page
+
+  // Wall of Love customization
+  headline     String?  // Custom headline for wall of love page
+  description  String?  // Custom description/tagline
+  logoUrl      String?  @map("logo_url") // Optional logo image URL
+  primaryColor String?  @default("#3B82F6") @map("primary_color") // Brand color for accents
+
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   forms        Form[]
   widgetConfig WidgetConfig?
@@ -96,6 +103,11 @@ model Form {
   name        String
   slug        String    @unique
   isActive    Boolean   @default(true) @map("is_active")
+
+  // Form collection settings
+  allowText   Boolean   @default(true) @map("allow_text")  // Allow text testimonials
+  allowVideo  Boolean   @default(false) @map("allow_video") // Allow video testimonials
+
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
@@ -117,12 +129,24 @@ model Submission {
   testimonial String           @db.Text
   rating      Int?             // 1-5 stars, optional
   photoUrl    String?          @map("photo_url")
+
+  // Video testimonial support
+  videoUrl       String?           @map("video_url") // URL to hosted video
+  videoThumbnail String?           @map("video_thumbnail") // Thumbnail image URL
+  videoDuration  Int?              @map("video_duration") // Duration in seconds
+  submissionType SubmissionType    @default(TEXT) @map("submission_type")
+
   status      SubmissionStatus @default(PENDING)
   createdAt   DateTime         @default(now()) @map("created_at")
   updatedAt   DateTime         @updatedAt @map("updated_at")
 
   @@index([formId, status])
   @@map("submissions")
+}
+
+enum SubmissionType {
+  TEXT
+  VIDEO
 }
 
 enum SubmissionStatus {

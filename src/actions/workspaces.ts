@@ -202,3 +202,61 @@ export async function deleteWorkspace(formData: FormData) {
 
   redirect('/dashboard/workspaces');
 }
+
+/**
+ * Update workspace customization (Wall of Love branding).
+ */
+export async function updateWorkspaceCustomization(formData: FormData) {
+  const user = await ensureUserExists();
+
+  if (!user) {
+    return { success: false, error: 'You must be logged in.' };
+  }
+
+  const workspaceId = formData.get('workspaceId') as string;
+  const headline = formData.get('headline') as string;
+  const description = formData.get('description') as string;
+  const logoUrl = formData.get('logoUrl') as string;
+  const primaryColor = formData.get('primaryColor') as string;
+
+  if (!workspaceId) {
+    return { success: false, error: 'Workspace ID is required.' };
+  }
+
+  // Verify ownership
+  const workspace = await prisma.workspace.findFirst({
+    where: {
+      id: workspaceId,
+      userId: user.id,
+    },
+  });
+
+  if (!workspace) {
+    return { success: false, error: 'Workspace not found.' };
+  }
+
+  // Validate color format (hex)
+  if (primaryColor && !/^#[0-9A-F]{6}$/i.test(primaryColor)) {
+    return { success: false, error: 'Invalid color format. Use hex format like #3B82F6.' };
+  }
+
+  try {
+    await prisma.workspace.update({
+      where: { id: workspaceId },
+      data: {
+        headline: headline || null,
+        description: description || null,
+        logoUrl: logoUrl || null,
+        primaryColor: primaryColor || '#3B82F6',
+      },
+    });
+
+    revalidatePath(`/dashboard/workspaces/${workspaceId}`);
+    revalidatePath(`/w/${workspace.slug}`);
+
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to update workspace customization:', error);
+    return { success: false, error: 'Failed to update customization. Please try again.' };
+  }
+}

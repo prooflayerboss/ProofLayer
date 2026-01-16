@@ -1,0 +1,22 @@
+import { createUploadthing, type FileRouter } from "uploadthing/next";
+
+const f = createUploadthing();
+
+export const ourFileRouter = {
+  videoUploader: f({
+    video: {
+      maxFileSize: "128MB",
+      maxFileCount: 1,
+    },
+  })
+    .middleware(async ({ req }) => {
+      // Allow public uploads to forms
+      return { uploadedBy: "public" };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Video upload complete:", file.url);
+      return { fileUrl: file.url };
+    }),
+} satisfies FileRouter;
+
+export type OurFileRouter = typeof ourFileRouter;

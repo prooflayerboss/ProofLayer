@@ -12,6 +12,10 @@ type Submission = {
   rating: number | null;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
   createdAt: Date;
+  submissionType: 'TEXT' | 'VIDEO';
+  videoUrl: string | null;
+  videoThumbnail: string | null;
+  videoDuration: number | null;
 };
 
 export default function SubmissionsList({
@@ -22,6 +26,17 @@ export default function SubmissionsList({
   const [submissions, setSubmissions] = useState(initialSubmissions);
   const [filter, setFilter] = useState<'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED'>('ALL');
   const [loading, setLoading] = useState<string | null>(null);
+
+  // Debug: log submissions to see what data we're receiving
+  console.log('Submissions data:', initialSubmissions);
+  if (initialSubmissions.length > 0) {
+    console.log('First submission details:', {
+      name: initialSubmissions[0].name,
+      submissionType: initialSubmissions[0].submissionType,
+      videoUrl: initialSubmissions[0].videoUrl,
+      hasVideoUrl: !!initialSubmissions[0].videoUrl,
+    });
+  }
 
   const filteredSubmissions = submissions.filter((s) => {
     if (filter === 'ALL') return true;
@@ -103,7 +118,17 @@ export default function SubmissionsList({
           >
             <div className="flex justify-between items-start mb-3">
               <div>
-                <p className="font-medium text-gray-900">{submission.name}</p>
+                <div className="flex items-center gap-2">
+                  <p className="font-medium text-gray-900">{submission.name}</p>
+                  {submission.submissionType === 'VIDEO' && (
+                    <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-medium rounded-full flex items-center gap-1">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      Video
+                    </span>
+                  )}
+                </div>
                 {(submission.company || submission.role) && (
                   <p className="text-sm text-gray-500">
                     {submission.role}{submission.role && submission.company && ' at '}{submission.company}
@@ -131,7 +156,37 @@ export default function SubmissionsList({
 
             {renderStars(submission.rating)}
 
-            <p className="text-gray-700 mt-3 mb-4">{submission.testimonial}</p>
+            {/* Video testimonial with text */}
+            {submission.submissionType === 'VIDEO' && submission.videoUrl ? (
+              <div className="mt-3 mb-4">
+                <div className="mb-3 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-3 flex items-start gap-2">
+                  <svg className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                  <div>
+                    <p className="text-sm font-semibold text-purple-900">Premium Video Testimonial</p>
+                    <p className="text-xs text-purple-700">{submission.name} took the time to record a personal video review!</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <p className="text-gray-700">{submission.testimonial}</p>
+                  </div>
+                  <div className="flex-shrink-0" style={{ width: '280px' }}>
+                    <video
+                      src={submission.videoUrl}
+                      controls
+                      className="w-full rounded-lg shadow-md"
+                      style={{ maxHeight: '200px' }}
+                      preload="metadata"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* Text testimonial only */
+              <p className="text-gray-700 mt-3 mb-4">{submission.testimonial}</p>
+            )}
 
             <div className="flex items-center justify-between pt-3 border-t border-gray-100">
               <p className="text-xs text-gray-400">
