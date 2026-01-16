@@ -47,7 +47,7 @@ export default function CheckoutButton({ plan }: { plan: 'MONTHLY' | 'LIFETIME' 
       <button
         onClick={handleCheckout}
         disabled={loading}
-        className="w-full bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? 'Loading...' : buttonText}
       </button>
