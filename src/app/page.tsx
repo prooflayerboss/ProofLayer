@@ -65,21 +65,28 @@ export default async function HomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-20 pb-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+      <section className="pt-20 pb-16 px-4 relative overflow-hidden">
+        {/* Background decorations */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+          <div className="absolute top-40 right-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+          <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        </div>
+
+        <div className="max-w-4xl mx-auto text-center relative">
+          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6 border border-blue-100 shadow-sm">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
             </span>
             Limited Offer: ${currentPrice} Lifetime Deal • Only {spotsLeft} Spots Left
           </div>
-          <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 leading-tight mb-6">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-6">
             Collect beautiful testimonials.<br />
-            <span className="text-blue-600">Display them anywhere.</span><br />
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Display them anywhere.</span><br />
             <span className="text-gray-600">Pay once.</span>
           </h1>
-          <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
             The simple alternative to monthly subscriptions. Prooflayer lets you gather and embed client reviews in minutes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -114,6 +121,107 @@ export default async function HomePage() {
             Managing reviews is messy. Screenshots look unprofessional. Monthly tools cost $300/year.<br />
             <span className="font-semibold text-gray-900">Prooflayer fixes the mess without the monthly fee.</span>
           </p>
+        </div>
+      </section>
+
+      {/* Demo Video Section */}
+      <section className="py-20 px-4 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
+              </svg>
+              See it in action
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Collect beautiful testimonials in minutes
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Watch how simple it is to set up your first form and start collecting testimonials.
+            </p>
+          </div>
+
+          {/* Video Container */}
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-purple-50">
+            {/* Aspect ratio container (16:9) */}
+            <div className="relative" style={{ paddingBottom: '56.25%' }}>
+              {/* Placeholder - Replace with actual video embed */}
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-600 to-purple-600">
+                <div className="text-center">
+                  <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-white/30 hover:scale-110 transition-transform cursor-pointer group">
+                    <svg className="w-12 h-12 text-white ml-1 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                    </svg>
+                  </div>
+                  <p className="text-white text-lg font-semibold mb-2">Product Demo Video</p>
+                  <p className="text-white/80 text-sm">
+                    Replace this placeholder with your demo video
+                  </p>
+                </div>
+              </div>
+
+              {/* To add your video, replace the placeholder div above with one of these: */}
+              {/*
+              YouTube embed:
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+                title="Prooflayer Demo"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+
+              Vimeo embed:
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src="https://player.vimeo.com/video/YOUR_VIDEO_ID"
+                title="Prooflayer Demo"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+              />
+
+              Loom embed:
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src="https://www.loom.com/embed/YOUR_VIDEO_ID"
+                title="Prooflayer Demo"
+                allowFullScreen
+              />
+              */}
+            </div>
+          </div>
+
+          {/* Video features */}
+          <div className="grid md:grid-cols-3 gap-6 mt-12">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Lightning Fast Setup</h3>
+              <p className="text-sm text-gray-600">Create your first form in under 2 minutes</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Fully Customizable</h3>
+              <p className="text-sm text-gray-600">Match your brand with themes and layouts</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">One-Line Embed</h3>
+              <p className="text-sm text-gray-600">Works with any website builder or CMS</p>
+            </div>
+          </div>
         </div>
       </section>
 
