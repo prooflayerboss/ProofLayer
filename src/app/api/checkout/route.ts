@@ -19,9 +19,9 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { plan } = body; // 'MONTHLY' or 'LIFETIME'
+    const { plan } = body; // 'LIFETIME' only
 
-    if (!plan || (plan !== 'MONTHLY' && plan !== 'LIFETIME')) {
+    if (!plan || plan !== 'LIFETIME') {
       return NextResponse.json(
         { error: 'Invalid plan selected' },
         { status: 400 }
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Check if already on a paid plan
+    // Check if already on lifetime plan
     const currentPlan = dbUser.entitlement?.plan;
 
     if (currentPlan === 'LIFETIME') {
@@ -61,24 +61,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (currentPlan === 'MONTHLY' && plan === 'MONTHLY') {
-      return NextResponse.json(
-        { error: 'You already have an active monthly subscription' },
-        { status: 400 }
-      );
-    }
-
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
-    // Determine mode and price based on plan
-    const isMonthly = plan === 'MONTHLY';
-    const priceId = isMonthly
-      ? process.env.STRIPE_MONTHLY_PRICE_ID!
-      : process.env.STRIPE_LIFETIME_PRICE_ID!;
+    // Get lifetime price ID
+    const priceId = process.env.STRIPE_LIFETIME_PRICE_ID!;
 
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
-      mode: isMonthly ? 'subscription' : 'payment',
+      mode: 'payment',
       payment_method_types: ['card'],
       line_items: [
         {
