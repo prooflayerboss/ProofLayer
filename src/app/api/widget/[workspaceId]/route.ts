@@ -1,0 +1,73 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { PLAN_LIMITS } from '@/lib/constants';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { workspaceId: string } }
+) {
+  try {
+    const workspace = await prisma.workspace.findUnique({
+      where: { id: params.workspaceId },
+      include: {
+        user: {
+          include: {
+            entitlement: true,
+          },
+        },
+        forms: {
+          include: {
+            submissions: {
+              where: { status: 'APPROVED' },
+              orderBy: { createdAt: 'desc' },
+            },
+          },
+        },
+      },
+    });
+
+    if (!workspace) {
+      return NextResponse.json(
+        { error: 'Workspace not found' },
+        { status: 404 }
+      );
+    }
+
+    // Gather all approved submissions from all forms
+    const testimonials = workspace.forms.flatMap((form) =>
+      form.submissions.map((sub) => ({
+        id: sub.id,
+        name: sub.name,
+        company: sub.company,
+        role: sub.role,
+        testimonial: sub.testimonial,
+        rating: sub.rating,
+        photoUrl: sub.photoUrl,
+        createdAt: sub.createdAt,
+      }))
+    );
+
+    // Check if we should show badge
+    const plan = workspace.user.entitlement?.plan || 'TRIAL';
+    const showBadge = PLAN_LIMITS[plan].showBadge;
+
+    // Set CORS headers to allow embedding on any site
+    const response = NextResponse.json({
+      testimonials,
+      showBadge,
+      workspaceName: workspace.name,
+    });
+
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    response.headers.set('Access-Control-Allow-Methods', 'GET');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+
+    return response;
+  } catch (error) {
+    console.error('Widget API error:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch testimonials' },
+      { status: 500 }
+    );
+  }
+}
