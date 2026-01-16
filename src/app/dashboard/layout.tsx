@@ -23,7 +23,7 @@ export default async function DashboardLayout({
           <div className="flex justify-between h-16">
             <div className="flex items-center space-x-8">
               <Link href="/dashboard" className="flex items-center gap-2">
-                <img src="/logo.png" alt="ProofLayer" className="h-7 w-auto" />
+                <img src="/logo-optimized.png" alt="ProofLayer" className="h-9 w-auto" />
               </Link>
               <div className="hidden md:flex items-center space-x-1">
                 <Link

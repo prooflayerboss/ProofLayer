@@ -35,7 +35,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center gap-2">
-              <img src="/logo.png" alt="ProofLayer" className="h-8 w-auto" />
+              <img src="/logo-optimized.png" alt="ProofLayer" className="h-10 w-auto" />
             </div>
             <div className="flex items-center space-x-4">
               {user ? (
@@ -557,7 +557,7 @@ export default async function HomePage() {
       <footer className="py-12 px-4 border-t border-gray-100">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center gap-2 mb-4 md:mb-0">
-            <img src="/logo.png" alt="ProofLayer" className="h-6 w-auto" />
+            <img src="/logo-optimized.png" alt="ProofLayer" className="h-8 w-auto" />
           </div>
           <div className="text-gray-500 text-sm">
             © {new Date().getFullYear()} ProofLayer. All rights reserved.
