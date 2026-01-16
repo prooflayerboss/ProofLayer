@@ -64,7 +64,17 @@ export async function POST(request: NextRequest) {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
     // Get lifetime price ID
-    const priceId = process.env.STRIPE_LIFETIME_PRICE_ID!;
+    const priceId = process.env.STRIPE_LIFETIME_PRICE_ID;
+
+    if (!priceId) {
+      console.error('STRIPE_LIFETIME_PRICE_ID is not set');
+      return NextResponse.json(
+        { error: 'Stripe price ID not configured' },
+        { status: 500 }
+      );
+    }
+
+    console.log('Creating checkout session with price:', priceId);
 
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
