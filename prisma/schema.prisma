@@ -54,6 +54,7 @@ model Entitlement {
 
 enum Plan {
   TRIAL
+  MONTHLY
   LIFETIME
 }
 

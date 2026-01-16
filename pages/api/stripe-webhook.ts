@@ -62,31 +62,101 @@ export default async function handler(
   try {
     console.log('📦 Webhook event received:', event.type);
 
+    // Handle checkout.session.completed for both one-time and subscription
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
       const userId = session.metadata?.userId;
+      const plan = session.metadata?.plan as 'MONTHLY' | 'LIFETIME';
 
       console.log('💳 Checkout session completed for userId:', userId);
-      console.log('Session metadata:', session.metadata);
+      console.log('Plan:', plan);
+      console.log('Mode:', session.mode);
+
+      if (!userId || !plan) {
+        console.error('❌ Missing userId or plan in session metadata');
+        return res.status(400).json({ error: 'Missing metadata' });
+      }
+
+      if (session.mode === 'subscription') {
+        // Monthly subscription
+        console.log('⏳ Setting up MONTHLY subscription...');
+
+        const updated = await prisma.entitlement.update({
+          where: { userId },
+          data: {
+            plan: 'MONTHLY',
+            stripeCustomerId: session.customer as string,
+            stripeSubscriptionId: session.subscription as string,
+            subscriptionStatus: 'active',
+          },
+        });
+
+        console.log(`✅ User ${userId} subscribed to MONTHLY plan!`);
+        console.log('Updated plan:', updated.plan);
+      } else {
+        // One-time payment (LIFETIME)
+        console.log('⏳ Upgrading user to LIFETIME...');
+
+        const updated = await prisma.entitlement.update({
+          where: { userId },
+          data: {
+            plan: 'LIFETIME',
+            stripeCustomerId: session.customer as string,
+            stripePaymentId: session.payment_intent as string,
+          },
+        });
+
+        console.log(`✅ User ${userId} upgraded to LIFETIME!`);
+        console.log('Updated plan:', updated.plan);
+      }
+    }
+
+    // Handle subscription updates
+    if (event.type === 'customer.subscription.updated') {
+      const subscription = event.data.object as Stripe.Subscription;
+      const userId = subscription.metadata?.userId;
+
+      console.log('🔄 Subscription updated for userId:', userId);
+      console.log('Status:', subscription.status);
 
       if (!userId) {
-        console.error('❌ No userId in session metadata');
+        console.error('❌ No userId in subscription metadata');
         return res.status(400).json({ error: 'Missing userId' });
       }
 
-      console.log('⏳ Attempting to upgrade user to LIFETIME...');
-
-      const updated = await prisma.entitlement.update({
+      await prisma.entitlement.update({
         where: { userId },
         data: {
-          plan: 'LIFETIME',
-          stripeCustomerId: session.customer as string,
-          stripePaymentId: session.payment_intent as string,
+          subscriptionStatus: subscription.status,
+          subscriptionPeriodEnd: new Date(subscription.current_period_end * 1000),
         },
       });
 
-      console.log(`✅✅✅ User ${userId} successfully upgraded to LIFETIME!`);
-      console.log('Updated plan:', updated.plan);
+      console.log(`✅ Subscription status updated for user ${userId}`);
+    }
+
+    // Handle subscription deletions/cancellations
+    if (event.type === 'customer.subscription.deleted') {
+      const subscription = event.data.object as Stripe.Subscription;
+      const userId = subscription.metadata?.userId;
+
+      console.log('❌ Subscription deleted for userId:', userId);
+
+      if (!userId) {
+        console.error('❌ No userId in subscription metadata');
+        return res.status(400).json({ error: 'Missing userId' });
+      }
+
+      await prisma.entitlement.update({
+        where: { userId },
+        data: {
+          plan: 'TRIAL',
+          subscriptionStatus: 'canceled',
+          stripeSubscriptionId: null,
+        },
+      });
+
+      console.log(`✅ User ${userId} downgraded to TRIAL after subscription cancellation`);
     }
 
     return res.json({ received: true });

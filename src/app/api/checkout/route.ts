@@ -19,9 +19,9 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { plan } = body; // 'LIFETIME' only
+    const { plan } = body; // 'MONTHLY' or 'LIFETIME'
 
-    if (!plan || plan !== 'LIFETIME') {
+    if (!plan || (plan !== 'MONTHLY' && plan !== 'LIFETIME')) {
       return NextResponse.json(
         { error: 'Invalid plan selected' },
         { status: 400 }
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Check if already on lifetime plan
+    // Check if already on a paid plan
     const currentPlan = dbUser.entitlement?.plan;
 
     if (currentPlan === 'LIFETIME') {
@@ -61,26 +61,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (currentPlan === 'MONTHLY' && plan === 'MONTHLY') {
+      return NextResponse.json(
+        { error: 'You already have an active monthly subscription' },
+        { status: 400 }
+      );
+    }
+
     // Get app URL - use Vercel URL in production or localhost in dev
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ||
                    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
-    // Get lifetime price ID
-    const priceId = process.env.STRIPE_LIFETIME_PRICE_ID;
+    // Get price ID based on plan
+    const priceId = plan === 'MONTHLY'
+      ? process.env.STRIPE_MONTHLY_PRICE_ID
+      : process.env.STRIPE_LIFETIME_PRICE_ID;
 
     if (!priceId) {
-      console.error('STRIPE_LIFETIME_PRICE_ID is not set');
+      console.error(`Stripe price ID not set for plan: ${plan}`);
       return NextResponse.json(
         { error: 'Stripe price ID not configured' },
         { status: 500 }
       );
     }
 
-    console.log('Creating checkout session with price:', priceId);
+    console.log('Creating checkout session with price:', priceId, 'for plan:', plan);
 
     // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
+    const sessionConfig: any = {
+      mode: plan === 'MONTHLY' ? 'subscription' : 'payment',
       payment_method_types: ['card'],
       line_items: [
         {
@@ -95,7 +104,14 @@ export async function POST(request: NextRequest) {
         userId: user.id,
         plan: plan,
       },
-    });
+    };
+
+    // For subscriptions, allow promotion codes
+    if (plan === 'MONTHLY') {
+      sessionConfig.allow_promotion_codes = true;
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     return NextResponse.json({ url: session.url });
   } catch (error) {

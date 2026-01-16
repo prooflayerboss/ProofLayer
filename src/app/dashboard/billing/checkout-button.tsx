@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export default function CheckoutButton({ plan }: { plan: 'LIFETIME' }) {
+export default function CheckoutButton({ plan }: { plan: 'MONTHLY' | 'LIFETIME' }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,7 +35,7 @@ export default function CheckoutButton({ plan }: { plan: 'LIFETIME' }) {
     }
   };
 
-  const buttonText = 'Get Lifetime Access - $49';
+  const buttonText = plan === 'MONTHLY' ? 'Subscribe - $19/month' : 'Get Lifetime Access - $49';
 
   return (
     <div>

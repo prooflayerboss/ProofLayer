@@ -6,11 +6,18 @@ export const PLAN_LIMITS = {
     price: 0,
     interval: null,
   },
+  MONTHLY: {
+    maxWorkspaces: 999, // Unlimited
+    maxSubmissions: 999999, // Unlimited
+    showBadge: false,
+    price: 19,
+    interval: 'month' as const,
+  },
   LIFETIME: {
     maxWorkspaces: 999, // Unlimited
     maxSubmissions: 999999, // Unlimited
     showBadge: false,
-    price: 49, // Launch price - will update in Stripe for tiered pricing
+    price: 49, // Founding members price
     interval: 'lifetime' as const,
   },
 } as const;

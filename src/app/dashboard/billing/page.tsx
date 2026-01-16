@@ -43,15 +43,17 @@ export default async function BillingPage({
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-2xl font-bold text-gray-900">
-              {plan === 'TRIAL' ? 'Trial' : 'Lifetime'}
+              {plan === 'TRIAL' ? 'Trial' : plan === 'MONTHLY' ? 'Monthly Subscription' : 'Lifetime'}
             </p>
             <p className="text-sm text-gray-500 mt-1">
               {plan === 'TRIAL'
                 ? 'Free forever with limits'
+                : plan === 'MONTHLY'
+                ? '$19/month, unlimited access'
                 : 'One-time purchase, unlimited access'}
             </p>
           </div>
-          {plan === 'LIFETIME' && (
+          {(plan === 'LIFETIME' || plan === 'MONTHLY') && (
             <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
               Active
             </span>
@@ -67,10 +69,10 @@ export default async function BillingPage({
             <div className="flex justify-between text-sm mb-1">
               <span className="text-gray-600">Workspaces</span>
               <span className="text-gray-900 font-medium">
-                {user.entitlement?.workspacesUsed || 0} / {plan === 'LIFETIME' ? '∞' : limits.maxWorkspaces}
+                {user.entitlement?.workspacesUsed || 0} / {(plan === 'LIFETIME' || plan === 'MONTHLY') ? '∞' : limits.maxWorkspaces}
               </span>
             </div>
-            {plan !== 'LIFETIME' && (
+            {plan !== 'LIFETIME' && plan !== 'MONTHLY' && (
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-blue-600 h-2 rounded-full transition-all"
@@ -85,10 +87,10 @@ export default async function BillingPage({
             <div className="flex justify-between text-sm mb-1">
               <span className="text-gray-600">Submissions</span>
               <span className="text-gray-900 font-medium">
-                {user.entitlement?.submissionsUsed || 0} / {plan === 'LIFETIME' ? '∞' : limits.maxSubmissions.toLocaleString()}
+                {user.entitlement?.submissionsUsed || 0} / {(plan === 'LIFETIME' || plan === 'MONTHLY') ? '∞' : limits.maxSubmissions.toLocaleString()}
               </span>
             </div>
-            {plan !== 'LIFETIME' && (
+            {plan !== 'LIFETIME' && plan !== 'MONTHLY' && (
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-blue-600 h-2 rounded-full transition-all"
@@ -185,11 +187,11 @@ export default async function BillingPage({
               </p>
             </div>
 
-            {/* Monthly Plan - Comparison */}
-            <div className="bg-white rounded-xl shadow-sm border-2 border-gray-200 p-6 opacity-90 order-2 md:order-1">
+            {/* Monthly Plan */}
+            <div className="bg-white rounded-xl shadow-sm border-2 border-gray-200 p-6 order-2 md:order-1">
               <div className="mb-4">
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Monthly Subscription</h3>
-                <p className="text-gray-500 text-sm">Coming Soon</p>
+                <p className="text-gray-500 text-sm">Pay as you go</p>
               </div>
 
               <div className="mb-6">
@@ -202,19 +204,19 @@ export default async function BillingPage({
 
               <ul className="space-y-3 mb-6">
                 <li className="flex items-center text-gray-600">
-                  <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   Unlimited workspaces
                 </li>
                 <li className="flex items-center text-gray-600">
-                  <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   Unlimited testimonials
                 </li>
                 <li className="flex items-center text-gray-600">
-                  <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   White label
@@ -233,15 +235,10 @@ export default async function BillingPage({
                 </li>
               </ul>
 
-              <button
-                disabled
-                className="w-full bg-gray-100 text-gray-400 px-6 py-3 rounded-lg font-semibold cursor-not-allowed"
-              >
-                Coming Soon
-              </button>
+              <CheckoutButton plan="MONTHLY" />
 
               <p className="text-xs text-gray-500 text-center mt-4">
-                Available after founding member period ends
+                Cancel anytime • No long-term commitment
               </p>
             </div>
           </div>
