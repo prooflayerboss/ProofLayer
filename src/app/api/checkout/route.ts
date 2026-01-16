@@ -88,8 +88,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error('Checkout error:', error);
+
+    // Return more detailed error for debugging
+    const errorMessage = error instanceof Error ? error.message : 'Failed to create checkout session';
+
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
