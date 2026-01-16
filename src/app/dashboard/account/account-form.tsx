@@ -31,10 +31,19 @@ export default function AccountForm({ profile }: { profile: Profile }) {
     setError(null);
 
     try {
+      // Auto-add https:// to website if missing
+      let website = formData.website.trim();
+      if (website && !website.match(/^https?:\/\//i)) {
+        website = 'https://' + website;
+      }
+
       const response = await fetch('/api/account/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          website,
+        }),
       });
 
       const data = await response.json();
@@ -42,6 +51,9 @@ export default function AccountForm({ profile }: { profile: Profile }) {
       if (!response.ok) {
         throw new Error(data.error || 'Failed to update profile');
       }
+
+      // Update local state with the saved website (which now has https://)
+      setFormData(prev => ({ ...prev, website }));
 
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
@@ -155,12 +167,13 @@ export default function AccountForm({ profile }: { profile: Profile }) {
               Website
             </label>
             <input
-              type="url"
+              type="text"
               value={formData.website}
               onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-              placeholder="https://example.com"
+              placeholder="example.com or https://example.com"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <p className="mt-1 text-xs text-gray-500">We'll automatically add https:// if needed</p>
           </div>
         </div>
       </div>
