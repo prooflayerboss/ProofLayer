@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { ensureUserExists } from '@/actions/user';
 import { getWorkspaces } from '@/actions/workspaces';
 import { PLAN_LIMITS } from '@/lib/constants';
+import { prisma } from '@/lib/prisma';
+import OnboardingModal from './onboarding-modal';
 
 export default async function DashboardPage() {
   const user = await ensureUserExists();
@@ -15,11 +17,26 @@ export default async function DashboardPage() {
   const plan = user.entitlement?.plan || 'TRIAL';
   const limits = PLAN_LIMITS[plan];
 
+  // Get full user profile to check onboarding status
+  const userProfile = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { onboardingCompleted: true, name: true },
+  });
+
+  const isFirstTime = !userProfile?.onboardingCompleted;
+  const userName = userProfile?.name || user.email?.split('@')[0] || 'there';
+
   return (
     <div>
+      {isFirstTime && <OnboardingModal userId={user.id} />}
+
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Welcome back!</h1>
-        <p className="text-gray-600 mt-1">Here&apos;s an overview of your account.</p>
+        <h1 className="text-2xl font-bold text-gray-900">
+          {isFirstTime ? `Welcome, ${userName}!` : `Welcome back, ${userName}!`}
+        </h1>
+        <p className="text-gray-600 mt-1">
+          {isFirstTime ? "Let's get started with Prooflayer." : "Here's an overview of your account."}
+        </p>
       </div>
 
       {/* Stats Cards */}

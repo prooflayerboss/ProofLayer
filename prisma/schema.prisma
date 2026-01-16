@@ -29,6 +29,9 @@ model User {
   businessType String? @map("business_type") // e.g., "agency", "freelancer", "saas", "ecommerce"
   website      String?
 
+  // Onboarding tracking
+  onboardingCompleted Boolean @default(false) @map("onboarding_completed")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
