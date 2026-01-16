@@ -145,52 +145,16 @@ export default async function HomePage() {
           </div>
 
           {/* Video Container */}
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-purple-50">
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200">
             {/* Aspect ratio container (16:9) */}
             <div className="relative" style={{ paddingBottom: '56.25%' }}>
-              {/* Placeholder - Replace with actual video embed */}
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-600 to-purple-600">
-                <div className="text-center">
-                  <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-white/30 hover:scale-110 transition-transform cursor-pointer group">
-                    <svg className="w-12 h-12 text-white ml-1 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                    </svg>
-                  </div>
-                  <p className="text-white text-lg font-semibold mb-2">Product Demo Video</p>
-                  <p className="text-white/80 text-sm">
-                    Replace this placeholder with your demo video
-                  </p>
-                </div>
-              </div>
-
-              {/* To add your video, replace the placeholder div above with one of these: */}
-              {/*
-              YouTube embed:
               <iframe
                 className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
-                title="Prooflayer Demo"
+                src="https://www.youtube.com/embed/I_C6VIvh5kA?rel=0&modestbranding=1&showinfo=0"
+                title="ProofLayer Demo - Collect and Display Testimonials"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />
-
-              Vimeo embed:
-              <iframe
-                className="absolute inset-0 w-full h-full"
-                src="https://player.vimeo.com/video/YOUR_VIDEO_ID"
-                title="Prooflayer Demo"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowFullScreen
-              />
-
-              Loom embed:
-              <iframe
-                className="absolute inset-0 w-full h-full"
-                src="https://www.loom.com/embed/YOUR_VIDEO_ID"
-                title="Prooflayer Demo"
-                allowFullScreen
-              />
-              */}
             </div>
           </div>
 
