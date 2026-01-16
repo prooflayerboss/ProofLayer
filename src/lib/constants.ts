@@ -14,7 +14,7 @@ export const PLAN_LIMITS = {
     interval: 'month' as const,
   },
   LIFETIME: {
-    maxWorkspaces: 999, // Unlimited
+    maxWorkspaces: 5, // Limited to force license stacking for agencies
     maxSubmissions: 999999, // Unlimited
     showBadge: false,
     price: 49, // Founding members price
