@@ -3,6 +3,10 @@ import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
+  console.log('🔥 WEBHOOK ENDPOINT HIT - stripe-webhook route');
+  console.log('Request URL:', request.url);
+  console.log('Request headers:', Object.fromEntries(request.headers.entries()));
+
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: '2025-02-24.acacia',
   });
@@ -10,7 +14,11 @@ export async function POST(request: NextRequest) {
   const body = await request.text();
   const signature = request.headers.get('stripe-signature');
 
+  console.log('Body length:', body.length);
+  console.log('Signature present:', !!signature);
+
   if (!signature) {
+    console.error('❌ Missing stripe-signature header');
     return NextResponse.json(
       { error: 'Missing stripe-signature header' },
       { status: 400 }
