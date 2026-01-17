@@ -44,9 +44,9 @@ export default function FeatureCard({
 
       {/* Tooltip */}
       {showTooltip && (
-        <div className="absolute left-0 right-0 top-full mt-2 z-10 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="absolute left-0 right-0 bottom-full mb-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
           <div className="bg-gradient-to-br from-gray-900 to-gray-800 text-white p-4 rounded-xl shadow-2xl border border-gray-700">
-            <div className="absolute -top-2 left-8 w-4 h-4 bg-gray-900 transform rotate-45 border-l border-t border-gray-700"></div>
+            <div className="absolute -bottom-2 left-8 w-4 h-4 bg-gray-900 transform rotate-45 border-r border-b border-gray-700"></div>
             <ul className="space-y-2">
               {details.map((detail, index) => (
                 <li key={index} className="flex items-start gap-2 text-sm">
