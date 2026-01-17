@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { Plan } from '@prisma/client';
+import { PLAN_LIMITS } from '@/lib/constants';
 
 type Workspace = {
   id: string;
@@ -10,9 +12,11 @@ type Workspace = {
 export default function WidgetConfigurator({
   workspaces,
   appUrl,
+  userPlan,
 }: {
   workspaces: Workspace[];
   appUrl: string;
+  userPlan: Plan;
 }) {
   const [selectedWorkspace, setSelectedWorkspace] = useState(workspaces[0]?.id || '');
   const [widgetType, setWidgetType] = useState<'embed' | 'popup' | 'floating'>('embed');
@@ -20,6 +24,18 @@ export default function WidgetConfigurator({
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [copied, setCopied] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<'shopify' | 'wix' | 'squarespace' | 'wordpress' | 'webflow'>('shopify');
+
+  // Get plan limits
+  const planLimits = PLAN_LIMITS[userPlan as keyof typeof PLAN_LIMITS];
+
+  // Helper functions to check if features are allowed
+  const isWidgetTypeAllowed = (type: string) => {
+    return planLimits.allowedWidgetTypes.includes(type.toUpperCase() as any);
+  };
+
+  const isLayoutAllowed = (layoutType: string) => {
+    return planLimits.allowedLayouts.includes(layoutType.toUpperCase() as any);
+  };
 
   // Popup settings
   const [popupTrigger, setPopupTrigger] = useState<'time' | 'exit_intent' | 'scroll'>('time');
@@ -88,37 +104,52 @@ export default function WidgetConfigurator({
             </label>
             <div className="grid grid-cols-3 gap-3">
               <button
-                onClick={() => setWidgetType('embed')}
-                className={`p-3 border rounded-lg text-center transition-colors ${
+                onClick={() => isWidgetTypeAllowed('embed') && setWidgetType('embed')}
+                disabled={!isWidgetTypeAllowed('embed')}
+                className={`relative p-3 border rounded-lg text-center transition-colors ${
                   widgetType === 'embed'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300'
+                    : isWidgetTypeAllowed('embed')
+                    ? 'border-gray-200 hover:border-gray-300'
+                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
                 }`}
               >
                 <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 <span className="text-xs font-medium">Embed</span>
+                {!isWidgetTypeAllowed('embed') && (
+                  <span className="absolute top-1 right-1 text-xs bg-gray-600 text-white px-1.5 py-0.5 rounded">🔒</span>
+                )}
               </button>
               <button
-                onClick={() => setWidgetType('popup')}
-                className={`p-3 border rounded-lg text-center transition-colors ${
+                onClick={() => isWidgetTypeAllowed('popup') && setWidgetType('popup')}
+                disabled={!isWidgetTypeAllowed('popup')}
+                className={`relative p-3 border rounded-lg text-center transition-colors ${
                   widgetType === 'popup'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300'
+                    : isWidgetTypeAllowed('popup')
+                    ? 'border-gray-200 hover:border-gray-300'
+                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
                 }`}
               >
                 <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                 </svg>
                 <span className="text-xs font-medium">Popup</span>
+                {!isWidgetTypeAllowed('popup') && (
+                  <span className="absolute top-1 right-1 text-xs bg-gray-600 text-white px-1.5 py-0.5 rounded">🔒</span>
+                )}
               </button>
               <button
-                onClick={() => setWidgetType('floating')}
-                className={`p-3 border rounded-lg text-center transition-colors ${
+                onClick={() => isWidgetTypeAllowed('floating') && setWidgetType('floating')}
+                disabled={!isWidgetTypeAllowed('floating')}
+                className={`relative p-3 border rounded-lg text-center transition-colors ${
                   widgetType === 'floating'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300'
+                    : isWidgetTypeAllowed('floating')
+                    ? 'border-gray-200 hover:border-gray-300'
+                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
                 }`}
               >
                 <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,6 +157,9 @@ export default function WidgetConfigurator({
                   <circle cx="19" cy="19" r="3" fill="currentColor" />
                 </svg>
                 <span className="text-xs font-medium">Floating</span>
+                {!isWidgetTypeAllowed('floating') && (
+                  <span className="absolute top-1 right-1 text-xs bg-gray-600 text-white px-1.5 py-0.5 rounded">🔒</span>
+                )}
               </button>
             </div>
           </div>
@@ -262,69 +296,99 @@ export default function WidgetConfigurator({
             </label>
             <div className="grid grid-cols-3 gap-3">
               <button
-                onClick={() => setLayout('grid')}
-                className={`p-3 border rounded-lg text-center transition-colors ${
+                onClick={() => isLayoutAllowed('grid') && setLayout('grid')}
+                disabled={!isLayoutAllowed('grid')}
+                className={`relative p-3 border rounded-lg text-center transition-colors ${
                   layout === 'grid'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300'
+                    : isLayoutAllowed('grid')
+                    ? 'border-gray-200 hover:border-gray-300'
+                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
                 }`}
               >
                 <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
                 </svg>
                 <span className="text-xs font-medium">Grid</span>
+                {!isLayoutAllowed('grid') && (
+                  <span className="absolute top-1 right-1 text-xs bg-gray-600 text-white px-1.5 py-0.5 rounded">🔒</span>
+                )}
               </button>
               <button
-                onClick={() => setLayout('carousel')}
-                className={`p-3 border rounded-lg text-center transition-colors ${
+                onClick={() => isLayoutAllowed('carousel') && setLayout('carousel')}
+                disabled={!isLayoutAllowed('carousel')}
+                className={`relative p-3 border rounded-lg text-center transition-colors ${
                   layout === 'carousel'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300'
+                    : isLayoutAllowed('carousel')
+                    ? 'border-gray-200 hover:border-gray-300'
+                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
                 }`}
               >
                 <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 4h10M7 8h10M7 12h10M7 16h10M7 20h10" />
                 </svg>
                 <span className="text-xs font-medium">Carousel</span>
+                {!isLayoutAllowed('carousel') && (
+                  <span className="absolute top-1 right-1 text-xs bg-gray-600 text-white px-1.5 py-0.5 rounded">🔒</span>
+                )}
               </button>
               <button
-                onClick={() => setLayout('marquee')}
-                className={`p-3 border rounded-lg text-center transition-colors ${
+                onClick={() => isLayoutAllowed('marquee') && setLayout('marquee')}
+                disabled={!isLayoutAllowed('marquee')}
+                className={`relative p-3 border rounded-lg text-center transition-colors ${
                   layout === 'marquee'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300'
+                    : isLayoutAllowed('marquee')
+                    ? 'border-gray-200 hover:border-gray-300'
+                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
                 }`}
               >
                 <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
                 </svg>
                 <span className="text-xs font-medium">Marquee</span>
+                {!isLayoutAllowed('marquee') && (
+                  <span className="absolute top-1 right-1 text-xs bg-gray-600 text-white px-1.5 py-0.5 rounded">🔒</span>
+                )}
               </button>
               <button
-                onClick={() => setLayout('masonry')}
-                className={`p-3 border rounded-lg text-center transition-colors ${
+                onClick={() => isLayoutAllowed('masonry') && setLayout('masonry')}
+                disabled={!isLayoutAllowed('masonry')}
+                className={`relative p-3 border rounded-lg text-center transition-colors ${
                   layout === 'masonry'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300'
+                    : isLayoutAllowed('masonry')
+                    ? 'border-gray-200 hover:border-gray-300'
+                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
                 }`}
               >
                 <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 14a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1h-4a1 1 0 01-1-1v-5z" />
                 </svg>
                 <span className="text-xs font-medium">Masonry</span>
+                {!isLayoutAllowed('masonry') && (
+                  <span className="absolute top-1 right-1 text-xs bg-gray-600 text-white px-1.5 py-0.5 rounded">🔒</span>
+                )}
               </button>
               <button
-                onClick={() => setLayout('spotlight')}
-                className={`p-3 border rounded-lg text-center transition-colors ${
+                onClick={() => isLayoutAllowed('spotlight') && setLayout('spotlight')}
+                disabled={!isLayoutAllowed('spotlight')}
+                className={`relative p-3 border rounded-lg text-center transition-colors ${
                   layout === 'spotlight'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 hover:border-gray-300'
+                    : isLayoutAllowed('spotlight')
+                    ? 'border-gray-200 hover:border-gray-300'
+                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
                 }`}
               >
                 <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
                 <span className="text-xs font-medium">Spotlight</span>
+                {!isLayoutAllowed('spotlight') && (
+                  <span className="absolute top-1 right-1 text-xs bg-gray-600 text-white px-1.5 py-0.5 rounded">🔒</span>
+                )}
               </button>
             </div>
           </div>

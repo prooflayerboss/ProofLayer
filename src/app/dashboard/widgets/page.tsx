@@ -37,11 +37,12 @@ export default async function WidgetsPage() {
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const userPlan = user.entitlement?.plan || 'TRIAL';
 
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Widgets</h1>
-      <WidgetConfigurator workspaces={workspaces} appUrl={appUrl} />
+      <WidgetConfigurator workspaces={workspaces} appUrl={appUrl} userPlan={userPlan} />
     </div>
   );
 }
