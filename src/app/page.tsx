@@ -134,10 +134,67 @@ export default async function HomePage() {
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-4">
             Stop pasting screenshots into paint.
           </h2>
-          <p className="text-xl text-gray-600 text-center max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 text-center max-w-2xl mx-auto mb-8">
             Managing reviews is messy. Screenshots look unprofessional. Monthly tools cost $300/year.<br />
-            <span className="font-semibold text-gray-900">Prooflayer fixes the mess without the monthly fee.</span>
+            <span className="font-semibold text-gray-900">ProofLayer fixes the mess without the monthly fee.</span>
           </p>
+
+          {/* Comparison Grid */}
+          <div className="max-w-3xl mx-auto mt-12 grid md:grid-cols-2 gap-6">
+            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <h3 className="font-bold text-red-900">Monthly Subscriptions</h3>
+              </div>
+              <ul className="space-y-3 text-sm text-red-800">
+                <li className="flex items-start gap-2">
+                  <span className="text-red-600 mt-0.5">•</span>
+                  <span>$29-$99/month forever</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-600 mt-0.5">•</span>
+                  <span>Data locked if you stop paying</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-600 mt-0.5">•</span>
+                  <span>$348-$1,188/year adds up fast</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-600 mt-0.5">•</span>
+                  <span>Cancel = lose all testimonials</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <h3 className="font-bold text-green-900">ProofLayer Lifetime</h3>
+              </div>
+              <ul className="space-y-3 text-sm text-green-800">
+                <li className="flex items-start gap-2">
+                  <span className="text-green-600 mt-0.5">•</span>
+                  <span><strong>$49 once</strong> - that's it, forever</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-600 mt-0.5">•</span>
+                  <span><strong>Your data</strong> - export anytime, keep forever</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-600 mt-0.5">•</span>
+                  <span><strong>Own it</strong> - no recurring charges ever</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-600 mt-0.5">•</span>
+                  <span><strong>All updates</strong> - new features included free</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -356,6 +413,12 @@ export default async function HomePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <span className="text-gray-700"><span className="font-semibold">All future updates</span> - Free forever</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-gray-700"><span className="font-semibold">Export your data anytime</span> - Your testimonials, yours to keep</span>
               </li>
             </ul>
 
