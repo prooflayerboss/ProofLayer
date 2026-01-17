@@ -44,6 +44,7 @@ export default async function PublicFormPage({
             workspaceId={form.workspaceId}
             allowText={form.allowText}
             allowVideo={form.allowVideo}
+            allowScreenshot={form.allowScreenshot}
           />
         </div>
 

@@ -57,6 +57,8 @@ export async function GET(
         testimonial: sub.testimonial,
         rating: sub.rating,
         photoUrl: sub.photoUrl,
+        submissionType: sub.submissionType,
+        socialPlatform: sub.socialPlatform,
         createdAt: sub.createdAt,
       }))
     );

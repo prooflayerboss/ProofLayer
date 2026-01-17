@@ -105,8 +105,9 @@ model Form {
   isActive    Boolean   @default(true) @map("is_active")
 
   // Form collection settings
-  allowText   Boolean   @default(true) @map("allow_text")  // Allow text testimonials
-  allowVideo  Boolean   @default(false) @map("allow_video") // Allow video testimonials
+  allowText       Boolean   @default(true) @map("allow_text")       // Allow text testimonials
+  allowVideo      Boolean   @default(false) @map("allow_video")     // Allow video testimonials
+  allowScreenshot Boolean   @default(true) @map("allow_screenshot") // Allow screenshot uploads
 
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
@@ -136,6 +137,10 @@ model Submission {
   videoDuration  Int?              @map("video_duration") // Duration in seconds
   submissionType SubmissionType    @default(TEXT) @map("submission_type")
 
+  // Screenshot/social media support
+  socialPlatform  String?          @map("social_platform") // twitter, linkedin, instagram, etc.
+  socialAuthorUrl String?          @map("social_author_url") // Link to original post
+
   status      SubmissionStatus @default(PENDING)
   createdAt   DateTime         @default(now()) @map("created_at")
   updatedAt   DateTime         @updatedAt @map("updated_at")
@@ -147,6 +152,7 @@ model Submission {
 enum SubmissionType {
   TEXT
   VIDEO
+  SCREENSHOT  // Social media screenshot
 }
 
 enum SubmissionStatus {

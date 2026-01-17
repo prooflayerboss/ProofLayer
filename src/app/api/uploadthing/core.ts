@@ -17,6 +17,21 @@ export const ourFileRouter = {
       console.log("Video upload complete:", file.url);
       return { fileUrl: file.url };
     }),
+
+  screenshotUploader: f({
+    image: {
+      maxFileSize: "5MB",
+      maxFileCount: 1,
+    },
+  })
+    .middleware(async ({ req }) => {
+      // Allow public uploads to forms
+      return { uploadedBy: "public" };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Screenshot upload complete:", file.url);
+      return { fileUrl: file.url };
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

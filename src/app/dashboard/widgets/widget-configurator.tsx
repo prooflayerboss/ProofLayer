@@ -21,7 +21,7 @@ export default function WidgetConfigurator({
   const [selectedPlatform, setSelectedPlatform] = useState<'shopify' | 'wix' | 'squarespace' | 'wordpress' | 'webflow'>('shopify');
 
   const embedCode = `<div id="prooflayer-widget"></div>
-<script src="${appUrl}/widget.js?v=3" data-workspace="${selectedWorkspace}" data-layout="${layout}" data-theme="${theme}"></script>`;
+<script src="${appUrl}/widget.js?v=4" data-workspace="${selectedWorkspace}" data-layout="${layout}" data-theme="${theme}"></script>`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(embedCode);

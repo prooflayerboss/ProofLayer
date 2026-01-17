@@ -2,17 +2,20 @@
 
 import { useState } from 'react';
 import VideoUploader from './video-uploader';
+import ScreenshotUploader from './screenshot-uploader';
 
 export default function TestimonialForm({
   formId,
   workspaceId,
   allowText,
   allowVideo,
+  allowScreenshot,
 }: {
   formId: string;
   workspaceId: string;
   allowText: boolean;
   allowVideo: boolean;
+  allowScreenshot: boolean;
 }) {
   // Common fields
   const [name, setName] = useState('');
@@ -26,6 +29,11 @@ export default function TestimonialForm({
   // Video testimonial fields
   const [videoUrl, setVideoUrl] = useState<string>('');
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
+
+  // Screenshot testimonial fields
+  const [screenshotUrl, setScreenshotUrl] = useState<string>('');
+  const [socialPlatform, setSocialPlatform] = useState<string>('');
+  const [socialAuthorUrl, setSocialAuthorUrl] = useState<string>('');
 
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -48,6 +56,12 @@ export default function TestimonialForm({
     setUploadProgress(progress);
   };
 
+  const handleScreenshotUploadComplete = (url: string) => {
+    setScreenshotUrl(url);
+    setError('');
+    setUploadProgress(100);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -58,22 +72,45 @@ export default function TestimonialForm({
       // Determine submission type based on what the user provided
       const hasVideo = !!videoUrl;
       const hasText = !!testimonial.trim();
+      const hasScreenshot = !!screenshotUrl;
 
       // Validation: user must provide at least one type of testimonial
-      if (!hasVideo && !hasText) {
-        if (allowText && allowVideo) {
-          setError('Please provide either a text testimonial or upload a video');
-        } else if (allowVideo) {
-          setError('Please upload a video');
-        } else {
-          setError('Please write a testimonial');
-        }
+      if (!hasVideo && !hasText && !hasScreenshot) {
+        const options = [];
+        if (allowText) options.push('text testimonial');
+        if (allowVideo) options.push('video');
+        if (allowScreenshot) options.push('screenshot');
+        setError(`Please provide ${options.join(' or ')}`);
         setLoading(false);
         return;
       }
 
-      // If they provided a video, submit as video testimonial
-      if (hasVideo) {
+      // Priority: screenshot > video > text
+      if (hasScreenshot) {
+        const response = await fetch('/api/submissions/screenshot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            formId,
+            workspaceId,
+            name,
+            company,
+            role,
+            rating,
+            photoUrl: screenshotUrl,
+            socialPlatform,
+            socialAuthorUrl,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setError(data.error || 'Failed to submit screenshot');
+          setLoading(false);
+          return;
+        }
+      } else if (hasVideo) {
         const response = await fetch('/api/submissions/video', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -152,14 +189,18 @@ export default function TestimonialForm({
         </div>
       )}
 
-      {/* Show helpful message if both are enabled */}
-      {allowText && allowVideo && (
+      {/* Show helpful message if multiple types are enabled */}
+      {(allowText && allowVideo) || (allowText && allowScreenshot) || (allowVideo && allowScreenshot) ? (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <p className="text-sm text-blue-800">
-            You can submit either a written testimonial, a video testimonial, or both!
+            You can submit a {[
+              allowText && 'written testimonial',
+              allowVideo && 'video',
+              allowScreenshot && 'screenshot'
+            ].filter(Boolean).join(', or ')}!
           </p>
         </div>
-      )}
+      ) : null}
 
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -262,6 +303,85 @@ export default function TestimonialForm({
 
           <p className="text-xs text-gray-500 mt-2">
             Tip: Keep your video under 2 minutes for best engagement
+          </p>
+        </div>
+      )}
+
+      {/* Screenshot testimonial field */}
+      {allowScreenshot && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Screenshot {!allowText && !allowVideo && '*'}
+          </label>
+
+          {!screenshotUrl ? (
+            <ScreenshotUploader
+              onUploadComplete={handleScreenshotUploadComplete}
+              onUploadError={handleUploadError}
+              onUploadProgress={handleUploadProgress}
+            />
+          ) : (
+            <div className="space-y-3">
+              <div className="relative rounded-lg overflow-hidden border border-gray-200">
+                <img
+                  src={screenshotUrl}
+                  alt="Screenshot preview"
+                  className="w-full h-auto"
+                  style={{ maxHeight: '300px', objectFit: 'contain' }}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setScreenshotUrl('');
+                  setUploadProgress(0);
+                }}
+                className="text-sm text-red-600 hover:text-red-700 font-medium"
+              >
+                Remove screenshot
+              </button>
+            </div>
+          )}
+
+          {screenshotUrl && (
+            <div className="mt-4 space-y-3">
+              <div>
+                <label htmlFor="socialPlatform" className="block text-sm font-medium text-gray-700 mb-1">
+                  Social Platform (Optional)
+                </label>
+                <select
+                  id="socialPlatform"
+                  value={socialPlatform}
+                  onChange={(e) => setSocialPlatform(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Select platform</option>
+                  <option value="twitter">Twitter / X</option>
+                  <option value="linkedin">LinkedIn</option>
+                  <option value="facebook">Facebook</option>
+                  <option value="instagram">Instagram</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="socialAuthorUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                  Link to Original Post (Optional)
+                </label>
+                <input
+                  id="socialAuthorUrl"
+                  type="url"
+                  value={socialAuthorUrl}
+                  onChange={(e) => setSocialAuthorUrl(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="https://twitter.com/..."
+                />
+              </div>
+            </div>
+          )}
+
+          <p className="text-xs text-gray-500 mt-2">
+            Upload a screenshot of a testimonial from social media (Twitter, LinkedIn, etc.)
           </p>
         </div>
       )}
