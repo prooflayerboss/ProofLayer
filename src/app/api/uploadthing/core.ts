@@ -20,7 +20,7 @@ export const ourFileRouter = {
 
   screenshotUploader: f({
     image: {
-      maxFileSize: "5MB",
+      maxFileSize: "4MB",
       maxFileCount: 1,
     },
   })

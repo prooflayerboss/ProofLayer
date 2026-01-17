@@ -24,9 +24,9 @@ export default function ScreenshotUploader({
 
     const file = acceptedFiles[0];
 
-    // Validate file size (5MB max)
-    if (file.size > 5 * 1024 * 1024) {
-      onUploadError('File size must be less than 5MB');
+    // Validate file size (4MB max)
+    if (file.size > 4 * 1024 * 1024) {
+      onUploadError('File size must be less than 4MB');
       return;
     }
 
@@ -95,7 +95,7 @@ export default function ScreenshotUploader({
                     Drag & drop a screenshot, or click to select
                   </p>
                   <p className="text-sm text-gray-500 mt-1">
-                    PNG, JPG, or WebP • Max 5MB
+                    PNG, JPG, or WebP • Max 4MB
                   </p>
                 </>
               )}
