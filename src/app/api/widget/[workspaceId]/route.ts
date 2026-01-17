@@ -16,11 +16,13 @@ export async function OPTIONS() {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { workspaceId: string } }
+  context: { params: Promise<{ workspaceId: string }> }
 ) {
   try {
+    const { workspaceId } = await context.params;
+
     const workspace = await prisma.workspace.findUnique({
-      where: { id: params.workspaceId },
+      where: { id: workspaceId },
       include: {
         user: {
           include: {

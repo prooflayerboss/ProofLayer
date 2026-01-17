@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProofLayer Widget Test</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f9fafb;
+        }
+        h1 {
+            color: #111827;
+            margin-bottom: 8px;
+        }
+        .instructions {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .instructions h2 {
+            margin-top: 0;
+            color: #374151;
+            font-size: 18px;
+        }
+        .instructions code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .instructions ol {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+        .instructions li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        #widget-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            min-height: 200px;
+        }
+        .debug-info {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .debug-info h3 {
+            margin: 0 0 12px 0;
+            font-family: system-ui;
+            font-size: 14px;
+            color: #92400e;
+        }
+        .debug-info pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <h1>ProofLayer Widget Test Page</h1>
+    <p style="color: #6b7280; margin-bottom: 32px;">Use this page to test your ProofLayer widget embed code</p>
+
+    <div class="instructions">
+        <h2>📋 Instructions</h2>
+        <ol>
+            <li>Go to your <strong>ProofLayer Dashboard → Widgets</strong></li>
+            <li>Copy the embed code (it should look like two lines of code with a <code>&lt;div&gt;</code> and a <code>&lt;script&gt;</code>)</li>
+            <li>Replace the placeholder code below (lines 84-85) with your actual embed code</li>
+            <li>Open this HTML file in your browser</li>
+            <li>Check the console (F12) for any errors</li>
+        </ol>
+        <p style="margin-bottom: 0; color: #6b7280;"><strong>Note:</strong> Make sure you have at least one APPROVED testimonial in your workspace, or the widget will show "No testimonials yet."</p>
+    </div>
+
+    <div id="widget-container">
+        <!-- REPLACE THIS COMMENT WITH YOUR EMBED CODE -->
+        <!-- It should look like this: -->
+        <!-- <div id="prooflayer-widget"></div> -->
+        <!-- <script src="http://localhost:3000/widget.js" data-workspace="YOUR-WORKSPACE-ID" data-layout="grid" data-theme="light"></script> -->
+
+        <div id="prooflayer-widget"></div>
+        <script src="http://localhost:3000/widget.js" data-workspace="PASTE_YOUR_WORKSPACE_ID_HERE" data-layout="grid" data-theme="light"></script>
+    </div>
+
+    <div class="debug-info">
+        <h3>🔍 Debug Information</h3>
+        <div id="debug-output">
+            <p>Open browser console (F12) to see detailed logs...</p>
+            <p style="margin-top: 12px; color: #92400e;">
+                <strong>Common issues:</strong><br>
+                • "Failed to load testimonials" = API endpoint issue or CORS error<br>
+                • "No testimonials yet" = No approved testimonials in workspace<br>
+                • "Container not found" = Missing &lt;div id="prooflayer-widget"&gt;&lt;/div&gt;<br>
+                • "Missing data-workspace" = Forgot to add workspace ID
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Add console interceptor to show errors in the UI
+        (function() {
+            const debugOutput = document.getElementById('debug-output');
+            const originalError = console.error;
+            const originalLog = console.log;
+
+            console.error = function() {
+                originalError.apply(console, arguments);
+                const message = Array.from(arguments).map(arg =>
+                    typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+                ).join(' ');
+                debugOutput.innerHTML += `<p style="color: #dc2626; margin-top: 8px;"><strong>❌ Error:</strong> ${escapeHtml(message)}</p>`;
+            };
+
+            console.log = function() {
+                originalLog.apply(console, arguments);
+                const message = Array.from(arguments).map(arg =>
+                    typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+                ).join(' ');
+                if (message.includes('Prooflayer')) {
+                    debugOutput.innerHTML += `<p style="color: #059669; margin-top: 8px;"><strong>ℹ️ Info:</strong> ${escapeHtml(message)}</p>`;
+                }
+            };
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // Test API endpoint directly
+            setTimeout(() => {
+                const script = document.querySelector('script[data-workspace]');
+                if (script) {
+                    const workspaceId = script.getAttribute('data-workspace');
+                    const apiUrl = new URL(script.src).origin + '/api/widget/' + workspaceId;
+
+                    debugOutput.innerHTML += `<p style="color: #2563eb; margin-top: 12px;"><strong>🔗 Testing API:</strong> ${escapeHtml(apiUrl)}</p>`;
+
+                    fetch(apiUrl)
+                        .then(res => res.json())
+                        .then(data => {
+                            debugOutput.innerHTML += `<p style="color: #059669; margin-top: 8px;"><strong>✅ API Response:</strong></p><pre style="color: #065f46;">${escapeHtml(JSON.stringify(data, null, 2))}</pre>`;
+                        })
+                        .catch(err => {
+                            debugOutput.innerHTML += `<p style="color: #dc2626; margin-top: 8px;"><strong>❌ API Fetch Error:</strong> ${escapeHtml(err.message)}</p>`;
+                        });
+                }
+            }, 1000);
+        })();
+    </script>
+</body>
+</html>
