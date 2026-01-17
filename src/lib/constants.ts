@@ -29,7 +29,7 @@ export const PLAN_LIMITS = {
     allowedWidgetTypes: ['EMBED', 'POPUP', 'FLOATING'] as const,
     allowedLayouts: ['GRID', 'CAROUSEL', 'MARQUEE', 'MASONRY', 'SPOTLIGHT'] as const,
     showBadge: false,
-    price: 49, // Founding members price
+    price: 49, // Legacy lifetime plan
     interval: 'lifetime' as const,
   },
   // Tier 1 - Solo / Starter
@@ -72,24 +72,24 @@ export const PLAN_LIMITS = {
 
 export type PlanType = keyof typeof PLAN_LIMITS;
 
-// Pricing tiers for LTD launch strategy
+// Legacy pricing tiers (no longer used - replaced by SOLO/PRO/AGENCY)
 export const LTD_PRICING = {
   BETA: {
     price: 49,
     limit: 25,
     label: 'Beta Price',
-    description: 'First 25 founding members',
+    description: 'Legacy beta pricing',
   },
   LAUNCH: {
     price: 69,
     limit: 50,
     label: 'Launch Price',
-    description: 'Next 50 early adopters',
+    description: 'Legacy launch pricing',
   },
   STANDARD: {
     price: 199,
     limit: null,
     label: 'Standard Price',
-    description: 'Regular lifetime access',
+    description: 'Legacy standard pricing',
   },
 } as const;

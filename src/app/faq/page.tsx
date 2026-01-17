@@ -8,7 +8,7 @@ export default function FAQPage() {
     },
     {
       question: 'Is this really a one-time payment?',
-      answer: 'Yes. You pay once, you own the account forever. No hidden fees, no monthly charges. This is a lifetime deal - pay $49 once and use ProofLayer forever.',
+      answer: 'Yes. You pay once, you own the account forever. No hidden fees, no monthly charges. Choose from our Solo ($59), Professional ($118), or Agency ($177) lifetime plans.',
     },
     {
       question: 'Will it work on my website builder?',
@@ -44,15 +44,15 @@ export default function FAQPage() {
     },
     {
       question: 'How many workspaces do I get?',
-      answer: 'The lifetime deal includes 5 workspaces - perfect for agencies managing multiple clients or businesses with multiple brands.',
+      answer: 'It depends on your plan: Solo includes 1 workspace, Professional includes 3 workspaces, and Agency includes 10 workspaces - perfect for agencies managing multiple clients.',
     },
     {
       question: 'Can I add star ratings?',
       answer: 'Yes! You can enable an optional 5-star rating system. Ratings are displayed in your widgets and you can filter testimonials by rating.',
     },
     {
-      question: 'What happens after I reach the spot limit?',
-      answer: 'Once all 25 founding member spots are claimed, the price will increase. Lock in your lifetime deal now at $49 before prices go up.',
+      question: 'What happens if I exceed my plan limits?',
+      answer: 'You can upgrade to a higher tier at any time. For example, if you have Solo and need more workspaces, you can upgrade to Professional or Agency.',
     },
     {
       question: 'Do you offer refunds?',
@@ -64,7 +64,7 @@ export default function FAQPage() {
     },
     {
       question: 'How is this different from Testimonial.to?',
-      answer: 'ProofLayer offers the same core features but with a one-time payment instead of monthly subscriptions. Stop renting your reputation - own it forever for a single $49 payment.',
+      answer: 'ProofLayer offers the same core features but with a one-time payment instead of monthly subscriptions. Stop renting your reputation - own it forever starting at just $59.',
     },
   ];
 
@@ -144,7 +144,7 @@ export default function FAQPage() {
             href="/signup"
             className="inline-block bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
           >
-            Get Lifetime Access for $49 →
+            Get Started from $59 →
           </Link>
         </div>
       </section>

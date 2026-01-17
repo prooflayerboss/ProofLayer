@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export default function CheckoutButton({ plan }: { plan: 'MONTHLY' | 'LIFETIME' }) {
+export default function CheckoutButton({ plan }: { plan: 'MONTHLY' | 'LIFETIME' | 'SOLO' | 'PRO' | 'AGENCY' }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,7 +35,15 @@ export default function CheckoutButton({ plan }: { plan: 'MONTHLY' | 'LIFETIME' 
     }
   };
 
-  const buttonText = plan === 'MONTHLY' ? 'Subscribe - $19/month' : 'Get Lifetime Access - $49';
+  const buttonTextMap = {
+    MONTHLY: 'Subscribe - $19/month',
+    LIFETIME: 'Get Lifetime Access - $49',
+    SOLO: 'Get Solo - $59',
+    PRO: 'Get Professional - $118',
+    AGENCY: 'Get Agency - $177',
+  };
+
+  const buttonText = buttonTextMap[plan];
 
   return (
     <div>

@@ -4,11 +4,12 @@ import { cookies } from 'next/headers';
 import FeaturesSection from '@/components/features-section';
 
 export default async function HomePage() {
-  // In real implementation, this would come from database
-  // For now, hardcode to BETA pricing
-  const currentPrice = 49;
-  const spotsLeft = 25;
-  const priceTier = 'BETA';
+  // Pricing tiers for AppSumo launch
+  const pricingTiers = {
+    SOLO: { price: 59, workspaces: 1, testimonials: 150, popular: false },
+    PRO: { price: 118, workspaces: 3, testimonials: 1000, popular: true },
+    AGENCY: { price: 177, workspaces: 10, testimonials: 5000, popular: false },
+  };
 
   // Check if user is authenticated
   const cookieStore = cookies();
@@ -90,7 +91,7 @@ export default async function HomePage() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
             </span>
-            Limited Offer: ${currentPrice} Lifetime Deal • Only {spotsLeft} Spots Left
+            Lifetime Access Starting at ${pricingTiers.SOLO.price}
           </div>
           <div className="mb-6">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-2">
@@ -111,19 +112,17 @@ export default async function HomePage() {
               href="/signup"
               className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/30"
             >
-              Get Lifetime Access for ${currentPrice} →
+              Get Started from ${pricingTiers.SOLO.price} →
             </Link>
             <a
-              href="#how-it-works"
+              href="#pricing"
               className="bg-white text-gray-700 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 transition-colors border border-gray-200"
             >
-              See How It Works
+              View Pricing
             </a>
           </div>
           <p className="mt-6 text-sm text-gray-500">
-            <span className="line-through text-gray-400">$199</span>{' '}
-            <span className="font-semibold text-blue-600">${currentPrice} Founding Member Price</span>
-            {' '}• 14-Day Money Back Guarantee
+            One-time payment • Lifetime access • 14-Day Money Back Guarantee
           </p>
         </div>
       </section>
@@ -178,7 +177,7 @@ export default async function HomePage() {
               <ul className="space-y-3 text-sm text-green-800">
                 <li className="flex items-start gap-2">
                   <span className="text-green-600 mt-0.5">•</span>
-                  <span><strong>$49 once</strong> - that's it, forever</span>
+                  <span><strong>From ${pricingTiers.SOLO.price} once</strong> - that's it, forever</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-600 mt-0.5">•</span>
@@ -352,90 +351,186 @@ export default async function HomePage() {
       <FeaturesSection />
 
       {/* Pricing */}
-      <section className="py-20 px-4 bg-gradient-to-br from-blue-600 to-blue-700">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-yellow-400 text-yellow-900 inline-block px-4 py-2 rounded-full text-sm font-bold mb-6">
-            LIMITED FOUNDING MEMBER OFFER
-          </div>
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-            Lifetime Deal
-          </h2>
-          <p className="text-xl text-blue-100 mb-12">
-            Pay once, use forever. No monthly fees. No limits.
-          </p>
-
-          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-2xl max-w-2xl mx-auto">
-            <div className="text-center mb-8">
-              <div className="text-gray-500 text-sm mb-2">Founding Member Price</div>
-              <div className="flex items-center justify-center gap-3 mb-2">
-                <span className="text-3xl text-gray-400 line-through">$199</span>
-                <span className="text-6xl font-bold text-gray-900">${currentPrice}</span>
-              </div>
-              <div className="text-blue-600 font-semibold">One-time payment • Forever access</div>
-            </div>
-
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
-              <div className="flex items-center justify-center gap-2 text-yellow-900 font-semibold">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                </svg>
-                Only {spotsLeft} founding member spots left
-              </div>
-            </div>
-
-            <ul className="space-y-4 mb-8 text-left">
-              <li className="flex items-start gap-3">
-                <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-gray-700"><span className="font-semibold">5 workspaces</span> - Perfect for growing agencies</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-gray-700"><span className="font-semibold">Unlimited testimonials</span> - No monthly limits</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-gray-700"><span className="font-semibold">Customizable widgets</span> - Grid & carousel layouts</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-gray-700"><span className="font-semibold">No "Powered by" badge</span> - White label ready</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-gray-700"><span className="font-semibold">All future updates</span> - Free forever</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-gray-700"><span className="font-semibold">Export your data anytime</span> - Your testimonials, yours to keep</span>
-              </li>
-            </ul>
-
-            <Link
-              href="/signup"
-              className="block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg mb-4"
-            >
-              Get Lifetime Access - ${currentPrice}
-            </Link>
-
-            <p className="text-sm text-gray-500">
-              14-Day Money Back Guarantee • Secure Payment via Stripe
+      <section id="pricing" className="py-20 px-4 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-xl text-gray-600">
+              Pay once, use forever. No monthly fees. No surprises.
             </p>
           </div>
 
-          <p className="text-blue-100 mt-8 text-sm">
-            Price increases to $69 after first 25 members • Then $199 standard
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {/* Solo Tier */}
+            <div className="bg-white rounded-2xl shadow-sm border-2 border-gray-200 p-8 hover:border-blue-300 transition-all">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Solo</h3>
+                <div className="flex items-baseline justify-center gap-2 mb-2">
+                  <span className="text-5xl font-bold text-gray-900">${pricingTiers.SOLO.price}</span>
+                </div>
+                <p className="text-sm text-gray-500">One-time payment</p>
+              </div>
+
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-700"><span className="font-semibold">1 Workspace</span></span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-700"><span className="font-semibold">3 Forms</span></span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-700"><span className="font-semibold">150 Testimonials</span></span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-700">Grid layout</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-700">Embed widget</span>
+                </li>
+              </ul>
+
+              <Link
+                href="/signup"
+                className="block text-center bg-gray-100 text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Get Started
+              </Link>
+            </div>
+
+            {/* Pro Tier - Popular */}
+            <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl shadow-2xl border-4 border-blue-400 p-8 transform md:scale-105 relative">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-yellow-900 text-sm font-bold px-6 py-2 rounded-full shadow-lg">
+                MOST POPULAR
+              </div>
+              <div className="text-center mb-6 mt-2">
+                <h3 className="text-2xl font-bold text-white mb-2">Professional</h3>
+                <div className="flex items-baseline justify-center gap-2 mb-2">
+                  <span className="text-5xl font-bold text-white">${pricingTiers.PRO.price}</span>
+                </div>
+                <p className="text-sm text-blue-100">One-time payment</p>
+              </div>
+
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-white"><span className="font-semibold">3 Workspaces</span></span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-white"><span className="font-semibold">30 Forms</span> (10 per workspace)</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-white"><span className="font-semibold">1,000 Testimonials</span></span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-white">Grid, Carousel, Marquee</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-white"><span className="font-semibold">Branding removal</span></span>
+                </li>
+              </ul>
+
+              <Link
+                href="/signup"
+                className="block text-center bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
+              >
+                Get Started
+              </Link>
+              <p className="text-xs text-blue-100 text-center mt-4">
+                14-Day Money Back Guarantee
+              </p>
+            </div>
+
+            {/* Agency Tier */}
+            <div className="bg-white rounded-2xl shadow-sm border-2 border-gray-200 p-8 hover:border-blue-300 transition-all">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Agency</h3>
+                <div className="flex items-baseline justify-center gap-2 mb-2">
+                  <span className="text-5xl font-bold text-gray-900">${pricingTiers.AGENCY.price}</span>
+                </div>
+                <p className="text-sm text-gray-500">One-time payment</p>
+              </div>
+
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-700"><span className="font-semibold">10 Workspaces</span></span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-700"><span className="font-semibold">50 Forms</span></span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-700"><span className="font-semibold">5,000 Testimonials</span></span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-700">All layouts & styles</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-700">Popup & Floating widgets</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-700"><span className="font-semibold">Priority support</span></span>
+                </li>
+              </ul>
+
+              <Link
+                href="/signup"
+                className="block text-center bg-gray-100 text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Get Started
+              </Link>
+            </div>
+          </div>
+
+          <p className="text-center text-gray-500 mt-12 text-sm">
+            All plans include video & text testimonials, customizable widgets, and lifetime updates
           </p>
         </div>
       </section>
@@ -475,13 +570,13 @@ export default async function HomePage() {
             Ready to collect amazing testimonials?
           </h2>
           <p className="text-xl text-gray-400 mb-10">
-            Join the founding members shaping Prooflayer. Only {spotsLeft} spots left at ${currentPrice}.
+            Choose your plan and get started today. Pay once, own forever.
           </p>
           <Link
             href="/signup"
             className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
           >
-            Claim Your Lifetime Deal →
+            Get Started from ${pricingTiers.SOLO.price} →
           </Link>
         </div>
       </section>
