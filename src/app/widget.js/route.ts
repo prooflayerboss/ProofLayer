@@ -10,7 +10,7 @@ export async function GET() {
     return new NextResponse(widgetCode, {
       headers: {
         'Content-Type': 'application/javascript',
-        'Cache-Control': 'public, max-age=3600',
+        'Cache-Control': 'public, max-age=300, s-maxage=300',
         'Access-Control-Allow-Origin': '*',
       },
     });
