@@ -12,10 +12,13 @@ type Submission = {
   rating: number | null;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
   createdAt: Date;
-  submissionType: 'TEXT' | 'VIDEO';
+  submissionType: 'TEXT' | 'VIDEO' | 'SCREENSHOT';
   videoUrl: string | null;
   videoThumbnail: string | null;
   videoDuration: number | null;
+  photoUrl: string | null;
+  socialPlatform: string | null;
+  socialAuthorUrl: string | null;
 };
 
 export default function SubmissionsList({
@@ -128,6 +131,14 @@ export default function SubmissionsList({
                       Video
                     </span>
                   )}
+                  {submission.submissionType === 'SCREENSHOT' && (
+                    <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full flex items-center gap-1">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      Screenshot
+                    </span>
+                  )}
                 </div>
                 {(submission.company || submission.role) && (
                   <p className="text-sm text-gray-500">
@@ -179,6 +190,35 @@ export default function SubmissionsList({
                       className="w-full rounded-lg shadow-md"
                       style={{ maxHeight: '200px' }}
                       preload="metadata"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : submission.submissionType === 'SCREENSHOT' && submission.photoUrl ? (
+              /* Screenshot testimonial */
+              <div className="mt-3 mb-4">
+                <div className="mb-3 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2">
+                  <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <div>
+                    <p className="text-sm font-semibold text-blue-900">Social Media Screenshot</p>
+                    <p className="text-xs text-blue-700">
+                      {submission.socialPlatform && `From ${submission.socialPlatform}`}
+                      {submission.socialAuthorUrl && (
+                        <a href={submission.socialAuthorUrl} target="_blank" rel="noopener noreferrer" className="ml-1 underline">
+                          View original
+                        </a>
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0" style={{ width: '100%', maxWidth: '400px' }}>
+                    <img
+                      src={submission.photoUrl}
+                      alt="Screenshot"
+                      className="w-full rounded-lg shadow-md border border-gray-200"
                     />
                   </div>
                 </div>
