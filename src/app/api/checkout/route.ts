@@ -19,9 +19,10 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { plan } = body; // 'MONTHLY' or 'LIFETIME'
+    const { plan } = body; // 'MONTHLY', 'LIFETIME', 'SOLO', 'PRO', or 'AGENCY'
 
-    if (!plan || (plan !== 'MONTHLY' && plan !== 'LIFETIME')) {
+    const validPlans = ['MONTHLY', 'LIFETIME', 'SOLO', 'PRO', 'AGENCY'];
+    if (!plan || !validPlans.includes(plan)) {
       return NextResponse.json(
         { error: 'Invalid plan selected' },
         { status: 400 }
@@ -53,8 +54,9 @@ export async function POST(request: NextRequest) {
 
     // Check if already on a paid plan
     const currentPlan = dbUser.entitlement?.plan;
+    const lifetimePlans = ['LIFETIME', 'SOLO', 'PRO', 'AGENCY'];
 
-    if (currentPlan === 'LIFETIME') {
+    if (lifetimePlans.includes(currentPlan || '')) {
       return NextResponse.json(
         { error: 'You already have lifetime access' },
         { status: 400 }
@@ -73,9 +75,27 @@ export async function POST(request: NextRequest) {
                    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
     // Get price ID based on plan
-    const priceId = plan === 'MONTHLY'
-      ? process.env.STRIPE_MONTHLY_PRICE_ID
-      : process.env.STRIPE_LIFETIME_PRICE_ID;
+    let priceId: string | undefined;
+
+    switch (plan) {
+      case 'MONTHLY':
+        priceId = process.env.STRIPE_MONTHLY_PRICE_ID;
+        break;
+      case 'LIFETIME':
+        priceId = process.env.STRIPE_LIFETIME_PRICE_ID;
+        break;
+      case 'SOLO':
+        priceId = process.env.STRIPE_PRICE_SOLO;
+        break;
+      case 'PRO':
+        priceId = process.env.STRIPE_PRICE_PRO;
+        break;
+      case 'AGENCY':
+        priceId = process.env.STRIPE_PRICE_AGENCY;
+        break;
+      default:
+        priceId = undefined;
+    }
 
     if (!priceId) {
       console.error(`Stripe price ID not set for plan: ${plan}`);
