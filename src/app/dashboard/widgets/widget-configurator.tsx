@@ -15,13 +15,40 @@ export default function WidgetConfigurator({
   appUrl: string;
 }) {
   const [selectedWorkspace, setSelectedWorkspace] = useState(workspaces[0]?.id || '');
+  const [widgetType, setWidgetType] = useState<'embed' | 'popup' | 'floating'>('embed');
   const [layout, setLayout] = useState<'grid' | 'carousel' | 'marquee' | 'masonry' | 'spotlight'>('grid');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [copied, setCopied] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<'shopify' | 'wix' | 'squarespace' | 'wordpress' | 'webflow'>('shopify');
 
-  const embedCode = `<div id="prooflayer-widget"></div>
-<script src="${appUrl}/widget.js?v=4" data-workspace="${selectedWorkspace}" data-layout="${layout}" data-theme="${theme}"></script>`;
+  // Popup settings
+  const [popupTrigger, setPopupTrigger] = useState<'time' | 'exit_intent' | 'scroll'>('time');
+  const [popupDelay, setPopupDelay] = useState(5000);
+  const [popupShowOnce, setPopupShowOnce] = useState(true);
+  const [scrollPercent, setScrollPercent] = useState(50);
+
+  // Floating badge settings
+  const [floatingPosition, setFloatingPosition] = useState<'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'>('bottom-right');
+  const [floatingText, setFloatingText] = useState('See what our customers say');
+  const [floatingIcon, setFloatingIcon] = useState<'star' | 'chat' | 'heart'>('star');
+
+  // Generate embed code based on widget type
+  const getEmbedCode = () => {
+    if (widgetType === 'popup') {
+      const triggerAttr = `data-trigger="${popupTrigger}"`;
+      const delayAttr = `data-delay="${popupDelay}"`;
+      const showOnceAttr = `data-show-once="${popupShowOnce}"`;
+      const scrollAttr = popupTrigger === 'scroll' ? ` data-scroll-percent="${scrollPercent}"` : '';
+      return `<script src="${appUrl}/widget-popup.js?v=5" data-workspace="${selectedWorkspace}" data-layout="${layout}" data-theme="${theme}" ${triggerAttr} ${delayAttr} ${showOnceAttr}${scrollAttr}></script>`;
+    } else if (widgetType === 'floating') {
+      return `<script src="${appUrl}/widget-floating.js?v=5" data-workspace="${selectedWorkspace}" data-layout="${layout}" data-theme="${theme}" data-position="${floatingPosition}" data-text="${floatingText}" data-icon="${floatingIcon}"></script>`;
+    } else {
+      return `<div id="prooflayer-widget"></div>
+<script src="${appUrl}/widget.js?v=5" data-workspace="${selectedWorkspace}" data-layout="${layout}" data-theme="${theme}"></script>`;
+    }
+  };
+
+  const embedCode = getEmbedCode();
 
   const handleCopy = () => {
     navigator.clipboard.writeText(embedCode);
@@ -53,6 +80,180 @@ export default function WidgetConfigurator({
               ))}
             </select>
           </div>
+
+          {/* Widget Type selector */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Widget Type
+            </label>
+            <div className="grid grid-cols-3 gap-3">
+              <button
+                onClick={() => setWidgetType('embed')}
+                className={`p-3 border rounded-lg text-center transition-colors ${
+                  widgetType === 'embed'
+                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span className="text-xs font-medium">Embed</span>
+              </button>
+              <button
+                onClick={() => setWidgetType('popup')}
+                className={`p-3 border rounded-lg text-center transition-colors ${
+                  widgetType === 'popup'
+                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                </svg>
+                <span className="text-xs font-medium">Popup</span>
+              </button>
+              <button
+                onClick={() => setWidgetType('floating')}
+                className={`p-3 border rounded-lg text-center transition-colors ${
+                  widgetType === 'floating'
+                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                  <circle cx="19" cy="19" r="3" fill="currentColor" />
+                </svg>
+                <span className="text-xs font-medium">Floating</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Popup-specific settings */}
+          {widgetType === 'popup' && (
+            <div className="space-y-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <h3 className="text-sm font-semibold text-gray-900">Popup Settings</h3>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Trigger
+                </label>
+                <select
+                  value={popupTrigger}
+                  onChange={(e) => setPopupTrigger(e.target.value as 'time' | 'exit_intent' | 'scroll')}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="time">After time delay</option>
+                  <option value="exit_intent">Exit intent (mouse leaves)</option>
+                  <option value="scroll">Scroll percentage</option>
+                </select>
+              </div>
+
+              {popupTrigger === 'time' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Delay (seconds)
+                  </label>
+                  <input
+                    type="number"
+                    value={popupDelay / 1000}
+                    onChange={(e) => setPopupDelay(parseInt(e.target.value) * 1000)}
+                    min="1"
+                    max="60"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              )}
+
+              {popupTrigger === 'scroll' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Scroll Percentage ({scrollPercent}%)
+                  </label>
+                  <input
+                    type="range"
+                    value={scrollPercent}
+                    onChange={(e) => setScrollPercent(parseInt(e.target.value))}
+                    min="10"
+                    max="90"
+                    step="10"
+                    className="w-full"
+                  />
+                </div>
+              )}
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="showOnce"
+                  checked={popupShowOnce}
+                  onChange={(e) => setPopupShowOnce(e.target.checked)}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label htmlFor="showOnce" className="ml-2 text-sm text-gray-700">
+                  Show only once per session
+                </label>
+              </div>
+            </div>
+          )}
+
+          {/* Floating badge settings */}
+          {widgetType === 'floating' && (
+            <div className="space-y-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+              <h3 className="text-sm font-semibold text-gray-900">Floating Badge Settings</h3>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Position
+                </label>
+                <select
+                  value={floatingPosition}
+                  onChange={(e) => setFloatingPosition(e.target.value as typeof floatingPosition)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="bottom-right">Bottom Right</option>
+                  <option value="bottom-left">Bottom Left</option>
+                  <option value="top-right">Top Right</option>
+                  <option value="top-left">Top Left</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Button Text
+                </label>
+                <input
+                  type="text"
+                  value={floatingText}
+                  onChange={(e) => setFloatingText(e.target.value)}
+                  maxLength={40}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Icon
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {(['star', 'chat', 'heart'] as const).map((iconType) => (
+                    <button
+                      key={iconType}
+                      onClick={() => setFloatingIcon(iconType)}
+                      className={`p-2 border rounded-lg text-center transition-colors ${
+                        floatingIcon === iconType
+                          ? 'border-purple-500 bg-purple-100'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <span className="text-xs font-medium capitalize">{iconType}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Layout selector */}
           <div>

@@ -168,22 +168,43 @@ model WidgetConfig {
   id          String       @id @default(uuid())
   workspaceId String       @unique @map("workspace_id")
   workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  // Widget type and layout
+  widgetType  WidgetType   @default(EMBED) @map("widget_type")
   layout      WidgetLayout @default(GRID)
+
+  // Display settings
   theme       String       @default("light") // "light" | "dark"
   columns     Int          @default(3) // For grid layout
   showRating  Boolean      @default(true) @map("show_rating")
   showPhoto   Boolean      @default(true) @map("show_photo")
   showCompany Boolean      @default(true) @map("show_company")
 
-  // New layout-specific settings
+  // Layout-specific settings
   autoRotateInterval Int?  @default(5000) @map("auto_rotate_interval") // For SPOTLIGHT (milliseconds)
   marqueeSpeed       Int?  @default(50) @map("marquee_speed")          // For MARQUEE (pixels/sec)
   masonryColumns     Int?  @default(3) @map("masonry_columns")         // For MASONRY
+
+  // Popup widget settings
+  popupTrigger   String?  @default("time") @map("popup_trigger")       // "time" | "exit_intent" | "scroll"
+  popupDelay     Int?     @default(5000) @map("popup_delay")           // Delay in milliseconds
+  popupShowOnce  Boolean? @default(true) @map("popup_show_once")       // Show only once per session
+
+  // Floating badge settings
+  floatingPosition String?  @default("bottom-right") @map("floating_position") // "bottom-right" | "bottom-left" | "top-right" | "top-left"
+  floatingText     String?  @default("See what our customers say") @map("floating_text")
+  floatingIcon     String?  @default("star") @map("floating_icon")    // "star" | "chat" | "heart"
 
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
 
   @@map("widget_configs")
+}
+
+enum WidgetType {
+  EMBED    // Traditional embedded widget
+  POPUP    // Modal popup
+  FLOATING // Floating badge/button
 }
 
 enum WidgetLayout {
