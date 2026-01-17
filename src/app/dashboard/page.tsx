@@ -5,12 +5,18 @@ import { getWorkspaces } from '@/actions/workspaces';
 import { PLAN_LIMITS } from '@/lib/constants';
 import { prisma } from '@/lib/prisma';
 import OnboardingModal from './onboarding-modal';
+import { createDemoWorkspace, shouldCreateDemoWorkspace } from '@/lib/create-demo-workspace';
 
 export default async function DashboardPage() {
   const user = await ensureUserExists();
 
   if (!user) {
     redirect('/login');
+  }
+
+  // Auto-create demo workspace for new users
+  if (await shouldCreateDemoWorkspace(user.id)) {
+    await createDemoWorkspace(user.id);
   }
 
   const workspaces = await getWorkspaces();
