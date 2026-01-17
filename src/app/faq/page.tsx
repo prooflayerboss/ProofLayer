@@ -59,6 +59,10 @@ export default function FAQPage() {
       answer: 'Yes! We offer a 30-day money-back guarantee. If ProofLayer isn\'t right for you, just let us know within 30 days for a full refund.',
     },
     {
+      question: 'Can I export my data?',
+      answer: 'Absolutely! Your testimonials are yours to keep forever. You can export all your data at any time - testimonials, videos, and customer information. No lock-in, no restrictions.',
+    },
+    {
       question: 'How is this different from Testimonial.to?',
       answer: 'ProofLayer offers the same core features but with a one-time payment instead of monthly subscriptions. Stop renting your reputation - own it forever for a single $49 payment.',
     },
