@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ensureUserExists } from '@/actions/user';
 import { createWorkspace } from '@/actions/workspaces';
-import { PLAN_LIMITS } from '@/lib/constants';
+import { canCreateWorkspace, formatLimitDisplay } from '@/lib/plan-limits';
 
 export default async function NewWorkspacePage({
   searchParams,
@@ -16,12 +16,13 @@ export default async function NewWorkspacePage({
   }
 
   const plan = user.entitlement?.plan || 'TRIAL';
-  const limits = PLAN_LIMITS[plan];
   const workspacesUsed = user.entitlement?.workspacesUsed || 0;
 
   // Check if user can create more workspaces
-  if (workspacesUsed >= limits.maxWorkspaces) {
-    redirect('/dashboard/workspaces?error=limit');
+  const { allowed, limit, remaining } = canCreateWorkspace(workspacesUsed, plan);
+
+  if (!allowed) {
+    redirect('/dashboard/workspaces?error=limit_reached');
   }
 
   async function handleCreateWorkspace(formData: FormData) {
@@ -90,8 +91,8 @@ export default async function NewWorkspacePage({
         </div>
 
         <div className="mt-4 text-sm text-gray-500">
-          Using {workspacesUsed} of {limits.maxWorkspaces} workspaces
-          {plan === 'TRIAL' && (
+          Using {formatLimitDisplay(workspacesUsed, limit)} workspaces
+          {remaining === 0 && limit < 999 && (
             <span className="ml-2">
               • <Link href="/dashboard/billing" className="text-blue-600 hover:text-blue-700">Upgrade for more</Link>
             </span>

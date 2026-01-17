@@ -66,6 +66,9 @@ enum Plan {
   TRIAL
   MONTHLY
   LIFETIME
+  SOLO       // Tier 1: 1 workspace, 3 forms, 150 submissions
+  PRO        // Tier 2: 3 workspaces, 30 forms, 1000 submissions
+  AGENCY     // Tier 3: 10 workspaces, 50 forms, 5000 submissions
 }
 
 // ===========================
