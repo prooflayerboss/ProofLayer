@@ -1,6 +1,39 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { PLAN_LIMITS } from '@/lib/constants';
+import { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const workspace = await prisma.workspace.findUnique({
+    where: { slug: params.slug },
+  });
+
+  if (!workspace) {
+    return {
+      title: 'Testimonials Not Found',
+    };
+  }
+
+  const title = workspace.headline || `${workspace.name} - Testimonials`;
+  const description = workspace.description || `Read what customers are saying about ${workspace.name}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      images: workspace.logoUrl ? [workspace.logoUrl] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: workspace.logoUrl ? [workspace.logoUrl] : [],
+    },
+  };
+}
 
 export default async function WallOfLovePage({ params }: { params: { slug: string } }) {
   const workspace = await prisma.workspace.findUnique({
@@ -168,6 +201,14 @@ export default async function WallOfLovePage({ params }: { params: { slug: strin
                         className="w-full rounded-lg"
                         poster={testimonial.videoThumbnail || undefined}
                         preload="metadata"
+                      />
+                    </div>
+                  ) : testimonial.submissionType === 'SCREENSHOT' && testimonial.photoUrl ? (
+                    <div className="mb-3">
+                      <img
+                        src={testimonial.photoUrl}
+                        alt="Screenshot testimonial"
+                        className="w-full rounded-lg"
                       />
                     </div>
                   ) : (
