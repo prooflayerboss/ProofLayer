@@ -20,8 +20,21 @@ export default async function DashboardPage() {
   }
 
   const workspaces = await getWorkspaces();
-  const plan = user.entitlement?.plan || 'TRIAL';
+  const plan = user.entitlement?.plan || 'SOLO';
   const limits = PLAN_LIMITS[plan];
+
+  // Helper function to display plan name
+  const getPlanDisplayName = (planType: string) => {
+    const planNames: Record<string, string> = {
+      TRIAL: 'Starter',
+      SOLO: 'Solo',
+      PRO: 'Professional',
+      AGENCY: 'Agency',
+      MONTHLY: 'Monthly',
+      LIFETIME: 'Lifetime',
+    };
+    return planNames[planType] || planType;
+  };
 
   // Get full user profile to check onboarding status
   const userProfile = await prisma.user.findUnique({
@@ -50,7 +63,7 @@ export default async function DashboardPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <p className="text-sm text-gray-500 mb-1">Plan</p>
           <p className="text-2xl font-bold text-gray-900">
-            {plan === 'TRIAL' ? 'Trial' : 'Lifetime'}
+            {getPlanDisplayName(plan)}
           </p>
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -94,12 +107,12 @@ export default async function DashboardPage() {
               <span className="text-sm font-medium text-gray-700">Get embed code</span>
               <span className="text-gray-400">→</span>
             </Link>
-            {plan === 'TRIAL' && (
+            {(plan === 'TRIAL' || plan === 'SOLO') && (
               <Link
                 href="/dashboard/billing"
                 className="flex items-center justify-between p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
               >
-                <span className="text-sm font-medium text-blue-700">Upgrade to Lifetime</span>
+                <span className="text-sm font-medium text-blue-700">Upgrade Plan</span>
                 <span className="text-blue-400">→</span>
               </Link>
             )}

@@ -48,7 +48,7 @@ model Entitlement {
   id                     String    @id @default(uuid())
   userId                 String    @unique @map("user_id")
   user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan                   Plan      @default(TRIAL)
+  plan                   Plan      @default(SOLO)
   stripeCustomerId       String?   @map("stripe_customer_id")
   stripeSubscriptionId   String?   @map("stripe_subscription_id") // For monthly subscriptions
   stripePaymentId        String?   @map("stripe_payment_id") // For one-time payments
