@@ -2,6 +2,7 @@ import Link from 'next/link';
 import FeaturesSection from '@/components/features-section';
 import Navigation from '@/components/navigation';
 import Footer from '@/components/footer';
+import VideoPlayer from '@/components/video-player';
 
 export default async function HomePage() {
   // Pricing tiers for AppSumo launch
@@ -155,18 +156,7 @@ export default async function HomePage() {
           </div>
 
           {/* Video Container */}
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200">
-            {/* Aspect ratio container (16:9) */}
-            <div className="relative" style={{ paddingBottom: '56.25%' }}>
-              <iframe
-                className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/I_C6VIvh5kA?rel=0&modestbranding=1&showinfo=0"
-                title="ProofLayer Demo - Collect and Display Testimonials"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          </div>
+          <VideoPlayer src="/videos/demo.mp4" />
 
           {/* Video features */}
           <div className="grid md:grid-cols-3 gap-6 mt-12">
