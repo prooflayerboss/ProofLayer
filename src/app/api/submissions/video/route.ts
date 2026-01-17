@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { PLAN_LIMITS } from '@/lib/constants';
+import { canAcceptSubmission } from '@/lib/plan-limits';
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,10 +57,11 @@ export async function POST(request: NextRequest) {
     // Check submission limits
     const user = form.workspace.user;
     const plan = user.entitlement?.plan || 'TRIAL';
-    const limits = PLAN_LIMITS[plan];
     const submissionsUsed = user.entitlement?.submissionsUsed || 0;
 
-    if (submissionsUsed >= limits.maxSubmissions) {
+    const { allowed } = canAcceptSubmission(submissionsUsed, plan);
+
+    if (!allowed) {
       return NextResponse.json(
         { error: 'This form has reached its submission limit' },
         { status: 403 }
