@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Plan } from '@prisma/client';
 import { PLAN_LIMITS } from '@/lib/constants';
+import UpgradeModal from '@/components/upgrade-modal';
 
 type Workspace = {
   id: string;
@@ -47,6 +48,14 @@ export default function WidgetConfigurator({
   const [floatingPosition, setFloatingPosition] = useState<'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'>('bottom-right');
   const [floatingText, setFloatingText] = useState('See what our customers say');
   const [floatingIcon, setFloatingIcon] = useState<'star' | 'chat' | 'heart'>('star');
+
+  // Upgrade modal state
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  // Handle locked feature clicks
+  const handleLockedFeatureClick = () => {
+    setShowUpgradeModal(true);
+  };
 
   // Generate embed code based on widget type
   const getEmbedCode = () => {
@@ -104,14 +113,19 @@ export default function WidgetConfigurator({
             </label>
             <div className="grid grid-cols-3 gap-3">
               <button
-                onClick={() => isWidgetTypeAllowed('embed') && setWidgetType('embed')}
-                disabled={!isWidgetTypeAllowed('embed')}
+                onClick={() => {
+                  if (isWidgetTypeAllowed('embed')) {
+                    setWidgetType('embed');
+                  } else {
+                    handleLockedFeatureClick();
+                  }
+                }}
                 className={`relative p-3 border rounded-lg text-center transition-colors ${
                   widgetType === 'embed'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : isWidgetTypeAllowed('embed')
                     ? 'border-gray-200 hover:border-gray-300'
-                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
+                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-pointer hover:bg-gray-100'
                 }`}
               >
                 <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,14 +137,19 @@ export default function WidgetConfigurator({
                 )}
               </button>
               <button
-                onClick={() => isWidgetTypeAllowed('popup') && setWidgetType('popup')}
-                disabled={!isWidgetTypeAllowed('popup')}
+                onClick={() => {
+                  if (isWidgetTypeAllowed('popup')) {
+                    setWidgetType('popup');
+                  } else {
+                    handleLockedFeatureClick();
+                  }
+                }}
                 className={`relative p-3 border rounded-lg text-center transition-colors ${
                   widgetType === 'popup'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : isWidgetTypeAllowed('popup')
                     ? 'border-gray-200 hover:border-gray-300'
-                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
+                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-pointer hover:bg-gray-100'
                 }`}
               >
                 <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,14 +161,19 @@ export default function WidgetConfigurator({
                 )}
               </button>
               <button
-                onClick={() => isWidgetTypeAllowed('floating') && setWidgetType('floating')}
-                disabled={!isWidgetTypeAllowed('floating')}
+                onClick={() => {
+                  if (isWidgetTypeAllowed('floating')) {
+                    setWidgetType('floating');
+                  } else {
+                    handleLockedFeatureClick();
+                  }
+                }}
                 className={`relative p-3 border rounded-lg text-center transition-colors ${
                   widgetType === 'floating'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : isWidgetTypeAllowed('floating')
                     ? 'border-gray-200 hover:border-gray-300'
-                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
+                    : 'border-gray-200 bg-gray-50 text-gray-400 cursor-pointer hover:bg-gray-100'
                 }`}
               >
                 <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -651,6 +675,14 @@ export default function WidgetConfigurator({
           </div>
         </div>
       </div>
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        currentPlan={userPlan}
+        limitType="widget"
+      />
     </div>
   );
 }
