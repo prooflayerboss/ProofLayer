@@ -70,8 +70,8 @@ export default function PrivacyPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact Us</h2>
               <p className="text-gray-700">
                 If you have questions about this Privacy Policy, please contact us at{' '}
-                <a href="mailto:privacy@prooflayer.com" className="text-blue-600 hover:text-blue-700">
-                  privacy@prooflayer.com
+                <a href="mailto:support@prooflayer.app" className="text-blue-600 hover:text-blue-700">
+                  support@prooflayer.app
                 </a>
               </p>
             </section>

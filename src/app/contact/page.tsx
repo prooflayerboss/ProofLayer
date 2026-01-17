@@ -35,10 +35,10 @@ export default function ContactPage() {
                   Get help with technical issues, billing questions, or general inquiries.
                 </p>
                 <a
-                  href="mailto:support@prooflayer.com"
+                  href="mailto:support@prooflayer.app"
                   className="text-blue-600 hover:text-blue-700 font-medium"
                 >
-                  support@prooflayer.com
+                  support@prooflayer.app
                 </a>
               </div>
 
@@ -51,10 +51,10 @@ export default function ContactPage() {
                   We're always looking to improve. Share your ideas with us.
                 </p>
                 <a
-                  href="mailto:feedback@prooflayer.com"
+                  href="mailto:support@prooflayer.app"
                   className="text-blue-600 hover:text-blue-700 font-medium"
                 >
-                  feedback@prooflayer.com
+                  support@prooflayer.app
                 </a>
               </div>
             </div>

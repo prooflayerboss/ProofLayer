@@ -89,8 +89,8 @@ export default function TermsPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact</h2>
               <p className="text-gray-700">
                 Questions about these Terms? Contact us at{' '}
-                <a href="mailto:legal@prooflayer.com" className="text-blue-600 hover:text-blue-700">
-                  legal@prooflayer.com
+                <a href="mailto:support@prooflayer.app" className="text-blue-600 hover:text-blue-700">
+                  support@prooflayer.app
                 </a>
               </p>
             </section>
