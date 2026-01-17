@@ -63,10 +63,13 @@ export default function SignupPage() {
   const handleGoogleSignup = async () => {
     const supabase = createClient();
 
+    // Use the current origin to handle both www and non-www domains
+    const redirectUrl = `${window.location.origin}/auth/callback`;
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://prooflayer.app/auth/callback',
+        redirectTo: redirectUrl,
       },
     });
 
