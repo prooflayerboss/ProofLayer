@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
 import FeaturesSection from '@/components/features-section';
+import Navigation from '@/components/navigation';
+import Footer from '@/components/footer';
 
 export default async function HomePage() {
   // Pricing tiers for AppSumo launch
@@ -11,70 +11,9 @@ export default async function HomePage() {
     AGENCY: { price: 177, workspaces: 10, testimonials: 5000, popular: false },
   };
 
-  // Check if user is authenticated
-  const cookieStore = cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll() {
-          // Can't set cookies in Server Components
-        },
-      },
-    }
-  );
-
-  const { data: { user } } = await supabase.auth.getUser();
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-      {/* Navigation */}
-      <nav className="border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                ProofLayer
-              </span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/faq"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-              >
-                FAQ
-              </Link>
-              {user ? (
-                <Link
-                  href="/dashboard"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-                >
-                  Go to Dashboard
-                </Link>
-              ) : (
-                <>
-                  <Link
-                    href="/login"
-                    className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-                  >
-                    Sign in
-                  </Link>
-                  <Link
-                    href="/signup"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-                  >
-                    Get Started
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       {/* Hero Section */}
       <section className="pt-20 pb-16 px-4 relative overflow-hidden">
@@ -581,19 +520,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-4 border-t border-gray-100">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center gap-2 mb-4 md:mb-0">
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              ProofLayer
-            </span>
-          </div>
-          <div className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} ProofLayer. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
