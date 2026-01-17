@@ -66,7 +66,7 @@ export default async function handler(
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
       const userId = session.metadata?.userId;
-      const plan = session.metadata?.plan as 'MONTHLY' | 'LIFETIME';
+      const plan = session.metadata?.plan as 'MONTHLY' | 'LIFETIME' | 'SOLO' | 'PRO' | 'AGENCY';
 
       console.log('💳 Checkout session completed for userId:', userId);
       console.log('Plan:', plan);
@@ -94,19 +94,19 @@ export default async function handler(
         console.log(`✅ User ${userId} subscribed to MONTHLY plan!`);
         console.log('Updated plan:', updated.plan);
       } else {
-        // One-time payment (LIFETIME)
-        console.log('⏳ Upgrading user to LIFETIME...');
+        // One-time payment (LIFETIME, SOLO, PRO, or AGENCY)
+        console.log(`⏳ Upgrading user to ${plan}...`);
 
         const updated = await prisma.entitlement.update({
           where: { userId },
           data: {
-            plan: 'LIFETIME',
+            plan: plan,
             stripeCustomerId: session.customer as string,
             stripePaymentId: session.payment_intent as string,
           },
         });
 
-        console.log(`✅ User ${userId} upgraded to LIFETIME!`);
+        console.log(`✅ User ${userId} upgraded to ${plan}!`);
         console.log('Updated plan:', updated.plan);
       }
     }
