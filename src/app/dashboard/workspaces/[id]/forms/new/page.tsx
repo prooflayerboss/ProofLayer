@@ -3,6 +3,8 @@ import { redirect, notFound } from 'next/navigation';
 import { ensureUserExists } from '@/actions/user';
 import { getWorkspace } from '@/actions/workspaces';
 import { createForm } from '@/actions/forms';
+import { prisma } from '@/lib/prisma';
+import { canCreateForm, formatLimitDisplay } from '@/lib/plan-limits';
 
 export default async function NewFormPage({
   params,
@@ -21,6 +23,24 @@ export default async function NewFormPage({
 
   if (!workspace) {
     notFound();
+  }
+
+  const plan = user.entitlement?.plan || 'TRIAL';
+
+  // Count total forms across ALL user's workspaces
+  const totalForms = await prisma.form.count({
+    where: {
+      workspace: {
+        userId: user.id,
+      },
+    },
+  });
+
+  // Check if user can create more forms
+  const { allowed, limit, remaining } = canCreateForm(totalForms, plan);
+
+  if (!allowed) {
+    redirect(`/dashboard/workspaces/${params.id}?error=form_limit_reached`);
   }
 
   async function handleCreateForm(formData: FormData) {
@@ -96,6 +116,15 @@ export default async function NewFormPage({
               </Link>
             </div>
           </form>
+        </div>
+
+        <div className="mt-4 text-sm text-gray-500">
+          Using {formatLimitDisplay(totalForms, limit)} forms
+          {remaining === 0 && limit < 999 && (
+            <span className="ml-2">
+              • <Link href="/dashboard/billing" className="text-blue-600 hover:text-blue-700">Upgrade for more</Link>
+            </span>
+          )}
         </div>
       </div>
     </div>
