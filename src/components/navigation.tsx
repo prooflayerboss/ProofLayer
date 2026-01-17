@@ -85,13 +85,13 @@ export default function Navigation() {
               Contact Us
             </Link>
             <Link
-              href="/auth/signin"
+              href="/login"
               className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
             >
               Sign In
             </Link>
             <Link
-              href="/auth/signup"
+              href="/signup"
               className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg"
             >
               Get Started
@@ -162,14 +162,14 @@ export default function Navigation() {
                 Contact Us
               </Link>
               <Link
-                href="/auth/signin"
+                href="/login"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-gray-700 hover:text-blue-600 font-medium"
               >
                 Sign In
               </Link>
               <Link
-                href="/auth/signup"
+                href="/signup"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold text-center hover:from-blue-700 hover:to-blue-800 transition-all shadow-md"
               >

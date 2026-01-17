@@ -33,7 +33,7 @@ export default function AgenciesPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/auth/signup"
+                href="/signup"
                 className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg hover:shadow-xl"
               >
                 Get Started - $177
@@ -163,7 +163,7 @@ export default function AgenciesPage() {
               Join agencies using ProofLayer to deliver better results for their clients.
             </p>
             <Link
-              href="/auth/signup"
+              href="/signup"
               className="inline-block bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl"
             >
               Get Agency Plan - $177

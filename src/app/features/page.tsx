@@ -91,7 +91,7 @@ export default function FeaturesPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/auth/signup"
+                href="/signup"
                 className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg hover:shadow-xl"
               >
                 Get Started Free
@@ -251,7 +251,7 @@ export default function FeaturesPage() {
             Join thousands of businesses using ProofLayer to build trust and grow faster.
           </p>
           <Link
-            href="/auth/signup"
+            href="/signup"
             className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg hover:shadow-xl"
           >
             Get Started Today

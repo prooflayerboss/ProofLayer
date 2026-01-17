@@ -158,7 +158,7 @@ export default function PricingPage() {
                 </div>
 
                 <Link
-                  href="/auth/signup"
+                  href="/signup"
                   className={`block w-full text-center py-3 px-6 rounded-lg font-semibold mb-8 transition-all ${
                     tier.popular
                       ? 'bg-white text-blue-600 hover:bg-blue-50 shadow-lg'
@@ -294,7 +294,7 @@ export default function PricingPage() {
               Join thousands of businesses using ProofLayer to build trust and grow faster.
             </p>
             <Link
-              href="/auth/signup"
+              href="/signup"
               className="inline-block bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl"
             >
               Get Started Today
