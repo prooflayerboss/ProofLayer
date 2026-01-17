@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProofLayer Widget - All Layouts Test</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f9fafb;
+        }
+        h1 { color: #111827; margin-bottom: 10px; }
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            margin: 30px 0;
+        }
+        .section h2 {
+            color: #374151;
+            margin: 0 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .description {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>ProofLayer Widget - All Layouts Showcase</h1>
+    <p style="color: #6b7280;">Testing all 5 widget layouts with 3 test testimonials</p>
+
+    <div class="section">
+        <h2>1. Grid Layout (Original)</h2>
+        <p class="description">Responsive grid that auto-fills available space with minimum 300px card width.</p>
+        <div id="prooflayer-widget-grid"></div>
+        <script src="http://localhost:3000/widget.js?v=3" data-workspace="f5f8e5be-c0a0-411f-b6e1-02f7ac2b8f9f" data-layout="grid" data-theme="light"></script>
+    </div>
+
+    <div class="section">
+        <h2>2. Carousel Layout (Original)</h2>
+        <p class="description">Horizontal scrolling carousel with snap points for smooth navigation.</p>
+        <div id="prooflayer-widget-carousel"></div>
+        <script src="http://localhost:3000/widget.js?v=3" data-workspace="f5f8e5be-c0a0-411f-b6e1-02f7ac2b8f9f" data-layout="carousel" data-theme="light"></script>
+    </div>
+
+    <div class="section">
+        <h2>3. Marquee Layout (NEW)</h2>
+        <p class="description">Infinite scrolling horizontal animation - perfect for hero sections. Hover to pause.</p>
+        <div id="prooflayer-widget-marquee"></div>
+        <script src="http://localhost:3000/widget.js?v=3" data-workspace="f5f8e5be-c0a0-411f-b6e1-02f7ac2b8f9f" data-layout="marquee" data-theme="light" data-marquee-speed="50"></script>
+    </div>
+
+    <div class="section">
+        <h2>4. Masonry Layout (NEW)</h2>
+        <p class="description">Pinterest-style layout with variable card heights for dynamic content.</p>
+        <div id="prooflayer-widget-masonry"></div>
+        <script src="http://localhost:3000/widget.js?v=3" data-workspace="f5f8e5be-c0a0-411f-b6e1-02f7ac2b8f9f" data-layout="masonry" data-theme="light"></script>
+    </div>
+
+    <div class="section">
+        <h2>5. Spotlight Layout (NEW)</h2>
+        <p class="description">Single rotating testimonial with smooth fade transitions. Auto-rotates every 5 seconds.</p>
+        <div id="prooflayer-widget-spotlight"></div>
+        <script src="http://localhost:3000/widget.js?v=3" data-workspace="f5f8e5be-c0a0-411f-b6e1-02f7ac2b8f9f" data-layout="spotlight" data-theme="light" data-auto-rotate="5000"></script>
+    </div>
+
+    <div class="section" style="background: #1a1a1a;">
+        <h2 style="color: #f9fafb; border-bottom-color: #374151;">Dark Theme - Grid Layout</h2>
+        <p class="description" style="color: #9ca3af;">All layouts support dark theme for different website styles.</p>
+        <div id="prooflayer-widget-dark"></div>
+        <script src="http://localhost:3000/widget.js?v=3" data-workspace="f5f8e5be-c0a0-411f-b6e1-02f7ac2b8f9f" data-layout="grid" data-theme="dark"></script>
+    </div>
+
+</body>
+</html>

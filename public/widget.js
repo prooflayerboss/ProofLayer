@@ -25,7 +25,10 @@
   var apiUrl = origin + '/api/widget/' + workspaceId;
 
   var isDark = theme === 'dark';
-  var styles = '.pl-widget{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif}.pl-widget *{box-sizing:border-box}.pl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}.pl-carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:20px;padding-bottom:10px}.pl-card{background:' + (isDark ? '#1f2937' : '#fff') + ';border:1px solid ' + (isDark ? '#374151' : '#e5e7eb') + ';border-radius:12px;padding:24px;' + (layout === 'carousel' ? 'min-width:320px;scroll-snap-align:start;' : '') + '}.pl-card-header{display:flex;align-items:center;margin-bottom:16px}.pl-avatar{width:48px;height:48px;border-radius:50%;background:' + (isDark ? '#374151' : '#e5e7eb') + ';display:flex;align-items:center;justify-content:center;font-weight:600;font-size:18px;color:' + (isDark ? '#9ca3af' : '#6b7280') + ';margin-right:12px;overflow:hidden}.pl-avatar img{width:100%;height:100%;object-fit:cover}.pl-name{font-weight:600;color:' + (isDark ? '#f9fafb' : '#111827') + ';font-size:16px}.pl-role{color:' + (isDark ? '#9ca3af' : '#6b7280') + ';font-size:14px}.pl-stars{display:flex;gap:2px;margin-bottom:12px}.pl-star{width:18px;height:18px}.pl-star-filled{color:#fbbf24}.pl-star-empty{color:' + (isDark ? '#4b5563' : '#e5e7eb') + '}.pl-text{color:' + (isDark ? '#d1d5db' : '#374151') + ';font-size:15px;line-height:1.6}.pl-badge{text-align:center;margin-top:20px;font-size:12px;color:' + (isDark ? '#6b7280' : '#9ca3af') + '}.pl-badge a{color:' + (isDark ? '#60a5fa' : '#3b82f6') + ';text-decoration:none}.pl-badge a:hover{text-decoration:underline}.pl-empty{text-align:center;padding:40px 20px;color:' + (isDark ? '#9ca3af' : '#6b7280') + '}';
+  var marqueeSpeed = script.getAttribute('data-marquee-speed') || '50';
+  var autoRotate = script.getAttribute('data-auto-rotate') || '5000';
+
+  var styles = '.pl-widget{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif}.pl-widget *{box-sizing:border-box}.pl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}.pl-carousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:20px;padding-bottom:10px}.pl-marquee{display:flex;gap:20px;overflow:hidden;position:relative}.pl-marquee-track{display:flex;gap:20px;animation:pl-marquee-scroll ' + marqueeSpeed + 's linear infinite}.pl-marquee-track:hover{animation-play-state:paused}@keyframes pl-marquee-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.pl-masonry{column-count:3;column-gap:20px}@media(max-width:1024px){.pl-masonry{column-count:2}}@media(max-width:640px){.pl-masonry{column-count:1}}.pl-masonry .pl-card{break-inside:avoid;margin-bottom:20px}.pl-spotlight{max-width:700px;margin:0 auto;position:relative;min-height:200px}.pl-spotlight .pl-card{opacity:0;position:absolute;top:0;left:0;right:0;transition:opacity 0.5s ease-in-out;pointer-events:none}.pl-spotlight .pl-card.pl-active{opacity:1;position:relative;pointer-events:auto}.pl-card{background:' + (isDark ? '#1f2937' : '#fff') + ';border:1px solid ' + (isDark ? '#374151' : '#e5e7eb') + ';border-radius:12px;padding:24px;' + (layout === 'carousel' ? 'min-width:320px;scroll-snap-align:start;' : '') + '}.pl-card-header{display:flex;align-items:center;margin-bottom:16px}.pl-avatar{width:48px;height:48px;border-radius:50%;background:' + (isDark ? '#374151' : '#e5e7eb') + ';display:flex;align-items:center;justify-content:center;font-weight:600;font-size:18px;color:' + (isDark ? '#9ca3af' : '#6b7280') + ';margin-right:12px;overflow:hidden}.pl-avatar img{width:100%;height:100%;object-fit:cover}.pl-name{font-weight:600;color:' + (isDark ? '#f9fafb' : '#111827') + ';font-size:16px}.pl-role{color:' + (isDark ? '#9ca3af' : '#6b7280') + ';font-size:14px}.pl-stars{display:flex;gap:2px;margin-bottom:12px}.pl-star{width:18px;height:18px}.pl-star-filled{color:#fbbf24}.pl-star-empty{color:' + (isDark ? '#4b5563' : '#e5e7eb') + '}.pl-text{color:' + (isDark ? '#d1d5db' : '#374151') + ';font-size:15px;line-height:1.6}.pl-badge{text-align:center;margin-top:20px;font-size:12px;color:' + (isDark ? '#6b7280' : '#9ca3af') + '}.pl-badge a{color:' + (isDark ? '#60a5fa' : '#3b82f6') + ';text-decoration:none}.pl-badge a:hover{text-decoration:underline}.pl-empty{text-align:center;padding:40px 20px;color:' + (isDark ? '#9ca3af' : '#6b7280') + '}';
 
   var styleEl = document.createElement('style');
   styleEl.textContent = styles;
@@ -75,7 +78,35 @@
       var cardsHtml = testimonials.map(renderCard).join('');
       var badgeHtml = showBadge ? '<div class="pl-badge">Powered by <a href="https://prooflayer.app" target="_blank">Prooflayer</a></div>' : '';
 
-      container.innerHTML = '<div class="pl-widget"><div class="pl-' + layout + '">' + cardsHtml + '</div>' + badgeHtml + '</div>';
+      // Handle different layout types
+      var layoutHtml;
+      if (layout === 'marquee') {
+        // Duplicate cards for infinite scroll effect
+        layoutHtml = '<div class="pl-marquee"><div class="pl-marquee-track">' + cardsHtml + cardsHtml + '</div></div>';
+      } else if (layout === 'spotlight') {
+        // Add active class to first card
+        var spotlightCards = testimonials.map(function(t, i) {
+          var card = renderCard(t);
+          return card.replace('class="pl-card"', 'class="pl-card' + (i === 0 ? ' pl-active' : '') + '"');
+        }).join('');
+        layoutHtml = '<div class="pl-spotlight">' + spotlightCards + '</div>';
+      } else {
+        // Grid, carousel, masonry use default rendering
+        layoutHtml = '<div class="pl-' + layout + '">' + cardsHtml + '</div>';
+      }
+
+      container.innerHTML = '<div class="pl-widget">' + layoutHtml + badgeHtml + '</div>';
+
+      // Spotlight auto-rotation
+      if (layout === 'spotlight' && testimonials.length > 1) {
+        var currentIndex = 0;
+        var cards = container.querySelectorAll('.pl-spotlight .pl-card');
+        setInterval(function() {
+          cards[currentIndex].classList.remove('pl-active');
+          currentIndex = (currentIndex + 1) % cards.length;
+          cards[currentIndex].classList.add('pl-active');
+        }, parseInt(autoRotate));
+      }
     })
     .catch(function(err) {
       console.error('Prooflayer: Failed to load testimonials', err);

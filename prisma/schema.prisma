@@ -168,6 +168,12 @@ model WidgetConfig {
   showRating  Boolean      @default(true) @map("show_rating")
   showPhoto   Boolean      @default(true) @map("show_photo")
   showCompany Boolean      @default(true) @map("show_company")
+
+  // New layout-specific settings
+  autoRotateInterval Int?  @default(5000) @map("auto_rotate_interval") // For SPOTLIGHT (milliseconds)
+  marqueeSpeed       Int?  @default(50) @map("marquee_speed")          // For MARQUEE (pixels/sec)
+  masonryColumns     Int?  @default(3) @map("masonry_columns")         // For MASONRY
+
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
 
@@ -177,6 +183,9 @@ model WidgetConfig {
 enum WidgetLayout {
   GRID
   CAROUSEL
+  MARQUEE    // Infinite scrolling horizontal
+  MASONRY    // Pinterest-style variable height
+  SPOTLIGHT  // Single rotating testimonial
 }
 
 // ===========================

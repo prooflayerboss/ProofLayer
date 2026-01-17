@@ -15,13 +15,13 @@ export default function WidgetConfigurator({
   appUrl: string;
 }) {
   const [selectedWorkspace, setSelectedWorkspace] = useState(workspaces[0]?.id || '');
-  const [layout, setLayout] = useState<'grid' | 'carousel'>('grid');
+  const [layout, setLayout] = useState<'grid' | 'carousel' | 'marquee' | 'masonry' | 'spotlight'>('grid');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [copied, setCopied] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<'shopify' | 'wix' | 'squarespace' | 'wordpress' | 'webflow'>('shopify');
 
   const embedCode = `<div id="prooflayer-widget"></div>
-<script src="${appUrl}/widget.js?v=2" data-workspace="${selectedWorkspace}" data-layout="${layout}" data-theme="${theme}"></script>`;
+<script src="${appUrl}/widget.js?v=3" data-workspace="${selectedWorkspace}" data-layout="${layout}" data-theme="${theme}"></script>`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(embedCode);
@@ -59,32 +59,71 @@ export default function WidgetConfigurator({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Layout
             </label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <button
                 onClick={() => setLayout('grid')}
-                className={`p-4 border rounded-lg text-center transition-colors ${
+                className={`p-3 border rounded-lg text-center transition-colors ${
                   layout === 'grid'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
-                <svg className="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
                 </svg>
-                <span className="text-sm font-medium">Grid</span>
+                <span className="text-xs font-medium">Grid</span>
               </button>
               <button
                 onClick={() => setLayout('carousel')}
-                className={`p-4 border rounded-lg text-center transition-colors ${
+                className={`p-3 border rounded-lg text-center transition-colors ${
                   layout === 'carousel'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
-                <svg className="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 4h10M7 8h10M7 12h10M7 16h10M7 20h10" />
                 </svg>
-                <span className="text-sm font-medium">Carousel</span>
+                <span className="text-xs font-medium">Carousel</span>
+              </button>
+              <button
+                onClick={() => setLayout('marquee')}
+                className={`p-3 border rounded-lg text-center transition-colors ${
+                  layout === 'marquee'
+                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                </svg>
+                <span className="text-xs font-medium">Marquee</span>
+              </button>
+              <button
+                onClick={() => setLayout('masonry')}
+                className={`p-3 border rounded-lg text-center transition-colors ${
+                  layout === 'masonry'
+                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 14a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1h-4a1 1 0 01-1-1v-5z" />
+                </svg>
+                <span className="text-xs font-medium">Masonry</span>
+              </button>
+              <button
+                onClick={() => setLayout('spotlight')}
+                className={`p-3 border rounded-lg text-center transition-colors ${
+                  layout === 'spotlight'
+                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                <span className="text-xs font-medium">Spotlight</span>
               </button>
             </div>
           </div>
