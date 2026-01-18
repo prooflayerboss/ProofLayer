@@ -11,10 +11,10 @@ export default function ComparePage() {
       <section className="pt-20 pb-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-5xl font-bold text-gray-900 mb-6">
-            ProofLayer vs. The Competition
+            Why Choose ProofLayer?
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            See how ProofLayer stacks up against other testimonial tools. Spoiler: you save thousands.
+            See how we stack up against monthly subscription tools. Spoiler: you save thousands.
           </p>
         </div>
       </section>
@@ -34,9 +34,9 @@ export default function ComparePage() {
                         <span className="text-xs text-blue-100 mt-1">That's us! 🎉</span>
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold">Testimonial.to</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold">Senja</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold">Wall-of-Love</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold">Competitor A</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold">Competitor B</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold">Competitor C</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -217,7 +217,7 @@ export default function ComparePage() {
               </div>
               <div className="text-center">
                 <p className="text-4xl font-bold text-red-600 mb-2">$1,188</p>
-                <p className="text-gray-700">Testimonial.to (3 years)</p>
+                <p className="text-gray-700">Monthly Tools (3 years)</p>
               </div>
             </div>
             <p className="text-center mt-6 text-xl font-semibold text-gray-900">
