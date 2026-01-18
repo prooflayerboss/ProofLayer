@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -124,12 +125,20 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-2">
-              <div className="bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold text-lg px-2.5 py-1 rounded-lg shadow-md">
-                PL
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative w-9 h-9 transition-transform group-hover:scale-105">
+                <Image
+                  src="/logos/prooflayer-icon-only.svg"
+                  alt="ProofLayer"
+                  width={36}
+                  height={36}
+                  className="w-full h-full"
+                />
               </div>
-              <span className="text-white font-semibold">ProofLayer</span>
-            </div>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                ProofLayer
+              </span>
+            </Link>
 
             <div className="text-sm text-gray-400 text-center">
               © {currentYear} ProofLayer. All rights reserved.
