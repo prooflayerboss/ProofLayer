@@ -2,7 +2,6 @@ import Link from 'next/link';
 import FeaturesSection from '@/components/features-section';
 import Navigation from '@/components/navigation';
 import Footer from '@/components/footer';
-import VideoPlayer from '@/components/video-player';
 
 export default async function HomePage() {
   // Pricing tiers for AppSumo launch
@@ -156,7 +155,15 @@ export default async function HomePage() {
           </div>
 
           {/* Video Container */}
-          <VideoPlayer src="/videos/demo.mp4" />
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 aspect-video">
+            <iframe
+              src="https://www.youtube.com/embed/I_C6VIvh5kA"
+              title="ProofLayer Demo"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+            />
+          </div>
 
           {/* Video features */}
           <div className="grid md:grid-cols-3 gap-6 mt-12">
