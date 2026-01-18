@@ -63,8 +63,12 @@ export default function FAQPage() {
       answer: 'Absolutely! Your testimonials are yours to keep forever. You can export all your data at any time - testimonials, videos, and customer information. No lock-in, no restrictions.',
     },
     {
-      question: 'How is this different from Testimonial.to?',
-      answer: 'ProofLayer offers the same core features but with a one-time payment instead of monthly subscriptions. Stop renting your reputation - own it forever starting at just $59.',
+      question: 'What makes ProofLayer different from other tools?',
+      answer: 'ProofLayer is built on the principle that you shouldn\'t rent your reputation. With a one-time payment, you own your testimonial platform forever - no monthly fees, no subscription trap. Your social proof is yours to keep.',
+    },
+    {
+      question: 'Is there customer support?',
+      answer: 'Yes! All plans include email support. Professional and Agency plans get priority support with faster response times. We\'re here to help you succeed.',
     },
   ];
 

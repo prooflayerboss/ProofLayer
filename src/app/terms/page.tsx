@@ -53,7 +53,7 @@ export default function TermsPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Payment and Refunds</h2>
               <p className="text-gray-700 mb-4">
-                All lifetime purchases are one-time payments. We offer a 60-day money-back guarantee. If you're not satisfied with ProofLayer, contact us within 60 days of purchase for a full refund.
+                All lifetime purchases are one-time payments. We offer a 30-day money-back guarantee. If you're not satisfied with ProofLayer, contact us at support@prooflayer.app within 30 days of purchase for a full refund, no questions asked.
               </p>
             </section>
 
@@ -65,9 +65,35 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Lifetime Access Guarantee</h2>
+              <p className="text-gray-700 mb-4">
+                "Lifetime" means the lifetime of ProofLayer as an operating service. Your lifetime license grants you:
+              </p>
+              <ul className="list-disc list-inside text-gray-700 space-y-2 mb-4">
+                <li>Access to ProofLayer for as long as the service operates commercially</li>
+                <li>All feature updates and improvements at no additional cost</li>
+                <li>Continued access to all testimonials and data you've collected</li>
+                <li>The ability to export your data at any time without restrictions</li>
+              </ul>
+              <p className="text-gray-700 mb-4">
+                <strong>Service Discontinuation Protection:</strong> In the unlikely event that ProofLayer ceases operations, we commit to:
+              </p>
+              <ul className="list-disc list-inside text-gray-700 space-y-2 mb-4">
+                <li>Provide at least 90 days advance notice via email to all active users</li>
+                <li>Enable full data export for all testimonials, videos, images, and customer information</li>
+                <li>Provide documentation to help you migrate to alternative solutions</li>
+                <li>Keep the service operational during the notice period to allow data migration</li>
+                <li>Offer pro-rated refunds based on time since purchase (e.g., purchased within 1 year = 50% refund, within 6 months = 75% refund)</li>
+              </ul>
+              <p className="text-gray-700 mb-4">
+                Your data belongs to you. We will never hold your testimonials or content hostage under any circumstances.
+              </p>
+            </section>
+
+            <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Service Availability</h2>
               <p className="text-gray-700 mb-4">
-                We strive to maintain 99.9% uptime, but we do not guarantee uninterrupted access. We reserve the right to modify or discontinue features with notice to users.
+                We strive to maintain 99.9% uptime, but we do not guarantee uninterrupted access. We reserve the right to modify or discontinue features with reasonable notice to users. Major feature removals will be announced at least 30 days in advance.
               </p>
             </section>
 
