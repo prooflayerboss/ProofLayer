@@ -53,20 +53,32 @@
     }
     var roleText = [t.role, t.company].filter(Boolean).join(' at ');
 
-    // For screenshots, use the screenshot as the avatar OR show below testimonial
     var isScreenshot = t.submissionType === 'SCREENSHOT';
+    var isVideo = t.submissionType === 'VIDEO';
+
     var avatar = (t.photoUrl && !isScreenshot)
       ? '<img src="' + t.photoUrl + '" alt="' + t.name + '">'
       : getInitials(t.name);
 
-    var screenshotContent = '';
-    if (isScreenshot && t.photoUrl) {
-      screenshotContent = '<div class="pl-screenshot"><img src="' + t.photoUrl + '" alt="Screenshot" style="width:100%;border-radius:8px;margin:12px 0"/></div>';
+    var mediaContent = '';
+
+    // Video testimonials
+    if (isVideo && t.videoUrl) {
+      mediaContent = '<div class="pl-video" style="margin:12px 0"><video controls style="width:100%;border-radius:8px;max-height:400px"><source src="' + t.videoUrl + '" type="video/mp4">Your browser does not support video.</video></div>';
     }
 
-    var testimonialText = isScreenshot ? '' : '<div class="pl-text">' + t.testimonial + '</div>';
+    // Screenshot testimonials
+    if (isScreenshot && t.photoUrl) {
+      mediaContent = '<div class="pl-screenshot"><img src="' + t.photoUrl + '" alt="Screenshot" style="width:100%;border-radius:8px;margin:12px 0"/></div>';
+    }
 
-    return '<div class="pl-card"><div class="pl-card-header"><div class="pl-avatar">' + avatar + '</div><div><div class="pl-name">' + t.name + '</div>' + (roleText ? '<div class="pl-role">' + roleText + '</div>' : '') + '</div></div>' + stars + screenshotContent + testimonialText + '</div>';
+    // Show text for text testimonials, or if video/screenshot has additional text
+    var testimonialText = '';
+    if (t.testimonial && (!isScreenshot || t.testimonial)) {
+      testimonialText = '<div class="pl-text">' + t.testimonial + '</div>';
+    }
+
+    return '<div class="pl-card"><div class="pl-card-header"><div class="pl-avatar">' + avatar + '</div><div><div class="pl-name">' + t.name + '</div>' + (roleText ? '<div class="pl-role">' + roleText + '</div>' : '') + '</div></div>' + stars + mediaContent + testimonialText + '</div>';
   }
 
   fetch(apiUrl)
