@@ -115,7 +115,7 @@ export default function TestimonialsSection() {
             <p className="text-gray-600 mt-2">Lifetime Access</p>
           </div>
           <div>
-            <p className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Unlimited</p>
+            <p className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">5,000+</p>
             <p className="text-gray-600 mt-2">Testimonials</p>
           </div>
           <div>
