@@ -123,7 +123,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-2">
               <div className="bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold text-lg px-2.5 py-1 rounded-lg shadow-md">
                 PL
@@ -131,11 +131,25 @@ export default function Footer() {
               <span className="text-white font-semibold">ProofLayer</span>
             </div>
 
-            <div className="text-sm text-gray-400">
+            <div className="text-sm text-gray-400 text-center">
               © {currentYear} ProofLayer. All rights reserved.
             </div>
 
             <div className="flex items-center gap-6">
+              {/* Social Links */}
+              <a
+                href="https://x.com/prooflayer56838"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+                aria-label="Follow us on X (Twitter)"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </a>
+
+              {/* Links */}
               <Link href="/privacy" className="text-sm hover:text-white transition-colors">
                 Privacy
               </Link>
