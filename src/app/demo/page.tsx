@@ -400,6 +400,24 @@ export default function DemoPage() {
                   <span className="text-sm text-gray-700">Show company names</span>
                 </label>
               </div>
+
+              {/* Floating Hearts Test Button */}
+              <div className="mt-4 pt-4 border-t">
+                <button
+                  onClick={() => {
+                    setShowFloatingHearts(true);
+                    setTimeout(() => setShowFloatingHearts(false), 3000);
+                  }}
+                  className="w-full bg-gradient-to-r from-pink-500 to-red-500 text-white px-4 py-3 rounded-lg font-semibold hover:from-pink-600 hover:to-red-600 transition-all shadow-md flex items-center justify-center gap-2"
+                >
+                  <span>❤️</span>
+                  Try Floating Hearts Animation
+                  <span>❤️</span>
+                </button>
+                <p className="text-xs text-gray-500 text-center mt-2">
+                  Also triggers automatically on testimonial submission
+                </p>
+              </div>
             </div>
 
             {/* Live Widget Preview */}
