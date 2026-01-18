@@ -174,24 +174,31 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                   </div>
                 ) : (
                   <div className="mb-3">
-                    <UploadButton
-                      endpoint="logoUploader"
-                      onClientUploadComplete={(res) => {
-                        if (res?.[0]?.url) {
-                          setLogoUrl(res[0].url);
+                    <div className="flex items-center justify-center w-full">
+                      <UploadButton
+                        endpoint="logoUploader"
+                        onClientUploadComplete={(res) => {
+                          if (res?.[0]?.url) {
+                            setLogoUrl(res[0].url);
+                            setUploading(false);
+                          }
+                        }}
+                        onUploadError={(error: Error) => {
+                          console.error('Upload error:', error);
+                          setError(`Upload failed: ${error.message}`);
                           setUploading(false);
-                        }
-                      }}
-                      onUploadError={(error: Error) => {
-                        alert(`Upload failed: ${error.message}`);
-                        setUploading(false);
-                      }}
-                      onUploadBegin={() => setUploading(true)}
-                      appearance={{
-                        button: 'ut-ready:bg-blue-600 ut-ready:hover:bg-blue-700 ut-uploading:bg-blue-400 ut-uploading:cursor-not-allowed text-sm px-4 py-2 rounded-lg',
-                        allowedContent: 'text-xs text-gray-500'
-                      }}
-                    />
+                        }}
+                        onUploadBegin={() => {
+                          setUploading(true);
+                          setError('');
+                        }}
+                        appearance={{
+                          button: 'ut-ready:bg-blue-600 ut-ready:hover:bg-blue-700 ut-uploading:bg-blue-400 ut-uploading:cursor-not-allowed ut-ready:text-white font-medium px-6 py-2.5 rounded-lg transition-colors w-full max-w-xs',
+                          container: 'w-full flex justify-start',
+                          allowedContent: 'text-xs text-gray-500 mt-2'
+                        }}
+                      />
+                    </div>
                   </div>
                 )}
 
