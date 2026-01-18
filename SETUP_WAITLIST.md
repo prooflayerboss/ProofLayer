@@ -2,14 +2,16 @@
 
 ## Database Setup
 
-You need to create the `waitlist` table in your Supabase database.
+You need to create the `waitlist` table in your Supabase database and set up permissions.
 
 ### Option 1: Run SQL Directly in Supabase
 
 1. Go to your Supabase dashboard
 2. Click on "SQL Editor" in the left sidebar
-3. Copy the contents of `prisma/migrations/create_waitlist_table.sql`
+3. **First**, copy the contents of `prisma/migrations/create_waitlist_table.sql`
 4. Paste and run it
+5. **Then**, copy the contents of `prisma/migrations/fix_waitlist_permissions.sql`
+6. Paste and run it (this enables anonymous users to submit emails)
 
 ### Option 2: Use the SQL File
 
