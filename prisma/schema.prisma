@@ -189,7 +189,7 @@ model WidgetConfig {
   workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   // Widget type and layout
-  widgetType  WidgetType   @default(EMBED) @map("widget_type")
+  widgetType  WidgetType   @default(WALL_OF_LOVE) @map("widget_type")
   layout      WidgetLayout @default(GRID)
 
   // Display settings
@@ -198,6 +198,12 @@ model WidgetConfig {
   showRating  Boolean      @default(true) @map("show_rating")
   showPhoto   Boolean      @default(true) @map("show_photo")
   showCompany Boolean      @default(true) @map("show_company")
+
+  // Animation settings
+  enableAnimations Boolean  @default(true) @map("enable_animations")     // Enable/disable animations
+  animationStyle   String?  @default("fade") @map("animation_style")     // "fade" | "slide" | "hearts" | "none"
+  hoverEffect      Boolean  @default(true) @map("hover_effect")          // Card hover lift effect
+  scrollDirection  String?  @default("vertical") @map("scroll_direction") // "vertical" | "horizontal"
 
   // Layout-specific settings
   autoRotateInterval Int?  @default(5000) @map("auto_rotate_interval") // For SPOTLIGHT (milliseconds)
@@ -221,9 +227,12 @@ model WidgetConfig {
 }
 
 enum WidgetType {
-  EMBED    // Traditional embedded widget
-  POPUP    // Modal popup
-  FLOATING // Floating badge/button
+  WALL_OF_LOVE    // Grid/list of multiple testimonials (replaces EMBED)
+  SINGLE          // Single rotating testimonial
+  BADGE           // Floating badge/button
+  COLLECTION_FORM // Embeddable testimonial collection form
+  POPUP           // Modal popup
+  FLOATING        // Floating badge (legacy, same as BADGE)
 }
 
 enum WidgetLayout {
@@ -232,6 +241,7 @@ enum WidgetLayout {
   MARQUEE    // Infinite scrolling horizontal
   MASONRY    // Pinterest-style variable height
   SPOTLIGHT  // Single rotating testimonial
+  LIST       // Vertical list
 }
 
 // ===========================
