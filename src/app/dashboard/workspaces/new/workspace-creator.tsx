@@ -192,7 +192,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                         setError('');
                       }}
                     />
-                    <p className="text-xs text-gray-500 mt-2">PNG, JPG up to 2MB</p>
+                    <p className="text-xs text-gray-500 mt-2">PNG, JPG up to 8MB</p>
                   </div>
                 )}
 

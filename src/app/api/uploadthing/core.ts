@@ -35,7 +35,7 @@ export const ourFileRouter = {
 
   logoUploader: f({
     image: {
-      maxFileSize: "2MB",
+      maxFileSize: "8MB",
       maxFileCount: 1,
     },
   })
