@@ -171,28 +171,44 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                         ×
                       </button>
                     </div>
+                    <p className="text-xs text-green-600 mt-2">✓ Logo uploaded successfully!</p>
                   </div>
                 ) : (
                   <div className="mb-3">
-                    <UploadButton
-                      endpoint="logoUploader"
-                      onClientUploadComplete={(res) => {
-                        if (res?.[0]?.url) {
-                          setLogoUrl(res[0].url);
-                          setUploading(false);
-                        }
-                      }}
-                      onUploadError={(error: Error) => {
-                        console.error('Upload error:', error);
-                        setError(`Upload failed: ${error.message}`);
-                        setUploading(false);
-                      }}
-                      onUploadBegin={() => {
-                        setUploading(true);
-                        setError('');
-                      }}
-                    />
-                    <p className="text-xs text-gray-500 mt-2">PNG, JPG up to 8MB</p>
+                    {uploading ? (
+                      <div className="border-2 border-dashed border-blue-300 bg-blue-50 rounded-lg p-6 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                          <span className="text-sm text-blue-600 font-medium">Uploading...</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <UploadButton
+                          endpoint="logoUploader"
+                          onClientUploadComplete={(res) => {
+                            if (res?.[0]?.url) {
+                              setLogoUrl(res[0].url);
+                              setUploading(false);
+                            }
+                          }}
+                          onUploadError={(error: Error) => {
+                            console.error('Upload error:', error);
+                            setError(`Upload failed: ${error.message}`);
+                            setUploading(false);
+                          }}
+                          onUploadBegin={() => {
+                            setUploading(true);
+                            setError('');
+                          }}
+                        />
+                        <p className="text-xs text-gray-500 mt-2">
+                          <span className="font-medium">Accepted:</span> PNG, JPG, JPEG, WebP
+                          <span className="mx-2">•</span>
+                          <span className="font-medium">Max size:</span> 8MB
+                        </p>
+                      </>
+                    )}
                   </div>
                 )}
 
