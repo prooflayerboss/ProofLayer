@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { ReactNode } from 'react';
 
 interface HelpArticleProps {
@@ -26,8 +27,19 @@ export default function HelpArticle({
             <span>/</span>
             <span className="text-gray-900">{category}</span>
           </div>
-          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            ProofLayer
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="relative w-8 h-8 transition-transform group-hover:scale-105">
+              <Image
+                src="/logos/prooflayer-icon-only.svg"
+                alt="ProofLayer"
+                width={32}
+                height={32}
+                className="w-full h-full"
+              />
+            </div>
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              ProofLayer
+            </span>
           </Link>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function HelpCenter() {
   const sections = [
@@ -89,8 +90,19 @@ export default function HelpCenter() {
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 py-6">
-          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            ProofLayer
+          <Link href="/" className="flex items-center gap-2 group w-fit">
+            <div className="relative w-9 h-9 transition-transform group-hover:scale-105">
+              <Image
+                src="/logos/prooflayer-icon-only.svg"
+                alt="ProofLayer"
+                width={36}
+                height={36}
+                className="w-full h-full"
+              />
+            </div>
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              ProofLayer
+            </span>
           </Link>
         </div>
       </div>

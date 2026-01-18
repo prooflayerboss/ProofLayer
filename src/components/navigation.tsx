@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { ChevronDown, Menu, X } from 'lucide-react';
 
@@ -22,11 +23,17 @@ export default function Navigation() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold text-xl px-3 py-1.5 rounded-lg shadow-md">
-                PL
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative w-10 h-10 transition-transform group-hover:scale-105">
+                <Image
+                  src="/logos/prooflayer-icon-only.svg"
+                  alt="ProofLayer"
+                  width={40}
+                  height={40}
+                  className="w-full h-full"
+                />
               </div>
-              <span className="text-xl font-bold text-gray-900">ProofLayer</span>
+              <span className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">ProofLayer</span>
             </Link>
           </div>
 

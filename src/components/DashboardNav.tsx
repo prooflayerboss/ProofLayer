@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import HelpMenu from './HelpMenu';
 
 export default function DashboardNav() {
@@ -9,8 +10,17 @@ export default function DashboardNav() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center space-x-8">
-            <Link href="/dashboard" className="flex items-center gap-2">
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <Link href="/dashboard" className="flex items-center gap-3 group">
+              <div className="relative w-9 h-9 transition-transform group-hover:scale-105">
+                <Image
+                  src="/logos/prooflayer-icon-only.svg"
+                  alt="ProofLayer"
+                  width={36}
+                  height={36}
+                  className="w-full h-full"
+                />
+              </div>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 ProofLayer
               </span>
             </Link>

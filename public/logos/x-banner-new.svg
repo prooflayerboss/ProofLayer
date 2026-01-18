@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1500" height="500" viewBox="0 0 1500 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="banner-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EFF6FF"/>
+      <stop offset="100%" stop-color="#FAF5FF"/>
+    </linearGradient>
+    <linearGradient id="banner-logo" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#9333EA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1500" height="500" fill="url(#banner-bg)"/>
+
+  <!-- Centered Logo + Wordmark -->
+  <g transform="translate(350, 150)">
+    <!-- Icon: Layered Checkmark -->
+    <g transform="translate(0, 0)">
+      <!-- Back Layer -->
+      <rect x="12" y="0" width="150" height="150" rx="30" fill="#3B82F6" opacity="0.25"/>
+      <!-- Middle Layer -->
+      <rect x="6" y="6" width="150" height="150" rx="30" fill="#6366F1" opacity="0.5"/>
+      <!-- Front Layer -->
+      <rect x="0" y="12" width="150" height="150" rx="30" fill="url(#banner-logo)"/>
+      <!-- Checkmark -->
+      <path d="M 45 90 L 63 108 L 105 60" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </g>
+
+    <!-- Wordmark -->
+    <text x="190" y="115" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="96" font-weight="700" fill="#1F2937" letter-spacing="-2">ProofLayer</text>
+  </g>
+
+  <!-- Tagline -->
+  <text x="540" y="370" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="400" fill="#6B7280">Collect &amp; showcase testimonials that convert</text>
+</svg>
