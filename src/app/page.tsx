@@ -2,6 +2,8 @@ import Link from 'next/link';
 import FeaturesSection from '@/components/features-section';
 import Navigation from '@/components/navigation';
 import Footer from '@/components/footer';
+import TestimonialsSection from '@/components/TestimonialsSection';
+import EmailCapture from '@/components/EmailCapture';
 
 export default async function HomePage() {
   // Pricing tiers for AppSumo launch
@@ -286,6 +288,9 @@ export default async function HomePage() {
       {/* Features */}
       <FeaturesSection />
 
+      {/* Testimonials Section */}
+      <TestimonialsSection />
+
       {/* Pricing */}
       <section id="pricing" className="py-20 px-4 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-6xl mx-auto">
@@ -472,26 +477,33 @@ export default async function HomePage() {
       </section>
 
 
-      {/* FAQ */}
+      {/* Email Capture */}
       <section className="py-20 px-4">
+        <div className="max-w-4xl mx-auto">
+          <EmailCapture />
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
             Frequently Asked Questions
           </h2>
           <div className="space-y-6">
-            <div className="bg-white p-6 rounded-xl border border-gray-200">
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Can I collect video testimonials?</h3>
               <p className="text-gray-600">Yes! Your customers can record videos directly in their browser or upload video files. Videos are automatically hosted and played inline.</p>
             </div>
-            <div className="bg-white p-6 rounded-xl border border-gray-200">
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Is this really a one-time payment?</h3>
               <p className="text-gray-600">Yes. You pay once, you own the account forever. No hidden fees, no monthly charges.</p>
             </div>
-            <div className="bg-white p-6 rounded-xl border border-gray-200">
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Will it work on my website builder?</h3>
               <p className="text-gray-600">Yes! Prooflayer works with Webflow, WordPress, Wix, Squarespace, and any site that accepts HTML/JavaScript embeds.</p>
             </div>
-            <div className="bg-white p-6 rounded-xl border border-gray-200">
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">What if I'm not happy with it?</h3>
               <p className="text-gray-600">14-day money back guarantee, no questions asked. Just email us and we'll refund you immediately.</p>
             </div>

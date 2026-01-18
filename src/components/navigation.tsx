@@ -70,16 +70,16 @@ export default function Navigation() {
               )}
             </div>
 
+            <Link href="/demo" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              Try Demo
+            </Link>
+
             <Link href="/pricing" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
               Pricing
             </Link>
 
-            <Link href="/integrations" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-              Integrations
-            </Link>
-
-            <Link href="/faq" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
-              FAQ
+            <Link href="/compare" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              Compare
             </Link>
           </div>
 
@@ -137,6 +137,14 @@ export default function Navigation() {
             </div>
 
             <Link
+              href="/demo"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block text-gray-700 hover:text-blue-600 font-medium"
+            >
+              Try Demo
+            </Link>
+
+            <Link
               href="/pricing"
               onClick={() => setMobileMenuOpen(false)}
               className="block text-gray-700 hover:text-blue-600 font-medium"
@@ -145,19 +153,11 @@ export default function Navigation() {
             </Link>
 
             <Link
-              href="/integrations"
+              href="/compare"
               onClick={() => setMobileMenuOpen(false)}
               className="block text-gray-700 hover:text-blue-600 font-medium"
             >
-              Integrations
-            </Link>
-
-            <Link
-              href="/faq"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-gray-700 hover:text-blue-600 font-medium"
-            >
-              FAQ
+              Compare
             </Link>
 
             <div className="border-t border-gray-200 pt-3 space-y-3">
