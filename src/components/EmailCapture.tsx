@@ -18,15 +18,18 @@ export default function EmailCapture() {
         body: JSON.stringify({ email }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
         setStatus('success');
-        setMessage('Thanks! We\'ll keep you updated on new features and updates.');
+        setMessage(data.message || 'Thanks! We\'ll keep you updated on new features and updates.');
         setEmail('');
       } else {
         setStatus('error');
-        setMessage('Something went wrong. Please try again.');
+        setMessage(data.error || 'Something went wrong. Please try again.');
       }
     } catch (error) {
+      console.error('Email capture error:', error);
       setStatus('error');
       setMessage('Something went wrong. Please try again.');
     }

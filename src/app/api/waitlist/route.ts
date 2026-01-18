@@ -26,11 +26,16 @@ export async function POST(request: Request) {
       ]);
 
     if (error) {
+      console.error('Supabase insert error:', error);
       // If duplicate email, that's okay
       if (error.code === '23505') {
         return NextResponse.json({ message: 'Already subscribed!' });
       }
-      throw error;
+      // Return more helpful error info
+      return NextResponse.json(
+        { error: `Database error: ${error.message}` },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ message: 'Successfully subscribed!' });
