@@ -179,12 +179,16 @@ export default async function BillingPage({
         </div>
       </div>
 
-      {/* Upgrade Section (Trial only) */}
-      {plan === 'TRIAL' && (
+      {/* Upgrade Section */}
+      {plan !== 'LIFETIME' && plan !== 'MONTHLY' && (
         <>
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">Upgrade Your Plan</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">
+            {plan === 'TRIAL' ? 'Upgrade Your Plan' : 'Upgrade to a Higher Tier'}
+          </h2>
           <p className="text-gray-600 mb-6">
-            Choose the plan that best fits your needs. Pay once, own forever.
+            {plan === 'TRIAL'
+              ? 'Choose the plan that best fits your needs. Pay once, own forever.'
+              : 'Unlock more features with a higher tier. One-time payment for lifetime access.'}
           </p>
 
           <div className="grid md:grid-cols-3 gap-6 mb-8">

@@ -144,6 +144,7 @@ export default function WidgetConfigurator({
                     handleLockedFeatureClick();
                   }
                 }}
+                title={!isWidgetTypeAllowed('popup') ? 'Upgrade to Agency plan to unlock Popup widgets' : 'Popup widget'}
                 className={`relative p-3 border rounded-lg text-center transition-colors ${
                   widgetType === 'popup'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
@@ -168,6 +169,7 @@ export default function WidgetConfigurator({
                     handleLockedFeatureClick();
                   }
                 }}
+                title={!isWidgetTypeAllowed('floating') ? 'Upgrade to Agency plan to unlock Floating widgets' : 'Floating badge widget'}
                 className={`relative p-3 border rounded-lg text-center transition-colors ${
                   widgetType === 'floating'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
@@ -341,6 +343,7 @@ export default function WidgetConfigurator({
               <button
                 onClick={() => isLayoutAllowed('carousel') && setLayout('carousel')}
                 disabled={!isLayoutAllowed('carousel')}
+                title={!isLayoutAllowed('carousel') ? 'Upgrade to Professional or Agency plan to unlock Carousel layout' : 'Carousel layout'}
                 className={`relative p-3 border rounded-lg text-center transition-colors ${
                   layout === 'carousel'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
@@ -360,6 +363,7 @@ export default function WidgetConfigurator({
               <button
                 onClick={() => isLayoutAllowed('marquee') && setLayout('marquee')}
                 disabled={!isLayoutAllowed('marquee')}
+                title={!isLayoutAllowed('marquee') ? 'Upgrade to Professional or Agency plan to unlock Marquee layout' : 'Marquee scrolling layout'}
                 className={`relative p-3 border rounded-lg text-center transition-colors ${
                   layout === 'marquee'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
@@ -379,6 +383,7 @@ export default function WidgetConfigurator({
               <button
                 onClick={() => isLayoutAllowed('masonry') && setLayout('masonry')}
                 disabled={!isLayoutAllowed('masonry')}
+                title={!isLayoutAllowed('masonry') ? 'Upgrade to Agency plan to unlock Masonry layout' : 'Masonry Pinterest-style layout'}
                 className={`relative p-3 border rounded-lg text-center transition-colors ${
                   layout === 'masonry'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
@@ -398,6 +403,7 @@ export default function WidgetConfigurator({
               <button
                 onClick={() => isLayoutAllowed('spotlight') && setLayout('spotlight')}
                 disabled={!isLayoutAllowed('spotlight')}
+                title={!isLayoutAllowed('spotlight') ? 'Upgrade to Agency plan to unlock Spotlight layout' : 'Spotlight rotating testimonial'}
                 className={`relative p-3 border rounded-lg text-center transition-colors ${
                   layout === 'spotlight'
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
