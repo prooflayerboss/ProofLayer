@@ -131,6 +131,9 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Space Name <span className="text-red-500">*</span>
                 </label>
+                <p className="text-xs text-gray-500 mb-2">
+                  Give your space a memorable name - this helps you organize testimonials by brand, product, or client.
+                </p>
                 <input
                   type="text"
                   value={name}
@@ -146,6 +149,9 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Logo (optional)
                 </label>
+                <p className="text-xs text-gray-500 mb-3">
+                  Upload your brand logo to appear at the top of your testimonial collection form. Makes your form instantly recognizable to customers.
+                </p>
 
                 {logoUrl ? (
                   <div className="mb-3">
@@ -222,6 +228,9 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Header Title
                 </label>
+                <p className="text-xs text-gray-500 mb-2">
+                  The main headline customers see when submitting testimonials. Keep it friendly and inviting!
+                </p>
                 <input
                   type="text"
                   value={headerTitle}
@@ -236,6 +245,9 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Custom Message
                 </label>
+                <p className="text-xs text-gray-500 mb-2">
+                  Add a personal welcome message explaining why their testimonial matters. This appears below the header.
+                </p>
                 <textarea
                   value={customMessage}
                   onChange={(e) => setCustomMessage(e.target.value)}
@@ -247,9 +259,12 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
 
               {/* Collection Options */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Collect Extra Information
                 </label>
+                <p className="text-xs text-gray-500 mb-3">
+                  Choose what additional details to collect alongside testimonials. More context makes testimonials more credible!
+                </p>
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -301,13 +316,19 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                   />
                   <span className="text-sm font-medium text-gray-700">Collect star rating (1-5 stars)</span>
                 </label>
+                <p className="text-xs text-gray-500 mt-2 ml-6">
+                  Let customers rate their experience with stars. Great for social proof and displaying average ratings.
+                </p>
               </div>
 
               {/* Theme Colors */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Theme Colors
                 </label>
+                <p className="text-xs text-gray-500 mb-3">
+                  Customize your form colors to match your brand. Changes reflect instantly in the preview!
+                </p>
                 <div className="space-y-4">
                   {/* Primary Color (Button) */}
                   <div>
@@ -434,6 +455,9 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Language
                 </label>
+                <p className="text-xs text-gray-500 mb-2">
+                  Select the language for your testimonial collection form. This will be used for form labels and buttons.
+                </p>
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
