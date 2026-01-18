@@ -2,7 +2,7 @@ import Link from 'next/link';
 import FeaturesSection from '@/components/features-section';
 import Navigation from '@/components/navigation';
 import Footer from '@/components/footer';
-import TestimonialsSection from '@/components/TestimonialsSection';
+import LiveWidgetShowcase from '@/components/LiveWidgetShowcase';
 import EmailCapture from '@/components/EmailCapture';
 import TrustBadges from '@/components/TrustBadges';
 
@@ -292,8 +292,8 @@ export default async function HomePage() {
       {/* Trust Badges */}
       <TrustBadges />
 
-      {/* Testimonials Section */}
-      <TestimonialsSection />
+      {/* Live Widget Showcase */}
+      <LiveWidgetShowcase />
 
       {/* Pricing */}
       <section id="pricing" className="py-20 px-4 bg-gradient-to-b from-white to-gray-50">
