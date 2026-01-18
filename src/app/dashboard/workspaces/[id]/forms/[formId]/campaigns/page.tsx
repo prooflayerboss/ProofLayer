@@ -9,8 +9,9 @@ import CampaignManager from './campaign-manager';
 export default async function CampaignsPage({
   params,
 }: {
-  params: { id: string; formId: string };
+  params: Promise<{ id: string; formId: string }>;
 }) {
+  const { id, formId } = await params;
   const user = await ensureUserExists();
 
   if (!user) {
@@ -26,7 +27,7 @@ export default async function CampaignsPage({
       <div>
         <div className="mb-6">
           <Link
-            href={`/dashboard/workspaces/${params.id}/forms/${params.formId}`}
+            href={`/dashboard/workspaces/${id}/forms/${formId}`}
             className="text-sm text-gray-500 hover:text-gray-700"
           >
             ← Back to Form
@@ -54,7 +55,7 @@ export default async function CampaignsPage({
     );
   }
 
-  const form = await getForm(params.formId);
+  const form = await getForm(formId);
 
   if (!form) {
     notFound();
@@ -62,7 +63,7 @@ export default async function CampaignsPage({
 
   // Get all campaigns for this form
   const campaigns = await prisma.emailCampaign.findMany({
-    where: { formId: params.formId },
+    where: { formId: formId },
     include: {
       recipients: true,
     },
@@ -73,7 +74,7 @@ export default async function CampaignsPage({
     <div>
       <div className="mb-6">
         <Link
-          href={`/dashboard/workspaces/${params.id}/forms/${params.formId}`}
+          href={`/dashboard/workspaces/${id}/forms/${formId}`}
           className="text-sm text-gray-500 hover:text-gray-700"
         >
           ← Back to {form.name}
@@ -88,8 +89,8 @@ export default async function CampaignsPage({
       </div>
 
       <CampaignManager
-        formId={params.formId}
-        workspaceId={params.id}
+        formId={formId}
+        workspaceId={id}
         formName={form.name}
         campaigns={campaigns}
         senderName={user.name || 'Your team'}

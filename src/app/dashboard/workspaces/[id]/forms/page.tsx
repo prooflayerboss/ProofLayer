@@ -7,27 +7,28 @@ import { getForms } from '@/actions/forms';
 export default async function FormsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const user = await ensureUserExists();
 
   if (!user) {
     redirect('/login');
   }
 
-  const workspace = await getWorkspace(params.id);
+  const workspace = await getWorkspace(id);
 
   if (!workspace) {
     notFound();
   }
 
-  const forms = await getForms(params.id);
+  const forms = await getForms(id);
 
   return (
     <div>
       <div className="mb-6">
         <Link
-          href={`/dashboard/workspaces/${params.id}`}
+          href={`/dashboard/workspaces/${id}`}
           className="text-sm text-gray-500 hover:text-gray-700"
         >
           ← Back to {workspace.name}
@@ -37,7 +38,7 @@ export default async function FormsPage({
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Forms</h1>
         <Link
-          href={`/dashboard/workspaces/${params.id}/forms/new`}
+          href={`/dashboard/workspaces/${id}/forms/new`}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
         >
           + New Form
@@ -54,7 +55,7 @@ export default async function FormsPage({
           <h2 className="text-lg font-semibold text-gray-900 mb-2">No forms yet</h2>
           <p className="text-gray-600 mb-6">Create your first form to start collecting testimonials.</p>
           <Link
-            href={`/dashboard/workspaces/${params.id}/forms/new`}
+            href={`/dashboard/workspaces/${id}/forms/new`}
             className="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
           >
             Create Form
@@ -90,7 +91,7 @@ export default async function FormsPage({
                   </td>
                   <td className="px-6 py-4 text-right">
                     <Link
-                      href={`/dashboard/workspaces/${params.id}/forms/${form.id}`}
+                      href={`/dashboard/workspaces/${id}/forms/${form.id}`}
                       className="text-blue-600 hover:text-blue-700 text-sm font-medium"
                     >
                       Manage
