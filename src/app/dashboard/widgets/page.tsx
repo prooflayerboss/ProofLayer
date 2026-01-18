@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ensureUserExists } from '@/actions/user';
 import { getWorkspaces } from '@/actions/workspaces';
-import WidgetConfigurator from './widget-configurator';
+import EnhancedWidgetConfigurator from './enhanced-widget-configurator';
 
 export default async function WidgetsPage() {
   const user = await ensureUserExists();
@@ -42,7 +42,7 @@ export default async function WidgetsPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Widgets</h1>
-      <WidgetConfigurator workspaces={workspaces} appUrl={appUrl} userPlan={userPlan} />
+      <EnhancedWidgetConfigurator workspaces={workspaces} appUrl={appUrl} userPlan={userPlan} />
     </div>
   );
 }
