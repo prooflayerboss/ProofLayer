@@ -191,11 +191,6 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                         setUploading(true);
                         setError('');
                       }}
-                      appearance={{
-                        button: 'bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-full text-sm transition-colors cursor-pointer border-0',
-                        container: 'inline-block',
-                        allowedContent: 'hidden'
-                      }}
                     />
                     <p className="text-xs text-gray-500 mt-2">PNG, JPG up to 2MB</p>
                   </div>
