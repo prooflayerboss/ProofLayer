@@ -8,16 +8,17 @@ export default async function WorkspaceDetailPage({
   params,
   searchParams,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
   searchParams: { error?: string; formCreated?: string };
 }) {
+  const { id } = await params;
   const user = await ensureUserExists();
 
   if (!user) {
     redirect('/login');
   }
 
-  const workspace = await getWorkspace(params.id);
+  const workspace = await getWorkspace(id);
 
   if (!workspace) {
     notFound();
@@ -61,7 +62,7 @@ export default async function WorkspaceDetailPage({
       </div>
 
       <WorkspaceDetailClient
-        workspaceId={params.id}
+        workspaceId={id}
         workspaceName={workspace.name}
         workspaceSlug={workspace.slug}
         forms={workspace.forms}

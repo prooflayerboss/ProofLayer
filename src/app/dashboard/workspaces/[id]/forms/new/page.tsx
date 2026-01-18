@@ -11,16 +11,17 @@ export default async function NewFormPage({
   params,
   searchParams,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
   searchParams: { error?: string };
 }) {
+  const { id } = await params;
   const user = await ensureUserExists();
 
   if (!user) {
     redirect('/login');
   }
 
-  const workspace = await getWorkspace(params.id);
+  const workspace = await getWorkspace(id);
 
   if (!workspace) {
     notFound();
@@ -41,7 +42,7 @@ export default async function NewFormPage({
   const { allowed, limit, remaining } = canCreateForm(totalForms, plan);
 
   if (!allowed) {
-    redirect(`/dashboard/workspaces/${params.id}?error=form_limit_reached`);
+    redirect(`/dashboard/workspaces/${id}?error=form_limit_reached`);
   }
 
   // Check if user's plan allows custom colors
@@ -49,10 +50,10 @@ export default async function NewFormPage({
 
   async function handleCreateForm(formData: FormData) {
     'use server';
-    formData.append('workspaceId', params.id);
+    formData.append('workspaceId', id);
     const result = await createForm(formData);
     if (result && !result.success) {
-      redirect(`/dashboard/workspaces/${params.id}/forms/new?error=${encodeURIComponent(result.error || 'Unknown error')}`);
+      redirect(`/dashboard/workspaces/${id}/forms/new?error=${encodeURIComponent(result.error || 'Unknown error')}`);
     }
   }
 
@@ -60,7 +61,7 @@ export default async function NewFormPage({
     <div>
       <div className="mb-6">
         <Link
-          href={`/dashboard/workspaces/${params.id}`}
+          href={`/dashboard/workspaces/${id}`}
           className="text-sm text-gray-500 hover:text-gray-700"
         >
           ← Back to {workspace.name}
@@ -80,7 +81,7 @@ export default async function NewFormPage({
       </div>
 
       <FormCreator
-        workspaceId={params.id}
+        workspaceId={id}
         workspaceName={workspace.name}
         workspaceLogoUrl={workspace.logoUrl}
         workspaceLogoShape={(workspace as any).logoShape}

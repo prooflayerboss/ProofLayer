@@ -7,15 +7,16 @@ import CustomizeForm from './customize-form';
 export default async function CustomizeWorkspacePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const user = await ensureUserExists();
 
   if (!user) {
     redirect('/login');
   }
 
-  const workspace = await getWorkspace(params.id);
+  const workspace = await getWorkspace(id);
 
   if (!workspace) {
     notFound();
@@ -25,7 +26,7 @@ export default async function CustomizeWorkspacePage({
     <div>
       <div className="mb-6">
         <Link
-          href={`/dashboard/workspaces/${params.id}`}
+          href={`/dashboard/workspaces/${id}`}
           className="text-sm text-gray-500 hover:text-gray-700"
         >
           ← Back to Workspace
