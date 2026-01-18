@@ -4,6 +4,7 @@ import Navigation from '@/components/navigation';
 import Footer from '@/components/footer';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import EmailCapture from '@/components/EmailCapture';
+import TrustBadges from '@/components/TrustBadges';
 
 export default async function HomePage() {
   // Pricing tiers for AppSumo launch
@@ -287,6 +288,9 @@ export default async function HomePage() {
 
       {/* Features */}
       <FeaturesSection />
+
+      {/* Trust Badges */}
+      <TrustBadges />
 
       {/* Testimonials Section */}
       <TestimonialsSection />
