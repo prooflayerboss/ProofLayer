@@ -320,12 +320,46 @@ export default function CampaignManager({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Recipients (CSV) <span className="text-red-500">*</span>
                 </label>
-                <p className="text-xs text-gray-500 mb-2">
-                  One recipient per line: email,name (name is optional)
-                </p>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
+                  <p className="text-xs text-blue-900 font-medium mb-1">CSV Format:</p>
+                  <p className="text-xs text-blue-800 font-mono mb-2">
+                    email@example.com,Full Name
+                  </p>
+                  <p className="text-xs text-blue-700">
+                    One recipient per line. Name is optional. No headers needed.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 mb-2">
+                  <label className="cursor-pointer px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    Upload CSV File
+                    <input
+                      type="file"
+                      accept=".csv,text/csv"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = (event) => {
+                            const text = event.target?.result as string;
+                            setCsvText(text);
+                          };
+                          reader.readAsText(file);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                  </label>
+                  <span className="text-xs text-gray-500">or paste/type below</span>
+                </div>
+
                 <textarea
                   value={csvText}
                   onChange={(e) => setCsvText(e.target.value)}
@@ -333,6 +367,9 @@ export default function CampaignManager({
                   rows={8}
                   className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none font-mono text-sm"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  {csvText.trim().split('\n').filter(line => line.includes('@')).length} recipients found
+                </p>
               </div>
 
               {error && (
