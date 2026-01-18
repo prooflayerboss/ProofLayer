@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -30,7 +31,33 @@ export async function GET(request: Request) {
       }
     );
 
-    await supabase.auth.exchangeCodeForSession(code);
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+
+    // Create user and entitlement in database if this is a new user
+    if (data?.user && !error) {
+      try {
+        await prisma.user.upsert({
+          where: { id: data.user.id },
+          update: {
+            email: data.user.email || '',
+            name: data.user.user_metadata?.name || data.user.email?.split('@')[0] || '',
+          },
+          create: {
+            id: data.user.id,
+            email: data.user.email || '',
+            name: data.user.user_metadata?.name || data.user.email?.split('@')[0] || '',
+            entitlement: {
+              create: {
+                plan: 'TRIAL',
+              },
+            },
+          },
+        });
+      } catch (dbError) {
+        console.error('Error creating user in database:', dbError);
+        // Continue with redirect even if DB fails - user is authenticated
+      }
+    }
   }
 
   // Redirect to dashboard after successful authentication
