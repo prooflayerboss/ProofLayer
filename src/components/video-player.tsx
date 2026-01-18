@@ -28,12 +28,19 @@ export default function VideoPlayer({ src, poster }: VideoPlayerProps) {
       setProgress(0);
     };
 
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+
     video.addEventListener('timeupdate', updateProgress);
     video.addEventListener('ended', handleEnded);
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
 
     return () => {
       video.removeEventListener('timeupdate', updateProgress);
       video.removeEventListener('ended', handleEnded);
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
     };
   }, []);
 
@@ -46,7 +53,6 @@ export default function VideoPlayer({ src, poster }: VideoPlayerProps) {
     } else {
       video.play();
     }
-    setIsPlaying(!isPlaying);
   };
 
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -62,7 +68,7 @@ export default function VideoPlayer({ src, poster }: VideoPlayerProps) {
   return (
     <div
       ref={containerRef}
-      className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-black group"
+      className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-black group aspect-video"
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(isPlaying ? false : true)}
     >
@@ -71,9 +77,10 @@ export default function VideoPlayer({ src, poster }: VideoPlayerProps) {
         ref={videoRef}
         src={src}
         poster={poster}
-        className="w-full h-full object-cover"
+        className="w-full h-full"
         onClick={togglePlay}
         playsInline
+        preload="metadata"
       />
 
       {/* Play/Pause Overlay */}
@@ -114,6 +121,7 @@ export default function VideoPlayer({ src, poster }: VideoPlayerProps) {
           <button
             onClick={togglePlay}
             className="text-white hover:text-blue-400 transition-colors"
+            aria-label={isPlaying ? 'Pause video' : 'Play video'}
           >
             {isPlaying ? (
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -125,9 +133,6 @@ export default function VideoPlayer({ src, poster }: VideoPlayerProps) {
               </svg>
             )}
           </button>
-          <span className="text-white text-sm font-medium">
-            Watch how ProofLayer works
-          </span>
         </div>
       </div>
     </div>
