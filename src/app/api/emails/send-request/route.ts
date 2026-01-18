@@ -32,17 +32,11 @@ export async function POST(request: Request) {
     const form = await prisma.form.findUnique({
       where: { id: formId },
       include: {
-        workspace: {
-          include: {
-            members: {
-              where: { userId: user.id }
-            }
-          }
-        }
+        workspace: true
       }
     });
 
-    if (!form || form.workspace.members.length === 0) {
+    if (!form || form.workspace.userId !== user.id) {
       return NextResponse.json(
         { error: 'Form not found or access denied' },
         { status: 404 }
@@ -53,7 +47,7 @@ export async function POST(request: Request) {
     const formUrl = `${appUrl}/f/${form.slug}`;
 
     // Render the email
-    const emailHtml = render(
+    const emailHtml = await render(
       TestimonialRequestEmail({
         recipientName,
         senderName: user.name || 'Your team',

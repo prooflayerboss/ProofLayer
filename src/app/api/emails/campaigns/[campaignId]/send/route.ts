@@ -77,7 +77,7 @@ export async function POST(
     for (const recipient of campaign.recipients) {
       try {
         // Render email
-        const emailHtml = render(
+        const emailHtml = await render(
           TestimonialRequestEmail({
             recipientName: recipient.name || undefined,
             senderName: user.name || 'Your team',
