@@ -86,7 +86,13 @@ model Workspace {
   logoShape      String?  @default("square") @map("logo_shape") // "square" | "circle"
   headerTitle    String?  @map("header_title") // Form page header
   customMessage  String?  @db.Text @map("custom_message") // Welcome message on form
-  primaryColor   String?  @default("#3B82F6") @map("primary_color") // Brand color for buttons/accents
+
+  // Theme colors - granular customization
+  primaryColor     String?  @default("#3B82F6") @map("primary_color")     // Button/CTA color
+  backgroundColor  String?  @default("#FFFFFF") @map("background_color")  // Form background
+  textColor        String?  @default("#111827") @map("text_color")        // Primary text color
+  secondaryTextColor String? @default("#6B7280") @map("secondary_text_color") // Secondary text (labels, etc)
+
   language       String?  @default("en") // Language code
 
   // Wall of Love customization (for public page)

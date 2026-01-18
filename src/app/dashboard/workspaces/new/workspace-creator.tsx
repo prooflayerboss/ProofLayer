@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { UploadButton } from '@/lib/uploadthing-utils';
 
 const PRESET_COLORS = [
   { name: 'Blue', value: '#3B82F6' },
@@ -33,8 +34,15 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
   const [logoShape, setLogoShape] = useState<'square' | 'circle'>('square');
   const [headerTitle, setHeaderTitle] = useState('Share your feedback');
   const [customMessage, setCustomMessage] = useState('Your testimonial helps us improve and helps others make informed decisions!');
+
+  // Theme colors
   const [primaryColor, setPrimaryColor] = useState('#3B82F6');
+  const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');
+  const [textColor, setTextColor] = useState('#111827');
+  const [secondaryTextColor, setSecondaryTextColor] = useState('#6B7280');
+
   const [language, setLanguage] = useState('en');
+  const [uploading, setUploading] = useState(false);
 
   // Collection preferences
   const [collectEmail, setCollectEmail] = useState(false);
@@ -68,6 +76,9 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
           headerTitle: headerTitle.trim(),
           customMessage: customMessage.trim(),
           primaryColor,
+          backgroundColor,
+          textColor,
+          secondaryTextColor,
           language,
           collectEmail,
           collectCompany,
@@ -133,15 +144,51 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
               {/* Logo */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Logo URL (optional)
+                  Logo (optional)
                 </label>
-                <input
-                  type="url"
-                  value={logoUrl}
-                  onChange={(e) => setLogoUrl(e.target.value)}
-                  placeholder="https://example.com/logo.png"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3"
-                />
+
+                {logoUrl ? (
+                  <div className="mb-3">
+                    <div className="relative inline-block">
+                      <img
+                        src={logoUrl}
+                        alt="Logo preview"
+                        className={`w-24 h-24 object-cover border-2 border-gray-200 ${
+                          logoShape === 'circle' ? 'rounded-full' : 'rounded-lg'
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setLogoUrl('')}
+                        className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-sm hover:bg-red-600"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mb-3">
+                    <UploadButton
+                      endpoint="logoUploader"
+                      onClientUploadComplete={(res) => {
+                        if (res?.[0]?.url) {
+                          setLogoUrl(res[0].url);
+                          setUploading(false);
+                        }
+                      }}
+                      onUploadError={(error: Error) => {
+                        alert(`Upload failed: ${error.message}`);
+                        setUploading(false);
+                      }}
+                      onUploadBegin={() => setUploading(true)}
+                      appearance={{
+                        button: 'ut-ready:bg-blue-600 ut-ready:hover:bg-blue-700 ut-uploading:bg-blue-400 ut-uploading:cursor-not-allowed text-sm px-4 py-2 rounded-lg',
+                        allowedContent: 'text-xs text-gray-500'
+                      }}
+                    />
+                  </div>
+                )}
+
                 <div className="flex gap-3">
                   <button
                     type="button"
@@ -256,30 +303,105 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                 </label>
               </div>
 
-              {/* Theme Color */}
+              {/* Theme Colors */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Theme Color
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Theme Colors
                 </label>
-                {canUseCustomColors ? (
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="color"
-                      value={primaryColor}
-                      onChange={(e) => setPrimaryColor(e.target.value)}
-                      className="w-16 h-10 rounded border border-gray-300 cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={primaryColor}
-                      onChange={(e) => setPrimaryColor(e.target.value)}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
-                      placeholder="#3B82F6"
-                    />
-                  </div>
-                ) : (
+                <div className="space-y-4">
+                  {/* Primary Color (Button) */}
                   <div>
-                    <div className="grid grid-cols-3 gap-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-2">
+                      Button Color
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={primaryColor}
+                        onChange={(e) => setPrimaryColor(e.target.value)}
+                        className="w-12 h-10 rounded border border-gray-300 cursor-pointer"
+                      />
+                      <input
+                        type="text"
+                        value={primaryColor}
+                        onChange={(e) => setPrimaryColor(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                        placeholder="#3B82F6"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Background Color */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-2">
+                      Background Color
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={backgroundColor}
+                        onChange={(e) => setBackgroundColor(e.target.value)}
+                        className="w-12 h-10 rounded border border-gray-300 cursor-pointer"
+                      />
+                      <input
+                        type="text"
+                        value={backgroundColor}
+                        onChange={(e) => setBackgroundColor(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                        placeholder="#FFFFFF"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Text Color */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-2">
+                      Text Color
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={textColor}
+                        onChange={(e) => setTextColor(e.target.value)}
+                        className="w-12 h-10 rounded border border-gray-300 cursor-pointer"
+                      />
+                      <input
+                        type="text"
+                        value={textColor}
+                        onChange={(e) => setTextColor(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                        placeholder="#111827"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Secondary Text Color */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-2">
+                      Secondary Text Color (labels, hints)
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={secondaryTextColor}
+                        onChange={(e) => setSecondaryTextColor(e.target.value)}
+                        className="w-12 h-10 rounded border border-gray-300 cursor-pointer"
+                      />
+                      <input
+                        type="text"
+                        value={secondaryTextColor}
+                        onChange={(e) => setSecondaryTextColor(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                        placeholder="#6B7280"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {!canUseCustomColors && (
+                  <div className="mt-3">
+                    <p className="text-xs text-gray-500">Quick presets:</p>
+                    <div className="grid grid-cols-3 gap-2 mt-2">
                       {PRESET_COLORS.map((color) => (
                         <button
                           key={color.value}
@@ -357,7 +479,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Live Preview</p>
               </div>
 
-              <div className="p-8">
+              <div className="p-8" style={{ backgroundColor }}>
                 {/* Logo */}
                 {logoUrl && (
                   <div className="flex justify-center mb-6">
@@ -379,17 +501,17 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                 )}
 
                 {/* Header */}
-                <h2 className="text-2xl font-bold text-gray-900 text-center mb-3">
+                <h2 className="text-2xl font-bold text-center mb-3" style={{ color: textColor }}>
                   {headerTitle || 'Share your feedback'}
                 </h2>
-                <p className="text-gray-600 text-center mb-6">
+                <p className="text-center mb-6" style={{ color: secondaryTextColor }}>
                   {customMessage || 'Your testimonial helps us improve!'}
                 </p>
 
                 {/* Form Fields Preview */}
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium mb-1" style={{ color: secondaryTextColor }}>
                       Your Name <span className="text-red-500">*</span>
                     </label>
                     <div className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-400">
@@ -399,7 +521,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
 
                   {collectEmail && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium mb-1" style={{ color: secondaryTextColor }}>
                         Email
                       </label>
                       <div className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-400">
@@ -410,7 +532,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
 
                   {collectCompany && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium mb-1" style={{ color: secondaryTextColor }}>
                         Company
                       </label>
                       <div className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-400">
@@ -421,7 +543,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
 
                   {collectRole && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium mb-1" style={{ color: secondaryTextColor }}>
                         Job Title
                       </label>
                       <div className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-400">
@@ -432,7 +554,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
 
                   {collectSocialLink && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium mb-1" style={{ color: secondaryTextColor }}>
                         Social Media Link
                       </label>
                       <div className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-400">
@@ -443,7 +565,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
 
                   {collectRating && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium mb-2" style={{ color: secondaryTextColor }}>
                         Rating
                       </label>
                       <div className="flex gap-1">
@@ -462,7 +584,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium mb-1" style={{ color: secondaryTextColor }}>
                       Your Testimonial <span className="text-red-500">*</span>
                     </label>
                     <div className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-400 h-24">

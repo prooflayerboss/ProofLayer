@@ -32,6 +32,21 @@ export const ourFileRouter = {
       console.log("Screenshot upload complete:", file.url);
       return { fileUrl: file.url };
     }),
+
+  logoUploader: f({
+    image: {
+      maxFileSize: "2MB",
+      maxFileCount: 1,
+    },
+  })
+    .middleware(async ({ req }) => {
+      // Allow authenticated users to upload logos
+      return { uploadedBy: "user" };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Logo upload complete:", file.url);
+      return { fileUrl: file.url };
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
