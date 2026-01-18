@@ -10,17 +10,37 @@ export default function TestimonialForm({
   allowText,
   allowVideo,
   allowScreenshot,
+  primaryColor,
+  textColor,
+  secondaryTextColor,
+  language,
+  collectEmail,
+  collectCompany,
+  collectRole,
+  collectSocialLink,
+  collectRating,
 }: {
   formId: string;
   workspaceId: string;
   allowText: boolean;
   allowVideo: boolean;
   allowScreenshot: boolean;
+  primaryColor: string;
+  textColor: string;
+  secondaryTextColor: string;
+  language: string;
+  collectEmail: boolean;
+  collectCompany: boolean;
+  collectRole: boolean;
+  collectSocialLink: boolean;
+  collectRating: boolean;
 }) {
   // Common fields
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [company, setCompany] = useState('');
   const [role, setRole] = useState('');
+  const [socialLink, setSocialLink] = useState('');
   const [rating, setRating] = useState(5);
 
   // Text testimonial fields
@@ -94,8 +114,10 @@ export default function TestimonialForm({
             formId,
             workspaceId,
             name,
+            email,
             company,
             role,
+            socialLink,
             rating,
             photoUrl: screenshotUrl,
             socialPlatform,
@@ -118,8 +140,10 @@ export default function TestimonialForm({
             formId,
             workspaceId,
             name,
+            email,
             company,
             role,
+            socialLink,
             rating,
             videoUrl,
           }),
@@ -141,8 +165,10 @@ export default function TestimonialForm({
             formId,
             workspaceId,
             name,
+            email,
             company,
             role,
+            socialLink,
             testimonial,
             rating,
             submissionType: 'TEXT',
@@ -203,7 +229,7 @@ export default function TestimonialForm({
       ) : null}
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="name" className="block text-sm font-medium mb-1" style={{ color: textColor }}>
           Your Name *
         </label>
         <input
@@ -214,42 +240,85 @@ export default function TestimonialForm({
           required
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="John Smith"
+          style={{ '::placeholder': { color: secondaryTextColor } } as any}
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      {collectEmail && (
         <div>
-          <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
-            Company
+          <label htmlFor="email" className="block text-sm font-medium mb-1" style={{ color: textColor }}>
+            Email
           </label>
           <input
-            id="company"
-            type="text"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Acme Inc"
+            placeholder="john@example.com"
+            style={{ '::placeholder': { color: secondaryTextColor } } as any}
           />
         </div>
+      )}
+
+      {(collectCompany || collectRole) && (
+        <div className={collectCompany && collectRole ? "grid grid-cols-2 gap-4" : ""}>
+          {collectCompany && (
+            <div>
+              <label htmlFor="company" className="block text-sm font-medium mb-1" style={{ color: textColor }}>
+                Company
+              </label>
+              <input
+                id="company"
+                type="text"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Acme Inc"
+                style={{ '::placeholder': { color: secondaryTextColor } } as any}
+              />
+            </div>
+          )}
+          {collectRole && (
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium mb-1" style={{ color: textColor }}>
+                Role
+              </label>
+              <input
+                id="role"
+                type="text"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="CEO"
+                style={{ '::placeholder': { color: secondaryTextColor } } as any}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {collectSocialLink && (
         <div>
-          <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
-            Role
+          <label htmlFor="socialLink" className="block text-sm font-medium mb-1" style={{ color: textColor }}>
+            Social Link
           </label>
           <input
-            id="role"
-            type="text"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
+            id="socialLink"
+            type="url"
+            value={socialLink}
+            onChange={(e) => setSocialLink(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="CEO"
+            placeholder="https://twitter.com/yourhandle"
+            style={{ '::placeholder': { color: secondaryTextColor } } as any}
           />
         </div>
-      </div>
+      )}
 
       {/* Text testimonial field */}
       {allowText && (
         <div>
-          <label htmlFor="testimonial" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="testimonial" className="block text-sm font-medium mb-1" style={{ color: textColor }}>
             Written Testimonial {!allowVideo && '*'}
           </label>
           <textarea
@@ -260,6 +329,7 @@ export default function TestimonialForm({
             rows={4}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
             placeholder="Share your experience..."
+            style={{ '::placeholder': { color: secondaryTextColor } } as any}
           />
         </div>
       )}
@@ -267,7 +337,7 @@ export default function TestimonialForm({
       {/* Video testimonial field */}
       {allowVideo && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium mb-2" style={{ color: textColor }}>
             Video Testimonial {!allowText && '*'}
           </label>
 
@@ -301,7 +371,7 @@ export default function TestimonialForm({
             </div>
           )}
 
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs mt-2" style={{ color: secondaryTextColor }}>
             Tip: Keep your video under 2 minutes for best engagement
           </p>
         </div>
@@ -310,7 +380,7 @@ export default function TestimonialForm({
       {/* Screenshot testimonial field */}
       {allowScreenshot && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium mb-2" style={{ color: textColor }}>
             Screenshot {!allowText && !allowVideo && '*'}
           </label>
 
@@ -346,7 +416,7 @@ export default function TestimonialForm({
           {screenshotUrl && (
             <div className="mt-4 space-y-3">
               <div>
-                <label htmlFor="socialPlatform" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="socialPlatform" className="block text-sm font-medium mb-1" style={{ color: textColor }}>
                   Social Platform (Optional)
                 </label>
                 <select
@@ -365,7 +435,7 @@ export default function TestimonialForm({
               </div>
 
               <div>
-                <label htmlFor="socialAuthorUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="socialAuthorUrl" className="block text-sm font-medium mb-1" style={{ color: textColor }}>
                   Link to Original Post (Optional)
                 </label>
                 <input
@@ -375,40 +445,43 @@ export default function TestimonialForm({
                   onChange={(e) => setSocialAuthorUrl(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="https://twitter.com/..."
+                  style={{ '::placeholder': { color: secondaryTextColor } } as any}
                 />
               </div>
             </div>
           )}
 
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs mt-2" style={{ color: secondaryTextColor }}>
             Upload a screenshot of a testimonial from social media (Twitter, LinkedIn, etc.)
           </p>
         </div>
       )}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Rating
-        </label>
-        <div className="flex gap-2">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              key={star}
-              type="button"
-              onClick={() => setRating(star)}
-              className="focus:outline-none"
-            >
-              <svg
-                className={`w-8 h-8 ${star <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
-                fill="currentColor"
-                viewBox="0 0 24 24"
+      {collectRating && (
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ color: textColor }}>
+            Rating
+          </label>
+          <div className="flex gap-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => setRating(star)}
+                className="focus:outline-none"
               >
-                <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-              </svg>
-            </button>
-          ))}
+                <svg
+                  className={`w-8 h-8 ${star <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                </svg>
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {uploadProgress > 0 && uploadProgress < 100 && (
         <div className="bg-blue-50 rounded-lg p-4">
@@ -437,7 +510,11 @@ export default function TestimonialForm({
       <button
         type="submit"
         disabled={loading || (uploadProgress > 0 && uploadProgress < 100)}
-        className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full text-white py-3 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        style={{
+          backgroundColor: primaryColor,
+          borderColor: primaryColor
+        }}
       >
         {loading ? 'Submitting...' : (uploadProgress > 0 && uploadProgress < 100) ? 'Uploading video...' : 'Submit Testimonial'}
       </button>

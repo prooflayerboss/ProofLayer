@@ -32,18 +32,6 @@ export async function POST(request: NextRequest) {
       name,
       logoUrl,
       logoShape,
-      headerTitle,
-      customMessage,
-      primaryColor,
-      backgroundColor,
-      textColor,
-      secondaryTextColor,
-      language,
-      collectEmail,
-      collectCompany,
-      collectRole,
-      collectSocialLink,
-      collectRating,
     } = body;
 
     if (!name || !name.trim()) {
@@ -67,40 +55,14 @@ export async function POST(request: NextRequest) {
       counter++;
     }
 
-    // Create workspace with all customization options
+    // Create workspace with only branding
     const workspace = await prisma.workspace.create({
       data: {
         userId: user.id,
         name: name.trim(),
         slug,
         logoUrl: logoUrl?.trim() || null,
-        logoShape: logoShape || 'square',
-        headerTitle: headerTitle?.trim() || 'Share your feedback',
-        customMessage: customMessage?.trim() || null,
-        primaryColor: primaryColor || '#3B82F6',
-        backgroundColor: backgroundColor || '#FFFFFF',
-        textColor: textColor || '#111827',
-        secondaryTextColor: secondaryTextColor || '#6B7280',
-        language: language || 'en',
-        collectEmail: collectEmail || false,
-        collectCompany: collectCompany !== false, // Default true
-        collectRole: collectRole !== false, // Default true
-        collectSocialLink: collectSocialLink || false,
-        collectRating: collectRating !== false, // Default true
-      },
-    });
-
-    // Also create a default form for this workspace
-    const formSlug = `${slug}-form`;
-    const form = await prisma.form.create({
-      data: {
-        workspaceId: workspace.id,
-        name: 'Main Form',
-        slug: formSlug,
-        isActive: true,
-        allowText: true,
-        allowVideo: true,
-        allowScreenshot: true,
+        logoShape: logoShape || 'rectangle',
       },
     });
 
@@ -118,10 +80,6 @@ export async function POST(request: NextRequest) {
         id: workspace.id,
         name: workspace.name,
         slug: workspace.slug,
-      },
-      form: {
-        id: form.id,
-        slug: form.slug,
       },
     });
   } catch (error) {

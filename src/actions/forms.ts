@@ -65,8 +65,27 @@ export async function createForm(formData: FormData) {
 
   const name = formData.get('name') as string;
   const workspaceId = formData.get('workspaceId') as string;
+
+  // Form customization
+  const headerTitle = formData.get('headerTitle') as string;
+  const customMessage = formData.get('customMessage') as string;
+  const primaryColor = formData.get('primaryColor') as string;
+  const backgroundColor = formData.get('backgroundColor') as string;
+  const textColor = formData.get('textColor') as string;
+  const secondaryTextColor = formData.get('secondaryTextColor') as string;
+  const language = formData.get('language') as string;
+
+  // Collection preferences
+  const collectEmail = formData.get('collectEmail') === 'on';
+  const collectCompany = formData.get('collectCompany') === 'on';
+  const collectRole = formData.get('collectRole') === 'on';
+  const collectSocialLink = formData.get('collectSocialLink') === 'on';
+  const collectRating = formData.get('collectRating') === 'on';
+
+  // Form types
   const allowText = formData.get('allowText') === 'on';
   const allowVideo = formData.get('allowVideo') === 'on';
+  const allowScreenshot = formData.get('allowScreenshot') === 'on';
 
   if (!name || name.trim().length === 0) {
     return { success: false, error: 'Form name is required.' };
@@ -77,8 +96,8 @@ export async function createForm(formData: FormData) {
   }
 
   // At least one testimonial type must be enabled
-  if (!allowText && !allowVideo) {
-    return { success: false, error: 'You must allow at least one testimonial type (text or video).' };
+  if (!allowText && !allowVideo && !allowScreenshot) {
+    return { success: false, error: 'You must allow at least one submission type.' };
   }
 
   // Verify workspace ownership
@@ -103,8 +122,21 @@ export async function createForm(formData: FormData) {
         name: name.trim(),
         slug,
         isActive: true,
+        headerTitle: headerTitle || 'Share your feedback',
+        customMessage: customMessage || null,
+        primaryColor: primaryColor || '#3B82F6',
+        backgroundColor: backgroundColor || '#FFFFFF',
+        textColor: textColor || '#111827',
+        secondaryTextColor: secondaryTextColor || '#6B7280',
+        language: language || 'en',
+        collectEmail,
+        collectCompany,
+        collectRole,
+        collectSocialLink,
+        collectRating,
         allowText,
         allowVideo,
+        allowScreenshot,
       },
     });
 

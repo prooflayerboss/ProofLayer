@@ -74,6 +74,8 @@ export async function GET(
       testimonials,
       showBadge,
       workspaceName: workspace.name,
+      logoUrl: workspace.logoUrl,
+      logoShape: (workspace as any).logoShape || 'rectangle',
     });
 
     response.headers.set('Access-Control-Allow-Origin', '*');

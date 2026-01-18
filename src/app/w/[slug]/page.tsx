@@ -84,7 +84,7 @@ export default async function WallOfLovePage({ params }: { params: { slug: strin
   const headline = workspace.headline || workspace.name;
   const description = workspace.description || 'Client testimonials and reviews';
   const logoUrl = workspace.logoUrl;
-  const primaryColor = workspace.primaryColor || '#3B82F6';
+  const primaryColor = '#3B82F6'; // Default blue color for Wall of Love
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">

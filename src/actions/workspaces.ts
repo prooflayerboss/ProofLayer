@@ -217,7 +217,6 @@ export async function updateWorkspaceCustomization(formData: FormData) {
   const headline = formData.get('headline') as string;
   const description = formData.get('description') as string;
   const logoUrl = formData.get('logoUrl') as string;
-  const primaryColor = formData.get('primaryColor') as string;
 
   if (!workspaceId) {
     return { success: false, error: 'Workspace ID is required.' };
@@ -235,11 +234,6 @@ export async function updateWorkspaceCustomization(formData: FormData) {
     return { success: false, error: 'Workspace not found.' };
   }
 
-  // Validate color format (hex)
-  if (primaryColor && !/^#[0-9A-F]{6}$/i.test(primaryColor)) {
-    return { success: false, error: 'Invalid color format. Use hex format like #3B82F6.' };
-  }
-
   try {
     await prisma.workspace.update({
       where: { id: workspaceId },
@@ -247,7 +241,6 @@ export async function updateWorkspaceCustomization(formData: FormData) {
         headline: headline || null,
         description: description || null,
         logoUrl: logoUrl || null,
-        primaryColor: primaryColor || '#3B82F6',
       },
     });
 

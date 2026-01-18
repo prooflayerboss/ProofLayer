@@ -81,30 +81,13 @@ model Workspace {
   name         String
   slug         String?  @unique // URL-friendly slug for public wall of love page
 
-  // Branding & Customization
+  // Branding (shared across all forms in this workspace)
   logoUrl        String?  @map("logo_url") // Optional logo image URL
-  logoShape      String?  @default("square") @map("logo_shape") // "square" | "circle"
-  headerTitle    String?  @map("header_title") // Form page header
-  customMessage  String?  @db.Text @map("custom_message") // Welcome message on form
-
-  // Theme colors - granular customization
-  primaryColor     String?  @default("#3B82F6") @map("primary_color")     // Button/CTA color
-  backgroundColor  String?  @default("#FFFFFF") @map("background_color")  // Form background
-  textColor        String?  @default("#111827") @map("text_color")        // Primary text color
-  secondaryTextColor String? @default("#6B7280") @map("secondary_text_color") // Secondary text (labels, etc)
-
-  language       String?  @default("en") // Language code
+  logoShape      String?  @default("rectangle") @map("logo_shape") // "square" | "circle" | "rectangle"
 
   // Wall of Love customization (for public page)
   headline     String?  // Custom headline for wall of love page
   description  String?  // Custom description/tagline
-
-  // Collection preferences (default for forms in this workspace)
-  collectEmail      Boolean  @default(false) @map("collect_email")
-  collectCompany    Boolean  @default(true) @map("collect_company")
-  collectRole       Boolean  @default(true) @map("collect_role")
-  collectSocialLink Boolean  @default(false) @map("collect_social_link")
-  collectRating     Boolean  @default(true) @map("collect_rating")
 
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
@@ -126,7 +109,26 @@ model Form {
   slug        String    @unique
   isActive    Boolean   @default(true) @map("is_active")
 
-  // Form collection settings
+  // Form customization
+  headerTitle    String?  @default("Share your feedback") @map("header_title") // Form page header
+  customMessage  String?  @db.Text @map("custom_message") // Welcome message on form
+
+  // Theme colors
+  primaryColor       String?  @default("#3B82F6") @map("primary_color")         // Button/CTA color
+  backgroundColor    String?  @default("#FFFFFF") @map("background_color")      // Form background
+  textColor          String?  @default("#111827") @map("text_color")            // Primary text color
+  secondaryTextColor String?  @default("#6B7280") @map("secondary_text_color")  // Secondary text (labels, etc)
+
+  language       String?  @default("en") // Language code (en, es, fr, de)
+
+  // Collection settings - what fields to collect
+  collectEmail      Boolean  @default(false) @map("collect_email")
+  collectCompany    Boolean  @default(true) @map("collect_company")
+  collectRole       Boolean  @default(true) @map("collect_role")
+  collectSocialLink Boolean  @default(false) @map("collect_social_link")
+  collectRating     Boolean  @default(true) @map("collect_rating")
+
+  // Form collection types
   allowText       Boolean   @default(true) @map("allow_text")       // Allow text testimonials
   allowVideo      Boolean   @default(false) @map("allow_video")     // Allow video testimonials
   allowScreenshot Boolean   @default(true) @map("allow_screenshot") // Allow screenshot uploads

@@ -10,7 +10,6 @@ interface CustomizeFormProps {
     headline: string | null;
     description: string | null;
     logoUrl: string | null;
-    primaryColor: string | null;
   };
 }
 
@@ -18,7 +17,6 @@ export default function CustomizeForm({ workspace }: CustomizeFormProps) {
   const [headline, setHeadline] = useState(workspace.headline || '');
   const [description, setDescription] = useState(workspace.description || '');
   const [logoUrl, setLogoUrl] = useState(workspace.logoUrl || '');
-  const [primaryColor, setPrimaryColor] = useState(workspace.primaryColor || '#3B82F6');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -122,34 +120,6 @@ export default function CustomizeForm({ workspace }: CustomizeFormProps) {
         )}
       </div>
 
-      {/* Primary Color */}
-      <div>
-        <label htmlFor="primaryColor" className="block text-sm font-medium text-gray-700 mb-2">
-          Brand Color
-        </label>
-        <div className="flex gap-3 items-center">
-          <input
-            type="color"
-            id="primaryColor"
-            name="primaryColor"
-            value={primaryColor}
-            onChange={(e) => setPrimaryColor(e.target.value)}
-            className="h-10 w-20 rounded cursor-pointer"
-          />
-          <input
-            type="text"
-            value={primaryColor}
-            onChange={(e) => setPrimaryColor(e.target.value)}
-            placeholder="#3B82F6"
-            pattern="^#[0-9A-Fa-f]{6}$"
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
-          />
-        </div>
-        <p className="text-sm text-gray-500 mt-1">
-          Your brand color for accents and highlights on the page
-        </p>
-      </div>
-
       {/* Preview Section */}
       <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
         <p className="text-sm font-medium text-gray-700 mb-3">Preview</p>
@@ -166,11 +136,8 @@ export default function CustomizeForm({ workspace }: CustomizeFormProps) {
             {description || 'Client testimonials and reviews'}
           </p>
           <div className="mt-4 flex items-center gap-3 p-3 bg-gray-50 rounded">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: `${primaryColor}20` }}
-            >
-              <span className="font-semibold text-sm" style={{ color: primaryColor }}>
+            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+              <span className="font-semibold text-sm text-blue-600">
                 JD
               </span>
             </div>
