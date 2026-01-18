@@ -53,7 +53,7 @@ export default function TermsPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Payment and Refunds</h2>
               <p className="text-gray-700 mb-4">
-                All lifetime purchases are one-time payments. We offer a 30-day money-back guarantee. If you're not satisfied with ProofLayer, contact us at support@prooflayer.app within 30 days of purchase for a full refund, no questions asked.
+                All lifetime purchases are one-time payments. We offer a 14-day money-back guarantee. If you're not satisfied with ProofLayer, contact us at support@prooflayer.app within 14 days of purchase for a full refund, no questions asked.
               </p>
             </section>
 

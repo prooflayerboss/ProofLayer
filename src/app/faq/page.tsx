@@ -56,7 +56,7 @@ export default function FAQPage() {
     },
     {
       question: 'Do you offer refunds?',
-      answer: 'Yes! We offer a 30-day money-back guarantee. If ProofLayer isn\'t right for you, just let us know within 30 days for a full refund.',
+      answer: 'Yes! We offer a 14-day money-back guarantee. If ProofLayer isn\'t right for you, just let us know within 14 days for a full refund.',
     },
     {
       question: 'Can I export my data?',

@@ -236,6 +236,10 @@ export default async function BillingPage({
               </ul>
 
               <CheckoutButton plan="SOLO" />
+
+              <p className="text-xs text-gray-500 text-center mt-4">
+                14-Day Money Back Guarantee
+              </p>
             </div>
 
             {/* Pro Tier - Popular */}
@@ -341,6 +345,10 @@ export default async function BillingPage({
               </ul>
 
               <CheckoutButton plan="AGENCY" />
+
+              <p className="text-xs text-gray-500 text-center mt-4">
+                14-Day Money Back Guarantee
+              </p>
             </div>
           </div>
         </>
