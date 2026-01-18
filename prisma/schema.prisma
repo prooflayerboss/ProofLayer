@@ -81,11 +81,24 @@ model Workspace {
   name         String
   slug         String?  @unique // URL-friendly slug for public wall of love page
 
-  // Wall of Love customization
+  // Branding & Customization
+  logoUrl        String?  @map("logo_url") // Optional logo image URL
+  logoShape      String?  @default("square") @map("logo_shape") // "square" | "circle"
+  headerTitle    String?  @map("header_title") // Form page header
+  customMessage  String?  @db.Text @map("custom_message") // Welcome message on form
+  primaryColor   String?  @default("#3B82F6") @map("primary_color") // Brand color for buttons/accents
+  language       String?  @default("en") // Language code
+
+  // Wall of Love customization (for public page)
   headline     String?  // Custom headline for wall of love page
   description  String?  // Custom description/tagline
-  logoUrl      String?  @map("logo_url") // Optional logo image URL
-  primaryColor String?  @default("#3B82F6") @map("primary_color") // Brand color for accents
+
+  // Collection preferences (default for forms in this workspace)
+  collectEmail      Boolean  @default(false) @map("collect_email")
+  collectCompany    Boolean  @default(true) @map("collect_company")
+  collectRole       Boolean  @default(true) @map("collect_role")
+  collectSocialLink Boolean  @default(false) @map("collect_social_link")
+  collectRating     Boolean  @default(true) @map("collect_rating")
 
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
@@ -129,8 +142,10 @@ model Submission {
   formId      String           @map("form_id")
   form        Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
   name        String
+  email       String?          // Optional email address
   company     String?
   role        String?
+  socialLink  String?          @map("social_link") // Twitter, LinkedIn, etc profile URL
   testimonial String           @db.Text
   rating      Int?             // 1-5 stars, optional
   photoUrl    String?          @map("photo_url")
