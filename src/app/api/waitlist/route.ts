@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { Resend } from 'resend';
 
 export async function POST(request: Request) {
   try {
@@ -36,6 +37,33 @@ export async function POST(request: Request) {
         { error: `Database error: ${error.message}` },
         { status: 500 }
       );
+    }
+
+    // Send notification email to admin
+    try {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from: 'ProofLayer <notifications@prooflayer.app>',
+        to: process.env.ADMIN_EMAIL || 'admin@example.com',
+        subject: '🎉 New Waitlist Signup!',
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #2563eb;">New Waitlist Signup</h2>
+            <p>Someone just joined your waitlist!</p>
+            <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <p style="margin: 0;"><strong>Email:</strong> ${email}</p>
+              <p style="margin: 10px 0 0 0;"><strong>Source:</strong> Homepage</p>
+              <p style="margin: 10px 0 0 0;"><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+            </div>
+            <p style="color: #6b7280; font-size: 14px;">
+              View all signups in your <a href="https://supabase.com/dashboard/project/vnfsacxvbpygklfawqsr/editor" style="color: #2563eb;">Supabase Dashboard</a>
+            </p>
+          </div>
+        `,
+      });
+    } catch (emailError) {
+      // Log but don't fail the request if email fails
+      console.error('Failed to send notification email:', emailError);
     }
 
     return NextResponse.json({ message: 'Successfully subscribed!' });
