@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import ProductTour from '@/components/ProductTour';
+import { Step } from 'react-joyride';
 
 const TRANSLATIONS = {
   en: {
@@ -70,6 +72,18 @@ export default function FormCreator({
   const [headerTitle, setHeaderTitle] = useState('Share your feedback');
   const [customMessage, setCustomMessage] = useState('');
 
+  // Tour state
+  const [runTour, setRunTour] = useState(false);
+
+  useEffect(() => {
+    // Start tour after component mounts (small delay for DOM to be ready)
+    const timer = setTimeout(() => {
+      setRunTour(true);
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   // Colors
   const [primaryColor, setPrimaryColor] = useState('#3B82F6');
   const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');
@@ -100,8 +114,108 @@ export default function FormCreator({
 
   const t = TRANSLATIONS[language];
 
+  // Tour steps
+  const tourSteps: Step[] = [
+    {
+      target: 'body',
+      content: (
+        <div>
+          <h3 className="text-lg font-semibold mb-2">Welcome to Form Creation! 🎉</h3>
+          <p className="text-sm text-gray-600">
+            You&apos;ve created your workspace <strong>{workspaceName}</strong>. Now let&apos;s create your first form to start collecting testimonials!
+          </p>
+        </div>
+      ),
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="logo-preview"]',
+      content: (
+        <div>
+          <h3 className="text-base font-semibold mb-2">Your Workspace Logo</h3>
+          <p className="text-sm text-gray-600">
+            This is your workspace logo. It will appear on all forms you create in this workspace.
+          </p>
+        </div>
+      ),
+      placement: 'left',
+    },
+    {
+      target: '[data-tour="form-colors"]',
+      content: (
+        <div>
+          <h3 className="text-base font-semibold mb-2">Customize Your Colors</h3>
+          <p className="text-sm text-gray-600">
+            {canUseCustomColors
+              ? 'Personalize your form with custom colors to match your brand! Each form can have different colors.'
+              : 'Custom colors are available on Pro and Agency plans. Upgrade to unlock this feature!'}
+          </p>
+        </div>
+      ),
+      placement: 'left',
+    },
+    {
+      target: '[data-tour="collection-preferences"]',
+      content: (
+        <div>
+          <h3 className="text-base font-semibold mb-2">Choose What to Collect</h3>
+          <p className="text-sm text-gray-600">
+            Select which information you want to collect from customers. You can customize this for each form!
+          </p>
+        </div>
+      ),
+      placement: 'left',
+    },
+    {
+      target: '[data-tour="submission-types"]',
+      content: (
+        <div>
+          <h3 className="text-base font-semibold mb-2">Submission Types</h3>
+          <p className="text-sm text-gray-600">
+            Choose which types of testimonials you want to accept: text, video, or screenshots from social media.
+          </p>
+        </div>
+      ),
+      placement: 'left',
+    },
+    {
+      target: '[data-tour="live-preview"]',
+      content: (
+        <div>
+          <h3 className="text-base font-semibold mb-2">Live Preview ✨</h3>
+          <p className="text-sm text-gray-600">
+            See exactly how your form will look to customers in real-time as you make changes!
+          </p>
+        </div>
+      ),
+      placement: 'left',
+    },
+    {
+      target: 'body',
+      content: (
+        <div>
+          <h3 className="text-lg font-semibold mb-2">You&apos;re All Set! 🚀</h3>
+          <p className="text-sm text-gray-600 mb-3">
+            Once you create your form, you&apos;ll get a unique link to share with customers. They can submit testimonials, and you&apos;ll be able to approve and display them on your website!
+          </p>
+          <p className="text-xs text-gray-500">
+            You can skip this tour anytime or retake it from the help menu.
+          </p>
+        </div>
+      ),
+      placement: 'center',
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <>
+      <ProductTour
+        tourId="form-creator"
+        steps={tourSteps}
+        run={runTour}
+      />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Left: Form Configuration */}
       <div className="space-y-6">
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -173,7 +287,7 @@ export default function FormCreator({
           </div>
 
           {/* Colors */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div data-tour="form-colors" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Colors</h2>
 
             {!canUseCustomColors && (
@@ -307,7 +421,7 @@ export default function FormCreator({
           </div>
 
           {/* Collection Preferences */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div data-tour="collection-preferences" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               Information to Collect
             </h2>
@@ -406,7 +520,7 @@ export default function FormCreator({
           </div>
 
           {/* Form Types */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div data-tour="submission-types" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               Submission Types
             </h2>
@@ -496,7 +610,7 @@ export default function FormCreator({
       </div>
 
       {/* Right: Live Preview */}
-      <div className="lg:sticky lg:top-6 h-fit">
+      <div data-tour="live-preview" className="lg:sticky lg:top-6 h-fit">
         <div className="bg-gray-50 rounded-xl p-6">
           <h3 className="text-sm font-medium text-gray-700 mb-4">Live Preview</h3>
 
@@ -508,7 +622,7 @@ export default function FormCreator({
             <div className="p-8 text-center border-b" style={{ borderColor: secondaryTextColor + '20' }}>
               {workspaceLogoUrl && (
                 <div className="flex justify-center mb-4">
-                  <div
+                  <div data-tour="logo-preview"
                     className={`relative overflow-hidden ${
                       workspaceLogoShape === 'circle' ? 'rounded-full' : workspaceLogoShape === 'square' ? 'rounded-lg' : ''
                     }`}
@@ -620,6 +734,7 @@ export default function FormCreator({
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
