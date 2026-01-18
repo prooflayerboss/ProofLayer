@@ -404,16 +404,16 @@ export default function CreatingWorkspace() {
                 <span className="bg-gray-100 px-3 py-1 rounded-full text-gray-900">1 workspace</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-700"><strong>Solo Plan ($19/mo):</strong></span>
+                <span className="text-gray-700"><strong>Solo Plan ($59 one-time):</strong></span>
                 <span className="bg-blue-100 px-3 py-1 rounded-full text-blue-900">1 workspace</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-700"><strong>Pro Plan ($49/mo):</strong></span>
+                <span className="text-gray-700"><strong>Pro Plan ($118 one-time):</strong></span>
                 <span className="bg-purple-100 px-3 py-1 rounded-full text-purple-900">3 workspaces</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-700"><strong>Agency Plan ($149/mo):</strong></span>
-                <span className="bg-green-100 px-3 py-1 rounded-full text-green-900">5 workspaces</span>
+                <span className="text-gray-700"><strong>Agency Plan ($177 one-time):</strong></span>
+                <span className="bg-green-100 px-3 py-1 rounded-full text-green-900">10 workspaces</span>
               </div>
             </div>
           </div>

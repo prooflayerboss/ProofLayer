@@ -10,9 +10,9 @@ export default function PlanComparison() {
       lastUpdated="January 2026"
     >
       <p className="text-lg text-gray-700 mb-6">
-        ProofLayer offers four pricing tiers designed to scale with your business: Free Trial, Solo, Pro, and Agency.
-        This comprehensive guide breaks down what's included in each plan, helps you understand the differences, and
-        guides you toward the best choice for your needs.
+        ProofLayer offers flexible pricing with both lifetime deals and monthly subscriptions. Our lifetime plans (Solo, Pro, Agency)
+        provide one-time payment options, while our Monthly plan offers ongoing flexibility. This comprehensive guide breaks down
+        what's included in each plan to help you choose the right fit for your needs.
       </p>
 
       <Section title="Plans at a Glance">
@@ -21,7 +21,7 @@ export default function PlanComparison() {
             <div className="text-center mb-4">
               <h3 className="font-bold text-gray-900 text-xl mb-1">Trial</h3>
               <div className="text-3xl font-bold text-gray-900 mb-1">Free</div>
-              <p className="text-sm text-gray-600">14 days</p>
+              <p className="text-sm text-gray-600">Test drive</p>
             </div>
             <ul className="space-y-2 text-sm text-gray-700">
               <li className="flex items-center gap-2">
@@ -34,19 +34,19 @@ export default function PlanComparison() {
                 <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>10 forms</span>
+                <span>1 form</span>
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>100 submissions</span>
+                <span>25 submissions</span>
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>All features</span>
+                <span>Grid layout only</span>
               </li>
             </ul>
           </div>
@@ -54,8 +54,8 @@ export default function PlanComparison() {
           <div className="border-2 border-blue-500 rounded-lg p-5 bg-blue-50">
             <div className="text-center mb-4">
               <h3 className="font-bold text-gray-900 text-xl mb-1">Solo</h3>
-              <div className="text-3xl font-bold text-blue-600 mb-1">$19</div>
-              <p className="text-sm text-gray-600">per month</p>
+              <div className="text-3xl font-bold text-blue-600 mb-1">$59</div>
+              <p className="text-sm text-gray-600">one-time</p>
             </div>
             <ul className="space-y-2 text-sm text-gray-700">
               <li className="flex items-center gap-2">
@@ -68,19 +68,19 @@ export default function PlanComparison() {
                 <svg className="w-4 h-4 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span><strong>50 forms</strong></span>
+                <span><strong>3 forms</strong></span>
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span><strong>Unlimited</strong> submissions</span>
+                <span><strong>150</strong> submissions</span>
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Email support</span>
+                <span>Grid only</span>
               </li>
             </ul>
           </div>
@@ -91,8 +91,8 @@ export default function PlanComparison() {
             </div>
             <div className="text-center mb-4">
               <h3 className="font-bold text-gray-900 text-xl mb-1">Pro</h3>
-              <div className="text-3xl font-bold text-purple-600 mb-1">$49</div>
-              <p className="text-sm text-gray-600">per month</p>
+              <div className="text-3xl font-bold text-purple-600 mb-1">$118</div>
+              <p className="text-sm text-gray-600">one-time</p>
             </div>
             <ul className="space-y-2 text-sm text-gray-700">
               <li className="flex items-center gap-2">
@@ -105,19 +105,19 @@ export default function PlanComparison() {
                 <svg className="w-4 h-4 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span><strong>Unlimited</strong> forms</span>
+                <span><strong>30</strong> forms</span>
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span><strong>Unlimited</strong> submissions</span>
+                <span><strong>1,000</strong> submissions</span>
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span><strong>Custom colors</strong></span>
+                <span><strong>3 layouts</strong></span>
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,39 +131,39 @@ export default function PlanComparison() {
           <div className="border-2 border-orange-500 rounded-lg p-5 bg-orange-50">
             <div className="text-center mb-4">
               <h3 className="font-bold text-gray-900 text-xl mb-1">Agency</h3>
-              <div className="text-3xl font-bold text-orange-600 mb-1">$149</div>
-              <p className="text-sm text-gray-600">per month</p>
+              <div className="text-3xl font-bold text-orange-600 mb-1">$177</div>
+              <p className="text-sm text-gray-600">one-time</p>
             </div>
             <ul className="space-y-2 text-sm text-gray-700">
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-orange-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span><strong>5 workspaces</strong></span>
+                <span><strong>10 workspaces</strong></span>
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-orange-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Everything in Pro</span>
+                <span><strong>50 forms</strong></span>
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-orange-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span><strong>White-label</strong></span>
+                <span><strong>5,000</strong> submissions</span>
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-orange-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span><strong>Priority support</strong></span>
+                <span><strong>All layouts</strong></span>
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-orange-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span><strong>Custom domain</strong></span>
+                <span><strong>All widget types</strong></span>
               </li>
             </ul>
           </div>
@@ -191,21 +191,21 @@ export default function PlanComparison() {
                 <td className="border border-gray-300 px-4 py-2 text-center">1</td>
                 <td className="border border-gray-300 px-4 py-2 text-center">1</td>
                 <td className="border border-gray-300 px-4 py-2 text-center">3</td>
-                <td className="border border-gray-300 px-4 py-2 text-center">5</td>
+                <td className="border border-gray-300 px-4 py-2 text-center">10</td>
               </tr>
               <tr>
                 <td className="border border-gray-300 px-4 py-2">Forms per workspace</td>
-                <td className="border border-gray-300 px-4 py-2 text-center">10</td>
+                <td className="border border-gray-300 px-4 py-2 text-center">1</td>
+                <td className="border border-gray-300 px-4 py-2 text-center">3</td>
+                <td className="border border-gray-300 px-4 py-2 text-center">30</td>
                 <td className="border border-gray-300 px-4 py-2 text-center">50</td>
-                <td className="border border-gray-300 px-4 py-2 text-center">Unlimited</td>
-                <td className="border border-gray-300 px-4 py-2 text-center">Unlimited</td>
               </tr>
               <tr>
-                <td className="border border-gray-300 px-4 py-2">Monthly submissions</td>
-                <td className="border border-gray-300 px-4 py-2 text-center">100</td>
-                <td className="border border-gray-300 px-4 py-2 text-center">Unlimited</td>
-                <td className="border border-gray-300 px-4 py-2 text-center">Unlimited</td>
-                <td className="border border-gray-300 px-4 py-2 text-center">Unlimited</td>
+                <td className="border border-gray-300 px-4 py-2">Total submissions</td>
+                <td className="border border-gray-300 px-4 py-2 text-center">25</td>
+                <td className="border border-gray-300 px-4 py-2 text-center">150</td>
+                <td className="border border-gray-300 px-4 py-2 text-center">1,000</td>
+                <td className="border border-gray-300 px-4 py-2 text-center">5,000</td>
               </tr>
               <tr>
                 <td className="border border-gray-300 px-4 py-2">Display widgets</td>
