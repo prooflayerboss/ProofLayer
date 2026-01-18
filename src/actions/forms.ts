@@ -146,7 +146,7 @@ export async function createForm(formData: FormData) {
     return { success: false, error: 'Failed to create form. Please try again.' };
   }
 
-  redirect(`/dashboard/workspaces/${workspaceId}`);
+  redirect(`/dashboard/workspaces/${workspaceId}?formCreated=true`);
 }
 
 export async function toggleFormStatus(formId: string, isActive: boolean) {

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { UploadButton } from '@/lib/uploadthing-utils';
+import WorkspaceTour from './workspace-tour';
 
 interface WorkspaceCreatorProps {
   canUseCustomColors: boolean;
@@ -62,8 +63,10 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-2xl mx-auto px-4">
+    <div>
+      <WorkspaceTour />
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-2xl mx-auto px-4">
         <div className="mb-6">
           <button
             onClick={handleCancel}
@@ -83,7 +86,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Workspace Name */}
-            <div>
+            <div data-tour="workspace-name">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Workspace Name <span className="text-red-500">*</span>
               </label>
@@ -101,7 +104,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
             </div>
 
             {/* Logo */}
-            <div>
+            <div data-tour="workspace-logo">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Logo (optional)
               </label>
@@ -241,6 +244,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
           <p>After creating your workspace, you'll set up your first form to collect testimonials.</p>
         </div>
       </div>
+    </div>
     </div>
   );
 }
