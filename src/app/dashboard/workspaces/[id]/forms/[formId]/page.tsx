@@ -3,6 +3,7 @@ import { redirect, notFound } from 'next/navigation';
 import { ensureUserExists } from '@/actions/user';
 import { getForm } from '@/actions/forms';
 import SubmissionsList from './submissions-list';
+import EmailSender from '@/components/email-sender';
 
 export default async function FormDetailPage({
   params,
@@ -54,8 +55,16 @@ export default async function FormDetailPage({
 
       {/* Form Link Card */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-3">Public Form Link</h2>
-        <p className="text-sm text-gray-600 mb-4">Share this link with your clients to collect testimonials:</p>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-semibold text-gray-900">Share Your Form</h2>
+          <EmailSender
+            formUrl={publicUrl}
+            formId={form.id}
+            senderName={user.name || 'Your team'}
+            senderCompany={form.workspace.name}
+          />
+        </div>
+        <p className="text-sm text-gray-600 mb-4">Share this link or send email requests to collect testimonials:</p>
         <div className="flex items-center gap-3">
           <input
             type="text"
