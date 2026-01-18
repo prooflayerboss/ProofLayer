@@ -5,7 +5,7 @@ import { ensureUserExists } from '@/actions/user';
 import { prisma } from '@/lib/prisma';
 import TestimonialRequestEmail from '../../../../../../../emails/testimonial-request';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 'placeholder');
 
 // Rate limiting: 2 emails per second (Resend free tier limit)
 const RATE_LIMIT_MS = 500;
@@ -19,6 +19,14 @@ export async function POST(
   { params }: { params: { campaignId: string } }
 ) {
   try {
+    // Check if Resend is configured
+    if (!process.env.RESEND_API_KEY) {
+      return NextResponse.json(
+        { error: 'Email service not configured' },
+        { status: 503 }
+      );
+    }
+
     const user = await ensureUserExists();
 
     if (!user) {
