@@ -218,7 +218,7 @@ export default function UpgradeModal({
         <div className="p-6 bg-gray-50 border-t border-gray-200">
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-600">
-              Upgrades will be available soon. We're currently in beta.
+              Ready to unlock more features? Upgrade to a higher tier to get access.
             </p>
             <div className="flex items-center space-x-3">
               <button
@@ -227,12 +227,12 @@ export default function UpgradeModal({
               >
                 Close
               </button>
-              <button
-                onClick={onClose}
+              <a
+                href="/dashboard/billing"
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors"
               >
-                I Understand
-              </button>
+                View Billing
+              </a>
             </div>
           </div>
         </div>

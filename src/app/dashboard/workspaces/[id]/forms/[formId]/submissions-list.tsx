@@ -179,20 +179,25 @@ export default function SubmissionsList({
                     <p className="text-xs text-purple-700">{submission.name} took the time to record a personal video review!</p>
                   </div>
                 </div>
-                <div className="flex gap-4">
-                  <div className="flex-1">
-                    <p className="text-gray-700">{submission.testimonial}</p>
-                  </div>
-                  <div className="flex-shrink-0" style={{ width: '280px' }}>
-                    <video
-                      src={submission.videoUrl}
-                      controls
-                      className="w-full rounded-lg shadow-md"
-                      style={{ maxHeight: '200px' }}
-                      preload="metadata"
-                    />
-                  </div>
+
+                {/* Video player */}
+                <div className="mb-4">
+                  <video
+                    src={submission.videoUrl}
+                    controls
+                    className="w-full rounded-lg shadow-md border border-gray-200"
+                    style={{ maxHeight: '400px' }}
+                    preload="metadata"
+                  />
                 </div>
+
+                {/* Text testimonial - shown prominently below video */}
+                {submission.testimonial && submission.testimonial.trim() && (
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <p className="text-sm font-medium text-gray-500 mb-2">Written testimonial:</p>
+                    <p className="text-gray-900 leading-relaxed">{submission.testimonial}</p>
+                  </div>
+                )}
               </div>
             ) : submission.submissionType === 'SCREENSHOT' && submission.photoUrl ? (
               /* Screenshot testimonial */
