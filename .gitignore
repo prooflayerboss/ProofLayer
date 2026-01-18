@@ -36,3 +36,15 @@ next-env.d.ts
 # uploaded videos
 public/videos/*
 !public/videos/.gitkeep
+
+# development files
+Design Inspiration/
+Logo/
+*_CHECKLIST.md
+*_GUIDE.md
+*_SETUP.md
+DEPLOYMENT.md
+GETTING_STARTED.md
+debug-*.html
+manual-*.ts
+migrate-*.ts
