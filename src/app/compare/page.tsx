@@ -34,9 +34,9 @@ export default function ComparePage() {
                         <span className="text-xs text-blue-100 mt-1">That's us! 🎉</span>
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold">Competitor A</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold">Competitor B</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold">Competitor C</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold">Monthly Tool A</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold">Monthly Tool B</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold">Monthly Tool C</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
