@@ -69,7 +69,7 @@ export default async function NewWorkspacePage({
                 placeholder="e.g., Acme Corp, My Agency"
               />
               <p className="mt-1 text-sm text-gray-500">
-                A workspace represents a client or project you collect testimonials for.
+                Enter your business name (or your client's name if you're an agency).
               </p>
             </div>
 
