@@ -6,6 +6,7 @@ export const PLAN_LIMITS = {
     maxWidgetStyles: 1, // Grid only
     allowedWidgetTypes: ['EMBED'] as const,
     allowedLayouts: ['GRID'] as const,
+    allowEmailCampaigns: false, // Simple email sender only
     showBadge: true,
     price: 0,
     interval: null,
@@ -17,6 +18,7 @@ export const PLAN_LIMITS = {
     maxWidgetStyles: 999, // All styles
     allowedWidgetTypes: ['EMBED', 'POPUP', 'FLOATING'] as const,
     allowedLayouts: ['GRID', 'CAROUSEL', 'MARQUEE', 'MASONRY', 'SPOTLIGHT'] as const,
+    allowEmailCampaigns: true, // CSV campaigns allowed
     showBadge: false,
     price: 19,
     interval: 'month' as const,
@@ -28,6 +30,7 @@ export const PLAN_LIMITS = {
     maxWidgetStyles: 999, // All styles
     allowedWidgetTypes: ['EMBED', 'POPUP', 'FLOATING'] as const,
     allowedLayouts: ['GRID', 'CAROUSEL', 'MARQUEE', 'MASONRY', 'SPOTLIGHT'] as const,
+    allowEmailCampaigns: true, // CSV campaigns allowed
     showBadge: false,
     price: 49, // Legacy lifetime plan
     interval: 'lifetime' as const,
@@ -40,6 +43,7 @@ export const PLAN_LIMITS = {
     maxWidgetStyles: 1, // Grid only
     allowedWidgetTypes: ['EMBED'] as const,
     allowedLayouts: ['GRID'] as const,
+    allowEmailCampaigns: false, // Simple email sender only
     showBadge: true, // Required "Powered by ProofLayer"
     price: 59,
     interval: 'lifetime' as const,
@@ -52,6 +56,7 @@ export const PLAN_LIMITS = {
     maxWidgetStyles: 3, // Grid, Carousel, Marquee
     allowedWidgetTypes: ['EMBED'] as const,
     allowedLayouts: ['GRID', 'CAROUSEL', 'MARQUEE'] as const,
+    allowEmailCampaigns: true, // CSV campaigns allowed
     showBadge: false, // Branding removal
     price: 118,
     interval: 'lifetime' as const,
@@ -64,6 +69,7 @@ export const PLAN_LIMITS = {
     maxWidgetStyles: 999, // All styles
     allowedWidgetTypes: ['EMBED', 'POPUP', 'FLOATING'] as const,
     allowedLayouts: ['GRID', 'CAROUSEL', 'MARQUEE', 'MASONRY', 'SPOTLIGHT'] as const,
+    allowEmailCampaigns: true, // CSV campaigns allowed
     showBadge: false,
     price: 177,
     interval: 'lifetime' as const,
