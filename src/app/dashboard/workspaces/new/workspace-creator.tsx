@@ -17,6 +17,53 @@ const LANGUAGES = [
   { code: 'de', name: 'German' },
 ];
 
+const TRANSLATIONS = {
+  en: {
+    name: 'Your Name',
+    email: 'Email Address',
+    company: 'Company',
+    role: 'Role/Title',
+    socialLink: 'Social Link',
+    testimonial: 'Your Testimonial',
+    rating: 'Rating',
+    submit: 'Submit Testimonial',
+    required: '*',
+  },
+  es: {
+    name: 'Tu Nombre',
+    email: 'Correo Electrónico',
+    company: 'Empresa',
+    role: 'Cargo/Título',
+    socialLink: 'Enlace Social',
+    testimonial: 'Tu Testimonio',
+    rating: 'Calificación',
+    submit: 'Enviar Testimonio',
+    required: '*',
+  },
+  fr: {
+    name: 'Votre Nom',
+    email: 'Adresse Email',
+    company: 'Entreprise',
+    role: 'Poste/Titre',
+    socialLink: 'Lien Social',
+    testimonial: 'Votre Témoignage',
+    rating: 'Évaluation',
+    submit: 'Soumettre le Témoignage',
+    required: '*',
+  },
+  de: {
+    name: 'Ihr Name',
+    email: 'E-Mail-Adresse',
+    company: 'Unternehmen',
+    role: 'Position/Titel',
+    socialLink: 'Social Link',
+    testimonial: 'Ihr Zeugnis',
+    rating: 'Bewertung',
+    submit: 'Zeugnis Einreichen',
+    required: '*',
+  },
+};
+
 interface WorkspaceCreatorProps {
   canUseCustomColors: boolean;
 }
@@ -575,7 +622,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-1" style={{ color: secondaryTextColor }}>
-                      Your Name <span className="text-red-500">*</span>
+                      {TRANSLATIONS[language as keyof typeof TRANSLATIONS]?.name || TRANSLATIONS.en.name} <span className="text-red-500">{TRANSLATIONS[language as keyof typeof TRANSLATIONS]?.required || '*'}</span>
                     </label>
                     <div className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-400">
                       John Doe
@@ -585,7 +632,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                   {collectEmail && (
                     <div>
                       <label className="block text-sm font-medium mb-1" style={{ color: secondaryTextColor }}>
-                        Email
+                        {TRANSLATIONS[language as keyof typeof TRANSLATIONS]?.email || TRANSLATIONS.en.email}
                       </label>
                       <div className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-400">
                         john@example.com
@@ -596,7 +643,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                   {collectCompany && (
                     <div>
                       <label className="block text-sm font-medium mb-1" style={{ color: secondaryTextColor }}>
-                        Company
+                        {TRANSLATIONS[language as keyof typeof TRANSLATIONS]?.company || TRANSLATIONS.en.company}
                       </label>
                       <div className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-400">
                         Acme Corp
@@ -607,7 +654,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                   {collectRole && (
                     <div>
                       <label className="block text-sm font-medium mb-1" style={{ color: secondaryTextColor }}>
-                        Job Title
+                        {TRANSLATIONS[language as keyof typeof TRANSLATIONS]?.role || TRANSLATIONS.en.role}
                       </label>
                       <div className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-400">
                         Marketing Manager
@@ -618,7 +665,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                   {collectSocialLink && (
                     <div>
                       <label className="block text-sm font-medium mb-1" style={{ color: secondaryTextColor }}>
-                        Social Media Link
+                        {TRANSLATIONS[language as keyof typeof TRANSLATIONS]?.socialLink || TRANSLATIONS.en.socialLink}
                       </label>
                       <div className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-400">
                         https://twitter.com/johndoe
@@ -629,7 +676,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                   {collectRating && (
                     <div>
                       <label className="block text-sm font-medium mb-2" style={{ color: secondaryTextColor }}>
-                        Rating
+                        {TRANSLATIONS[language as keyof typeof TRANSLATIONS]?.rating || TRANSLATIONS.en.rating}
                       </label>
                       <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map((star) => (
@@ -648,7 +695,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
 
                   <div>
                     <label className="block text-sm font-medium mb-1" style={{ color: secondaryTextColor }}>
-                      Your Testimonial <span className="text-red-500">*</span>
+                      {TRANSLATIONS[language as keyof typeof TRANSLATIONS]?.testimonial || TRANSLATIONS.en.testimonial} <span className="text-red-500">{TRANSLATIONS[language as keyof typeof TRANSLATIONS]?.required || '*'}</span>
                     </label>
                     <div className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm text-gray-400 h-24">
                       This product has been amazing...
@@ -660,7 +707,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                     className="w-full px-4 py-3 rounded-lg font-medium text-white transition-colors"
                     style={{ backgroundColor: primaryColor }}
                   >
-                    Submit Testimonial
+                    {TRANSLATIONS[language as keyof typeof TRANSLATIONS]?.submit || TRANSLATIONS.en.submit}
                   </button>
                 </div>
               </div>
