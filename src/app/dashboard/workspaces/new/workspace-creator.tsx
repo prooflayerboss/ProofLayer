@@ -31,7 +31,7 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
   // Form state
   const [name, setName] = useState('');
   const [logoUrl, setLogoUrl] = useState('');
-  const [logoShape, setLogoShape] = useState<'square' | 'circle'>('square');
+  const [logoShape, setLogoShape] = useState<'square' | 'circle' | 'rectangle'>('rectangle');
   const [headerTitle, setHeaderTitle] = useState('Share your feedback');
   const [customMessage, setCustomMessage] = useState('Your testimonial helps us improve and helps others make informed decisions!');
 
@@ -159,8 +159,12 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                       <img
                         src={logoUrl}
                         alt="Logo preview"
-                        className={`w-24 h-24 object-cover border-2 border-gray-200 ${
-                          logoShape === 'circle' ? 'rounded-full' : 'rounded-lg'
+                        className={`object-contain border-2 border-gray-200 ${
+                          logoShape === 'circle'
+                            ? 'w-24 h-24 rounded-full object-cover'
+                            : logoShape === 'rectangle'
+                            ? 'h-16 max-w-xs rounded-lg'
+                            : 'w-24 h-24 rounded-lg'
                         }`}
                       />
                       <button
@@ -213,6 +217,18 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                 )}
 
                 <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setLogoShape('rectangle')}
+                    className={`flex-1 px-4 py-2 rounded-lg border-2 transition-all ${
+                      logoShape === 'rectangle'
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="w-16 h-8 bg-gray-300 rounded mx-auto mb-1"></div>
+                    <span className="text-sm font-medium">Rectangle</span>
+                  </button>
                   <button
                     type="button"
                     onClick={() => setLogoShape('square')}
@@ -525,14 +541,20 @@ export default function WorkspaceCreator({ canUseCustomColors }: WorkspaceCreato
                 {logoUrl && (
                   <div className="flex justify-center mb-6">
                     <div
-                      className={`w-20 h-20 bg-gray-100 flex items-center justify-center overflow-hidden ${
-                        logoShape === 'circle' ? 'rounded-full' : 'rounded-lg'
+                      className={`flex items-center justify-center overflow-hidden ${
+                        logoShape === 'circle'
+                          ? 'w-20 h-20 rounded-full'
+                          : logoShape === 'rectangle'
+                          ? 'h-14 max-w-[200px] rounded-lg'
+                          : 'w-20 h-20 rounded-lg'
                       }`}
                     >
                       <img
                         src={logoUrl}
                         alt="Logo"
-                        className="w-full h-full object-cover"
+                        className={`${
+                          logoShape === 'rectangle' ? 'h-full w-auto object-contain' : 'w-full h-full object-cover'
+                        }`}
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                         }}
