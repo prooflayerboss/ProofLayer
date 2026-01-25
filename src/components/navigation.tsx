@@ -124,6 +124,14 @@ export default function Navigation() {
             </Link>
 
             <Link
+              href="/directory"
+              className="px-4 py-2 text-[#737373] hover:text-[#0a0a0b] font-medium transition-colors rounded-lg hover:bg-black/5 flex items-center gap-1.5"
+            >
+              Directory
+              <span className="text-[10px] font-semibold bg-violet-100 text-violet-600 px-1.5 py-0.5 rounded-full">Soon</span>
+            </Link>
+
+            <Link
               href="/#pricing"
               className="px-4 py-2 text-[#737373] hover:text-[#0a0a0b] font-medium transition-colors rounded-lg hover:bg-black/5"
             >
@@ -182,6 +190,16 @@ export default function Navigation() {
             >
               <Users className="w-5 h-5 text-[#8b5cf6]" />
               <span className="font-medium text-[#0a0a0b]">For Early Adopters</span>
+            </Link>
+
+            <Link
+              href="/directory"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-[#fafafa] transition-colors"
+            >
+              <Sparkles className="w-5 h-5 text-[#8b5cf6]" />
+              <span className="font-medium text-[#0a0a0b]">Directory</span>
+              <span className="text-[10px] font-semibold bg-violet-100 text-violet-600 px-1.5 py-0.5 rounded-full">Soon</span>
             </Link>
 
             <Link
