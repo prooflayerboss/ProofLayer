@@ -393,6 +393,7 @@ model First100Waitlist {
   productStage       String?  @map("product_stage") // "idea" | "building" | "alpha" | "beta" | "launched"
   lookingForCount    Int?     @map("looking_for_count") // Number of early adopters wanted
   offerDescription   String?  @map("offer_description") // What deal/discount they're offering
+  slug               String?  @unique // URL-friendly slug for public product page (e.g., "my-awesome-app")
 
   // Status tracking
   status             String?  @default("pending") // "pending" | "approved" | "active" | "paused"

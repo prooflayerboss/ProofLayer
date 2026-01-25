@@ -3,6 +3,36 @@ import { prisma } from '@/lib/prisma';
 import { Resend } from 'resend';
 import { randomBytes } from 'crypto';
 
+// Generate URL-friendly slug from product name
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Remove consecutive hyphens
+    .substring(0, 50); // Limit length
+}
+
+// Ensure slug is unique by checking DB and appending suffix if needed
+async function getUniqueSlug(baseSlug: string): Promise<string> {
+  let slug = baseSlug;
+  let suffix = 0;
+
+  while (true) {
+    const existing = await prisma.first100Waitlist.findUnique({
+      where: { slug },
+    });
+
+    if (!existing) {
+      return slug;
+    }
+
+    suffix++;
+    slug = `${baseSlug}-${suffix}`;
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -52,8 +82,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'This email is already on the waitlist' }, { status: 409 });
     }
 
-    // Generate access token for founders
+    // Generate access token and slug for founders
     const accessToken = type === 'founder' ? randomBytes(32).toString('hex') : undefined;
+    let slug: string | undefined;
+
+    if (type === 'founder' && productName) {
+      const baseSlug = generateSlug(productName);
+      slug = await getUniqueSlug(baseSlug);
+    }
 
     // Build data object based on type
     const createData: {
@@ -70,15 +106,19 @@ export async function POST(request: NextRequest) {
       lookingForCount?: number;
       offerDescription?: string;
       accessToken?: string;
+      slug?: string;
     } = {
       email: email.toLowerCase().trim(),
       type: waitlistType,
       interests: interestsList,
     };
 
-    // Add access token for founders
+    // Add access token and slug for founders
     if (accessToken) {
       createData.accessToken = accessToken;
+    }
+    if (slug) {
+      createData.slug = slug;
     }
 
     // Add founder-specific fields
@@ -148,6 +188,16 @@ export async function POST(request: NextRequest) {
                 <p style="margin: 0 0 12px 0; font-size: 14px; color: #15803d;">Bookmark this link to check for early adopters who want to try your product:</p>
                 <a href="https://prooflayer.app/first100/portal?token=${accessToken}" style="display: inline-block; background: #00d084; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">View Your Portal</a>
               </div>
+
+              ${slug ? `
+              <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                <p style="margin: 0 0 12px 0; font-size: 14px; color: #1e40af; font-weight: 600;">Your Public Product Page</p>
+                <p style="margin: 0 0 12px 0; font-size: 14px; color: #1d4ed8;">Share this link to attract early adopters:</p>
+                <p style="margin: 0; font-size: 14px;">
+                  <a href="https://prooflayer.app/p/${slug}" style="color: #2563eb; font-weight: 600;">prooflayer.app/p/${slug}</a>
+                </p>
+              </div>
+              ` : ''}
 
               <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 30px;">
                 Reply to this email anytime - I read every message.
@@ -238,9 +288,10 @@ export async function POST(request: NextRequest) {
 
               <div style="background: #0a0a0b; border-radius: 12px; padding: 20px; text-align: center;">
                 <p style="color: #9ca3af; margin: 0 0 10px 0; font-size: 14px;">Quick Actions</p>
-                <a href="mailto:${email}?subject=Welcome to ProofLayer - ${productName}" style="display: inline-block; background: #00d084; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-right: 10px;">Reply to Founder</a>
-                ${productUrl ? `<a href="${productUrl}" style="display: inline-block; background: #374151; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-right: 10px;">View Product</a>` : ''}
-                <a href="https://prooflayer.app/first100/portal?token=${accessToken}" style="display: inline-block; background: #8b5cf6; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">View Portal</a>
+                <a href="mailto:${email}?subject=Welcome to ProofLayer - ${productName}" style="display: inline-block; background: #00d084; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin: 5px;">Reply to Founder</a>
+                ${productUrl ? `<a href="${productUrl}" style="display: inline-block; background: #374151; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin: 5px;">View Product</a>` : ''}
+                ${slug ? `<a href="https://prooflayer.app/p/${slug}" style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin: 5px;">Public Page</a>` : ''}
+                <a href="https://prooflayer.app/first100/portal?token=${accessToken}" style="display: inline-block; background: #8b5cf6; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin: 5px;">View Portal</a>
               </div>
 
               <p style="color: #9ca3af; font-size: 12px; margin-top: 20px; text-align: center;">
