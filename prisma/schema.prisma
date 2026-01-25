@@ -63,12 +63,18 @@ model Entitlement {
 }
 
 enum Plan {
+  FREE       // Free listing: basic product listing, 10 submissions/month
+  STARTER    // $49: Featured listing, unlimited testimonials
+  GROWTH     // $149: Hot Pick badge, priority matching, analytics
+  LAUNCH     // $299: Social post, spotlight email, custom branding
+  CONCIERGE  // Custom: Full launch strategy, done-for-you
+  // Legacy plans (kept for backwards compatibility)
   TRIAL
   MONTHLY
   LIFETIME
-  SOLO       // Tier 1: 1 workspace, 3 forms, 150 submissions
-  PRO        // Tier 2: 3 workspaces, 30 forms, 1000 submissions
-  AGENCY     // Tier 3: 10 workspaces, 50 forms, 5000 submissions
+  SOLO
+  PRO
+  AGENCY
 }
 
 // ===========================

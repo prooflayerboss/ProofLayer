@@ -1,4 +1,75 @@
 export const PLAN_LIMITS = {
+  // =====================
+  // New First100 Plans
+  // =====================
+  // Free Listing - basic access
+  FREE: {
+    maxWorkspaces: 1,
+    maxForms: 1,
+    maxSubmissions: 10, // 10 submissions/month
+    maxWidgetStyles: 1,
+    allowedWidgetTypes: ['EMBED'] as const,
+    allowedLayouts: ['GRID'] as const,
+    allowEmailCampaigns: false,
+    showBadge: true,
+    price: 0,
+    interval: null,
+  },
+  // Starter - $49
+  STARTER: {
+    maxWorkspaces: 1,
+    maxForms: 999, // Unlimited
+    maxSubmissions: 999999, // Unlimited testimonials
+    maxWidgetStyles: 999, // All widget layouts
+    allowedWidgetTypes: ['EMBED', 'POPUP', 'FLOATING'] as const,
+    allowedLayouts: ['GRID', 'CAROUSEL', 'MARQUEE', 'MASONRY', 'SPOTLIGHT'] as const,
+    allowEmailCampaigns: false,
+    showBadge: true,
+    price: 49,
+    interval: 'lifetime' as const,
+  },
+  // Growth - $149 (Most Popular)
+  GROWTH: {
+    maxWorkspaces: 3,
+    maxForms: 999,
+    maxSubmissions: 999999,
+    maxWidgetStyles: 999,
+    allowedWidgetTypes: ['EMBED', 'POPUP', 'FLOATING'] as const,
+    allowedLayouts: ['GRID', 'CAROUSEL', 'MARQUEE', 'MASONRY', 'SPOTLIGHT'] as const,
+    allowEmailCampaigns: true,
+    showBadge: false, // Branding removal
+    price: 149,
+    interval: 'lifetime' as const,
+  },
+  // Launch - $299
+  LAUNCH: {
+    maxWorkspaces: 10,
+    maxForms: 999,
+    maxSubmissions: 999999,
+    maxWidgetStyles: 999,
+    allowedWidgetTypes: ['EMBED', 'POPUP', 'FLOATING'] as const,
+    allowedLayouts: ['GRID', 'CAROUSEL', 'MARQUEE', 'MASONRY', 'SPOTLIGHT'] as const,
+    allowEmailCampaigns: true,
+    showBadge: false,
+    price: 299,
+    interval: 'lifetime' as const,
+  },
+  // Concierge - Custom done-for-you
+  CONCIERGE: {
+    maxWorkspaces: 999,
+    maxForms: 999,
+    maxSubmissions: 999999,
+    maxWidgetStyles: 999,
+    allowedWidgetTypes: ['EMBED', 'POPUP', 'FLOATING'] as const,
+    allowedLayouts: ['GRID', 'CAROUSEL', 'MARQUEE', 'MASONRY', 'SPOTLIGHT'] as const,
+    allowEmailCampaigns: true,
+    showBadge: false,
+    price: 0, // Custom pricing
+    interval: 'lifetime' as const,
+  },
+  // =====================
+  // Legacy Plans
+  // =====================
   TRIAL: {
     maxWorkspaces: 1,
     maxForms: 1,
@@ -35,7 +106,7 @@ export const PLAN_LIMITS = {
     price: 49, // Legacy lifetime plan
     interval: 'lifetime' as const,
   },
-  // Tier 1 - Solo / Starter
+  // Tier 1 - Solo / Starter (legacy)
   SOLO: {
     maxWorkspaces: 1,
     maxForms: 3,
@@ -48,7 +119,7 @@ export const PLAN_LIMITS = {
     price: 59,
     interval: 'lifetime' as const,
   },
-  // Tier 2 - Professional (Most Popular)
+  // Tier 2 - Professional (legacy)
   PRO: {
     maxWorkspaces: 3,
     maxForms: 30, // 10 per workspace
@@ -61,7 +132,7 @@ export const PLAN_LIMITS = {
     price: 118,
     interval: 'lifetime' as const,
   },
-  // Tier 3 - Agency
+  // Tier 3 - Agency (legacy)
   AGENCY: {
     maxWorkspaces: 10,
     maxForms: 50,
