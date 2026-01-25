@@ -385,10 +385,28 @@ model First100Waitlist {
   // Interest categories for early adopters (for matching)
   interests String[] @default([])
 
+  // Founder product fields (only for FOUNDER type)
+  productName        String?  @map("product_name")
+  productTagline     String?  @map("product_tagline")
+  productUrl         String?  @map("product_url")
+  productCategory    String?  @map("product_category")
+  productStage       String?  @map("product_stage") // "idea" | "building" | "alpha" | "beta" | "launched"
+  lookingForCount    Int?     @map("looking_for_count") // Number of early adopters wanted
+  offerDescription   String?  @map("offer_description") // What deal/discount they're offering
+
+  // Status tracking
+  status             String?  @default("pending") // "pending" | "approved" | "active" | "paused"
+  approvedAt         DateTime? @map("approved_at")
+
+  // Founder portal access
+  accessToken        String?  @unique @map("access_token") // Unique token for founder portal access
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([type])
+  @@index([status])
+  @@index([productCategory])
   @@map("first100_waitlist")
 }
 
