@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useRef } from 'react';
-import { ChevronDown, Menu, X, Rocket, Users, MessageSquare, LayoutGrid, Sparkles } from 'lucide-react';
+import { ChevronDown, Menu, X, Rocket, Users, MessageSquare, LayoutGrid, Sparkles, Vote } from 'lucide-react';
 
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -124,6 +124,15 @@ export default function Navigation() {
             </Link>
 
             <Link
+              href="/vote"
+              className="px-4 py-2 text-[#737373] hover:text-[#0a0a0b] font-medium transition-colors rounded-lg hover:bg-black/5 flex items-center gap-1.5"
+            >
+              <Vote className="w-4 h-4" />
+              Vote
+              <span className="text-[10px] font-semibold bg-[#00d084]/10 text-[#00d084] px-1.5 py-0.5 rounded-full">New</span>
+            </Link>
+
+            <Link
               href="/directory"
               className="px-4 py-2 text-[#737373] hover:text-[#0a0a0b] font-medium transition-colors rounded-lg hover:bg-black/5 flex items-center gap-1.5"
             >
@@ -190,6 +199,16 @@ export default function Navigation() {
             >
               <Users className="w-5 h-5 text-[#8b5cf6]" />
               <span className="font-medium text-[#0a0a0b]">For Early Adopters</span>
+            </Link>
+
+            <Link
+              href="/vote"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-[#fafafa] transition-colors"
+            >
+              <Vote className="w-5 h-5 text-[#00d084]" />
+              <span className="font-medium text-[#0a0a0b]">Vote on Products</span>
+              <span className="text-[10px] font-semibold bg-[#00d084]/10 text-[#00d084] px-1.5 py-0.5 rounded-full">New</span>
             </Link>
 
             <Link

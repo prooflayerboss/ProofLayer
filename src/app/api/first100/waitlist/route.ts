@@ -96,6 +96,7 @@ export async function POST(request: NextRequest) {
       email: string;
       type: 'FOUNDER' | 'EARLY_ADOPTER';
       interests: string[];
+      status?: string;
       name?: string;
       twitterHandle?: string;
       productName?: string;
@@ -111,6 +112,8 @@ export async function POST(request: NextRequest) {
       email: email.toLowerCase().trim(),
       type: waitlistType,
       interests: interestsList,
+      // Founders start in voting status for community approval
+      status: type === 'founder' ? 'voting' : undefined,
     };
 
     // Add access token and slug for founders
@@ -161,7 +164,7 @@ export async function POST(request: NextRequest) {
               </h1>
 
               <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
-                Thanks for submitting ${productName || 'your product'}. I'm reviewing applications personally to make sure we match you with the right early adopters.
+                Thanks for submitting ${productName || 'your product'}! Your product is now <strong>live for community voting</strong>.
               </p>
 
               <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
@@ -172,14 +175,21 @@ export async function POST(request: NextRequest) {
                 <p style="margin: 0; font-size: 14px; color: #15803d;"><strong>Offering:</strong> ${offerDescription || 'N/A'}</p>
               </div>
 
+              <div style="background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                <p style="margin: 0 0 12px 0; font-size: 14px; color: #7c3aed; font-weight: 600;">🗳️ Community Voting</p>
+                <p style="margin: 0; font-size: 14px; color: #6d28d9; line-height: 1.6;">
+                  Our early adopters vote on products they're excited about. Once you get <strong>5 votes</strong>, your product is automatically approved and added to the directory.
+                </p>
+              </div>
+
               <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
                 <strong>What happens next:</strong>
               </p>
 
               <ol style="font-size: 16px; color: #4b5563; line-height: 1.8; margin-bottom: 20px; padding-left: 20px;">
-                <li>I'll review your product (usually within 24 hours)</li>
-                <li>Once approved, you'll appear in our directory</li>
-                <li>Early adopters who match your category can request access</li>
+                <li>Early adopters see your product on the <a href="https://prooflayer.app/vote" style="color: #00d084;">voting page</a></li>
+                <li>Once you get 5 votes, you're automatically approved</li>
+                <li>You'll appear in our directory for early adopters to request access</li>
                 <li>You approve who gets in and start building relationships</li>
               </ol>
 
@@ -329,7 +339,16 @@ export async function POST(request: NextRequest) {
                 <li>Early access to products that match your interests</li>
                 <li>Exclusive lifetime deals and discounts</li>
                 <li>Direct line to founders who want your feedback</li>
+                <li><strong>Vote on products</strong> you want to see approved</li>
               </ul>
+
+              <div style="background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                <p style="margin: 0 0 12px 0; font-size: 14px; color: #7c3aed; font-weight: 600;">🗳️ Your Voice Matters</p>
+                <p style="margin: 0 0 12px 0; font-size: 14px; color: #6d28d9; line-height: 1.6;">
+                  As an early adopter, you help decide which products get approved. Vote for the ones you're excited about!
+                </p>
+                <a href="https://prooflayer.app/vote" style="display: inline-block; background: #8b5cf6; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">Vote on Products</a>
+              </div>
 
               ${interestsList.length > 0 ? `
               <div style="background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 12px; padding: 16px; margin-bottom: 20px;">

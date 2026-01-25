@@ -396,8 +396,13 @@ model First100Waitlist {
   slug               String?  @unique // URL-friendly slug for public product page (e.g., "my-awesome-app")
 
   // Status tracking
-  status             String?  @default("pending") // "pending" | "approved" | "active" | "paused"
+  status             String?  @default("pending") // "pending" | "voting" | "approved" | "active" | "paused"
   approvedAt         DateTime? @map("approved_at")
+
+  // Voting system
+  voteCount          Int      @default(0) @map("vote_count") // Cached count of votes
+  votesReceived      ProductVote[] @relation("ProductVotes") // Votes this product received (for founders)
+  votesGiven         ProductVote[] @relation("VoterVotes")   // Votes this user gave (for early adopters)
 
   // Founder portal access
   accessToken        String?  @unique @map("access_token") // Unique token for founder portal access
@@ -408,7 +413,32 @@ model First100Waitlist {
   @@index([type])
   @@index([status])
   @@index([productCategory])
+  @@index([voteCount])
   @@map("first100_waitlist")
+}
+
+// ===========================
+// PRODUCT VOTES
+// ===========================
+// Tracks votes from early adopters on founder products
+model ProductVote {
+  id          String   @id @default(uuid())
+
+  // The product being voted on (founder entry)
+  productId   String   @map("product_id")
+  product     First100Waitlist @relation("ProductVotes", fields: [productId], references: [id], onDelete: Cascade)
+
+  // The early adopter who voted
+  voterId     String   @map("voter_id")
+  voter       First100Waitlist @relation("VoterVotes", fields: [voterId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Each early adopter can only vote once per product
+  @@unique([productId, voterId])
+  @@index([productId])
+  @@index([voterId])
+  @@map("product_votes")
 }
 
 enum First100WaitlistType {
