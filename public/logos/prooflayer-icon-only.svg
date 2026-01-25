@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="icon-only-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00d084"/>
+      <stop offset="100%" stop-color="#00b371"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Back Layer -->
+  <rect x="14" y="4" width="100" height="100" rx="20" fill="#00d084" opacity="0.25"/>
+
+  <!-- Middle Layer -->
+  <rect x="10" y="8" width="100" height="100" rx="20" fill="#00d084" opacity="0.5"/>
+
+  <!-- Front Layer -->
+  <rect x="6" y="12" width="100" height="100" rx="20" fill="url(#icon-only-gradient)"/>
+
+  <!-- Checkmark -->
+  <path d="M 36 64 L 48 76 L 76 44" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

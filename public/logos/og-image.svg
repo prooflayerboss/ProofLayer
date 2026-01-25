@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="main-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#9333EA"/>
+    </linearGradient>
+    <linearGradient id="card-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
+    <clipPath id="screenshot-clip">
+      <rect x="620" y="120" width="520" height="390" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg-gradient)"/>
+
+  <!-- Subtle grid pattern -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#334155" stroke-width="0.5" opacity="0.3"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Decorative gradient orbs -->
+  <circle cx="100" cy="500" r="200" fill="#3B82F6" opacity="0.1"/>
+  <circle cx="1100" cy="100" r="150" fill="#9333EA" opacity="0.1"/>
+
+  <!-- Left side content -->
+  <g transform="translate(60, 180)">
+    <!-- Logo Icon -->
+    <g transform="scale(0.7)">
+      <rect x="8" y="0" width="100" height="100" rx="20" fill="#3B82F6" opacity="0.25"/>
+      <rect x="4" y="4" width="100" height="100" rx="20" fill="#6366F1" opacity="0.5"/>
+      <rect x="0" y="8" width="100" height="100" rx="20" fill="url(#main-gradient)"/>
+      <path d="M 30 60 L 42 72 L 70 40" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </g>
+
+    <!-- ProofLayer text -->
+    <text x="90" y="70" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="48" font-weight="700" fill="white" letter-spacing="-1">ProofLayer</text>
+  </g>
+
+  <!-- Tagline -->
+  <text x="60" y="320" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="600" fill="white">Collect &amp; Embed</text>
+  <text x="60" y="365" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="32" font-weight="600" fill="white">Client Testimonials</text>
+
+  <!-- Subtitle -->
+  <text x="60" y="420" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" fill="#94A3B8">The easiest way for agencies and freelancers</text>
+  <text x="60" y="445" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" fill="#94A3B8">to collect and showcase social proof.</text>
+
+  <!-- CTA Badge -->
+  <g transform="translate(60, 480)">
+    <rect width="180" height="44" rx="22" fill="url(#main-gradient)"/>
+    <text x="90" y="28" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="600" fill="white" text-anchor="middle">Get Started Free</text>
+  </g>
+
+  <!-- Right side: Dashboard mockup -->
+  <g filter="url(#shadow)">
+    <!-- Browser window frame -->
+    <rect x="580" y="90" width="560" height="450" rx="12" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+
+    <!-- Browser header -->
+    <rect x="580" y="90" width="560" height="40" rx="12" fill="#334155"/>
+    <rect x="580" y="118" width="560" height="12" fill="#334155"/>
+
+    <!-- Traffic lights -->
+    <circle cx="605" cy="110" r="6" fill="#EF4444"/>
+    <circle cx="625" cy="110" r="6" fill="#F59E0B"/>
+    <circle cx="645" cy="110" r="6" fill="#22C55E"/>
+
+    <!-- URL bar -->
+    <rect x="680" y="100" width="380" height="20" rx="4" fill="#1E293B"/>
+    <text x="695" y="114" font-family="monospace" font-size="11" fill="#64748B">prooflayer.io/dashboard</text>
+
+    <!-- Dashboard content area -->
+    <rect x="590" y="140" width="540" height="390" fill="#0F172A"/>
+
+    <!-- Sidebar -->
+    <rect x="590" y="140" width="140" height="390" fill="#1E293B"/>
+
+    <!-- Sidebar items -->
+    <rect x="600" y="160" width="120" height="32" rx="6" fill="url(#main-gradient)" opacity="0.9"/>
+    <text x="615" y="181" font-family="system-ui" font-size="12" fill="white">Dashboard</text>
+
+    <text x="615" y="220" font-family="system-ui" font-size="12" fill="#64748B">Workspaces</text>
+    <text x="615" y="252" font-family="system-ui" font-size="12" fill="#64748B">Testimonials</text>
+    <text x="615" y="284" font-family="system-ui" font-size="12" fill="#64748B">Widgets</text>
+    <text x="615" y="316" font-family="system-ui" font-size="12" fill="#64748B">Settings</text>
+
+    <!-- Main content area -->
+    <!-- Header -->
+    <text x="750" y="175" font-family="system-ui" font-size="18" font-weight="600" fill="white">Your Testimonials</text>
+
+    <!-- Stats cards -->
+    <rect x="750" y="195" width="115" height="70" rx="8" fill="#1E293B"/>
+    <text x="765" y="220" font-family="system-ui" font-size="11" fill="#64748B">Total</text>
+    <text x="765" y="248" font-family="system-ui" font-size="24" font-weight="700" fill="white">24</text>
+
+    <rect x="875" y="195" width="115" height="70" rx="8" fill="#1E293B"/>
+    <text x="890" y="220" font-family="system-ui" font-size="11" fill="#64748B">Approved</text>
+    <text x="890" y="248" font-family="system-ui" font-size="24" font-weight="700" fill="#22C55E">18</text>
+
+    <rect x="1000" y="195" width="115" height="70" rx="8" fill="#1E293B"/>
+    <text x="1015" y="220" font-family="system-ui" font-size="11" fill="#64748B">Pending</text>
+    <text x="1015" y="248" font-family="system-ui" font-size="24" font-weight="700" fill="#F59E0B">6</text>
+
+    <!-- Testimonial cards -->
+    <rect x="750" y="280" width="365" height="80" rx="8" fill="#1E293B"/>
+    <circle cx="785" cy="320" r="20" fill="#3B82F6"/>
+    <text x="782" y="325" font-family="system-ui" font-size="14" font-weight="600" fill="white">JD</text>
+    <text x="815" y="310" font-family="system-ui" font-size="13" font-weight="600" fill="white">John Davidson</text>
+    <text x="815" y="328" font-family="system-ui" font-size="11" fill="#64748B">"Absolutely transformed our client workflow..."</text>
+    <text x="815" y="348" font-family="system-ui" font-size="10" fill="#22C55E">Approved</text>
+    <!-- Stars -->
+    <text x="1050" y="310" font-family="system-ui" font-size="12" fill="#F59E0B">★★★★★</text>
+
+    <rect x="750" y="370" width="365" height="80" rx="8" fill="#1E293B"/>
+    <circle cx="785" cy="410" r="20" fill="#9333EA"/>
+    <text x="779" y="415" font-family="system-ui" font-size="14" font-weight="600" fill="white">SM</text>
+    <text x="815" y="400" font-family="system-ui" font-size="13" font-weight="600" fill="white">Sarah Mitchell</text>
+    <text x="815" y="418" font-family="system-ui" font-size="11" fill="#64748B">"Best testimonial tool I've ever used..."</text>
+    <text x="815" y="438" font-family="system-ui" font-size="10" fill="#22C55E">Approved</text>
+    <text x="1050" y="400" font-family="system-ui" font-size="12" fill="#F59E0B">★★★★★</text>
+
+    <rect x="750" y="460" width="365" height="60" rx="8" fill="#1E293B"/>
+    <circle cx="785" cy="490" r="20" fill="#22C55E"/>
+    <text x="778" y="495" font-family="system-ui" font-size="14" font-weight="600" fill="white">MR</text>
+    <text x="815" y="485" font-family="system-ui" font-size="13" font-weight="600" fill="white">Mike Roberts</text>
+    <text x="815" y="503" font-family="system-ui" font-size="11" fill="#64748B">"Finally a simple way to collect reviews..."</text>
+  </g>
+
+  <!-- Bottom accent line -->
+  <rect x="0" y="620" width="1200" height="10" fill="url(#main-gradient)"/>
+</svg>

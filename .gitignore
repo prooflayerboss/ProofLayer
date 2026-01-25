@@ -1,0 +1,62 @@
+# dependencies
+node_modules
+.pnp
+.pnp.js
+
+# testing
+coverage
+
+# next.js
+.next/
+out/
+build
+dist
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env
+.env.local
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# uploaded videos
+public/videos/*
+!public/videos/.gitkeep
+
+# development files
+Design Inspiration/
+Logo/
+*_CHECKLIST.md
+*_GUIDE.md
+*_SETUP.md
+DEPLOYMENT.md
+GETTING_STARTED.md
+debug-*.html
+manual-*.ts
+migrate-*.ts
+
+# internal docs
+SETUP_WAITLIST.md
+WIDGET_TYPES.md
+
+# screenshots
+Product Screenshots/
+HomePage Screenshot.png
+
+# remotion (removed)
+remotion.config.ts
+remotion-intro/

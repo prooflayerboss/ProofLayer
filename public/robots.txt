@@ -1,0 +1,10 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.prooflayer.app/sitemap.xml
+
+# Disallow admin/dashboard areas from indexing
+Disallow: /dashboard/
+Disallow: /api/

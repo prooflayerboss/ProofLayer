@@ -1,0 +1,398 @@
+// Prooflayer Database Schema
+// ===========================
+// This schema uses Supabase Auth user IDs as the primary key for User/Profile.
+// All relations reference this ID directly.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ===========================
+// USER / PROFILE
+// ===========================
+// The `id` field is the Supabase Auth user ID (UUID from auth.users).
+// We do NOT auto-generate this - it comes from Supabase Auth.
+model User {
+  id        String   @id // Supabase Auth user ID - NOT auto-generated
+  email     String   @unique
+  name      String?
+  phone     String?
+
+  // Business profile fields
+  businessName String? @map("business_name")
+  businessType String? @map("business_type") // e.g., "agency", "freelancer", "saas", "ecommerce"
+  website      String?
+
+  // Onboarding tracking
+  onboardingCompleted Boolean @default(false) @map("onboarding_completed")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  entitlement Entitlement?
+  workspaces  Workspace[]
+
+  @@map("users")
+}
+
+// ===========================
+// ENTITLEMENTS (Plan & Limits)
+// ===========================
+model Entitlement {
+  id                     String    @id @default(uuid())
+  userId                 String    @unique @map("user_id")
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan                   Plan      @default(SOLO)
+  stripeCustomerId       String?   @map("stripe_customer_id")
+  stripeSubscriptionId   String?   @map("stripe_subscription_id") // For monthly subscriptions
+  stripePaymentId        String?   @map("stripe_payment_id") // For one-time payments
+  subscriptionStatus     String?   @map("subscription_status") // active, canceled, past_due, etc.
+  subscriptionPeriodEnd  DateTime? @map("subscription_period_end") // When current period ends
+  workspacesUsed         Int       @default(0) @map("workspaces_used")
+  submissionsUsed        Int       @default(0) @map("submissions_used")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  @@map("entitlements")
+}
+
+enum Plan {
+  TRIAL
+  MONTHLY
+  LIFETIME
+  SOLO       // Tier 1: 1 workspace, 3 forms, 150 submissions
+  PRO        // Tier 2: 3 workspaces, 30 forms, 1000 submissions
+  AGENCY     // Tier 3: 10 workspaces, 50 forms, 5000 submissions
+}
+
+// ===========================
+// WORKSPACES
+// ===========================
+model Workspace {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  slug         String?  @unique // URL-friendly slug for public wall of love page
+
+  // Branding (shared across all forms in this workspace)
+  logoUrl        String?  @map("logo_url") // Optional logo image URL
+  logoShape      String?  @default("rectangle") @map("logo_shape") // "square" | "circle" | "rectangle"
+
+  // Wall of Love customization (for public page)
+  headline     String?  // Custom headline for wall of love page
+  description  String?  // Custom description/tagline
+
+  // Widget Analytics
+  widgetViews    Int      @default(0) @map("widget_views")
+  lastWidgetView DateTime? @map("last_widget_view")
+
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  forms        Form[]
+  widgetConfig WidgetConfig?
+
+  @@map("workspaces")
+}
+
+// ===========================
+// FORMS
+// ===========================
+model Form {
+  id          String    @id @default(uuid())
+  workspaceId String    @map("workspace_id")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name        String
+  slug        String    @unique
+  isActive    Boolean   @default(true) @map("is_active")
+
+  // Form customization
+  headerTitle    String?  @default("Share your feedback") @map("header_title") // Form page header
+  customMessage  String?  @db.Text @map("custom_message") // Welcome message on form
+
+  // Theme colors
+  primaryColor       String?  @default("#3B82F6") @map("primary_color")         // Button/CTA color
+  backgroundColor    String?  @default("#FFFFFF") @map("background_color")      // Form background
+  textColor          String?  @default("#111827") @map("text_color")            // Primary text color
+  secondaryTextColor String?  @default("#6B7280") @map("secondary_text_color")  // Secondary text (labels, etc)
+
+  language       String?  @default("en") // Language code (en, es, fr, de)
+
+  // Collection settings - what fields to collect
+  collectEmail      Boolean  @default(false) @map("collect_email")
+  collectCompany    Boolean  @default(true) @map("collect_company")
+  collectRole       Boolean  @default(true) @map("collect_role")
+  collectSocialLink Boolean  @default(false) @map("collect_social_link")
+  collectRating     Boolean  @default(true) @map("collect_rating")
+
+  // Form collection types
+  allowText       Boolean   @default(true) @map("allow_text")       // Allow text testimonials
+  allowVideo      Boolean   @default(false) @map("allow_video")     // Allow video testimonials
+  allowScreenshot Boolean   @default(true) @map("allow_screenshot") // Allow screenshot uploads
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  submissions     Submission[]
+  emailCampaigns  EmailCampaign[]
+
+  @@map("forms")
+}
+
+// ===========================
+// SUBMISSIONS (Testimonials)
+// ===========================
+model Submission {
+  id          String           @id @default(uuid())
+  formId      String           @map("form_id")
+  form        Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
+  name        String
+  email       String?          // Optional email address
+  company     String?
+  role        String?
+  socialLink  String?          @map("social_link") // Twitter, LinkedIn, etc profile URL
+  testimonial String           @db.Text
+  rating      Int?             // 1-5 stars, optional
+  photoUrl    String?          @map("photo_url")
+
+  // Video testimonial support
+  videoUrl       String?           @map("video_url") // URL to hosted video
+  videoThumbnail String?           @map("video_thumbnail") // Thumbnail image URL
+  videoDuration  Int?              @map("video_duration") // Duration in seconds
+  submissionType SubmissionType    @default(TEXT) @map("submission_type")
+
+  // Screenshot/social media support
+  socialPlatform  String?          @map("social_platform") // twitter, linkedin, instagram, etc.
+  socialAuthorUrl String?          @map("social_author_url") // Link to original post
+
+  // Import tracking
+  importSource    String?          @map("import_source") // linkedin, google, manual, null for direct submissions
+
+  status      SubmissionStatus @default(PENDING)
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  @@index([formId, status])
+  @@map("submissions")
+}
+
+enum SubmissionType {
+  TEXT
+  VIDEO
+  SCREENSHOT  // Social media screenshot
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// ===========================
+// WIDGET CONFIGURATION
+// ===========================
+model WidgetConfig {
+  id          String       @id @default(uuid())
+  workspaceId String       @unique @map("workspace_id")
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  // Widget type and layout
+  widgetType  WidgetType   @default(WALL_OF_LOVE) @map("widget_type")
+  layout      WidgetLayout @default(GRID)
+
+  // Display settings
+  theme       String       @default("light") // "light" | "dark"
+  columns     Int          @default(3) // For grid layout
+  showRating  Boolean      @default(true) @map("show_rating")
+  showPhoto   Boolean      @default(true) @map("show_photo")
+  showCompany Boolean      @default(true) @map("show_company")
+
+  // Animation settings
+  enableAnimations Boolean  @default(true) @map("enable_animations")     // Enable/disable animations
+  animationStyle   String?  @default("fade") @map("animation_style")     // "fade" | "slide" | "hearts" | "none"
+  hoverEffect      Boolean  @default(true) @map("hover_effect")          // Card hover lift effect
+  scrollDirection  String?  @default("vertical") @map("scroll_direction") // "vertical" | "horizontal"
+
+  // Layout-specific settings
+  autoRotateInterval Int?  @default(5000) @map("auto_rotate_interval") // For SPOTLIGHT (milliseconds)
+  marqueeSpeed       Int?  @default(50) @map("marquee_speed")          // For MARQUEE (pixels/sec)
+  masonryColumns     Int?  @default(3) @map("masonry_columns")         // For MASONRY
+
+  // Popup widget settings
+  popupTrigger   String?  @default("time") @map("popup_trigger")       // "time" | "exit_intent" | "scroll"
+  popupDelay     Int?     @default(5000) @map("popup_delay")           // Delay in milliseconds
+  popupShowOnce  Boolean? @default(true) @map("popup_show_once")       // Show only once per session
+
+  // Floating badge settings
+  floatingPosition String?  @default("bottom-right") @map("floating_position") // "bottom-right" | "bottom-left" | "top-right" | "top-left"
+  floatingText     String?  @default("See what our customers say") @map("floating_text")
+  floatingIcon     String?  @default("star") @map("floating_icon")    // "star" | "chat" | "heart"
+
+  // Analytics
+  totalViews       Int      @default(0) @map("total_views")
+  lastViewedAt     DateTime? @map("last_viewed_at")
+
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  @@map("widget_configs")
+}
+
+enum WidgetType {
+  WALL_OF_LOVE    // Grid/list of multiple testimonials (replaces EMBED)
+  SINGLE          // Single rotating testimonial
+  BADGE           // Floating badge/button
+  COLLECTION_FORM // Embeddable testimonial collection form
+  POPUP           // Modal popup
+  FLOATING        // Floating badge (legacy, same as BADGE)
+}
+
+enum WidgetLayout {
+  GRID
+  CAROUSEL
+  MARQUEE    // Infinite scrolling horizontal
+  MASONRY    // Pinterest-style variable height
+  SPOTLIGHT  // Single rotating testimonial
+  LIST       // Vertical list
+}
+
+// ===========================
+// EMAIL CAMPAIGNS (PRO/AGENCY)
+// ===========================
+model EmailCampaign {
+  id          String   @id @default(uuid())
+  formId      String   @map("form_id")
+  form        Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  name        String   // Campaign name for tracking
+  subject     String   // Email subject line
+  customMessage String? @db.Text @map("custom_message") // Optional custom message
+
+  status      CampaignStatus @default(DRAFT)
+  totalRecipients Int    @default(0) @map("total_recipients")
+  sentCount   Int      @default(0) @map("sent_count")
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  sentAt      DateTime? @map("sent_at") // When campaign was sent
+
+  recipients  EmailRecipient[]
+
+  @@map("email_campaigns")
+}
+
+enum CampaignStatus {
+  DRAFT
+  SENDING
+  COMPLETED
+  FAILED
+}
+
+model EmailRecipient {
+  id          String   @id @default(uuid())
+  campaignId  String   @map("campaign_id")
+  campaign    EmailCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  email       String
+  name        String?  // Optional recipient name
+
+  status      EmailStatus @default(PENDING)
+  sentAt      DateTime? @map("sent_at")
+  openedAt    DateTime? @map("opened_at") // Email opened (future feature)
+  clickedAt   DateTime? @map("clicked_at") // Link clicked (future feature)
+  submittedAt DateTime? @map("submitted_at") // Testimonial submitted
+
+  errorMessage String? @db.Text @map("error_message") // If send failed
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([campaignId])
+  @@map("email_recipients")
+}
+
+enum EmailStatus {
+  PENDING
+  SENT
+  OPENED
+  CLICKED
+  SUBMITTED
+  FAILED
+}
+
+// ===========================
+// RATE LIMITING (Anti-spam)
+// ===========================
+// Simple IP-based rate limiting for public form submissions
+model RateLimit {
+  id          String   @id // IP address or identifier
+  count       Int      @default(1)
+  windowStart DateTime @default(now()) @map("window_start")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("rate_limits")
+}
+
+// ===========================
+// GOOGLE BUSINESS INTEGRATION
+// ===========================
+// Stores Google OAuth tokens and connection info for importing reviews
+model GoogleIntegration {
+  id               String   @id @default(uuid())
+  workspaceId      String   @unique @map("workspace_id")
+
+  // OAuth tokens
+  accessToken      String   @db.Text @map("access_token")
+  refreshToken     String?  @db.Text @map("refresh_token")
+  tokenExpiresAt   DateTime @map("token_expires_at")
+
+  // Google Business Profile info
+  accountName      String?  @map("account_name")    // Google account name
+  locationName     String?  @map("location_name")    // Business location name
+  locationId       String?  @map("location_id")      // Google Business location ID
+
+  // Sync settings
+  lastSyncAt       DateTime? @map("last_sync_at")
+  autoSync         Boolean   @default(true) @map("auto_sync")
+  syncInterval     Int       @default(24) @map("sync_interval") // Hours between syncs
+
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("google_integrations")
+}
+
+// ===========================
+// USER ACQUISITION WAITLIST
+// ===========================
+// Waitlist for founders and early adopters
+model First100Waitlist {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  type      First100WaitlistType
+
+  // Optional fields
+  name      String?
+  twitterHandle String? @map("twitter_handle")
+
+  // Interest categories for early adopters (for matching)
+  interests String[] @default([])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([type])
+  @@map("first100_waitlist")
+}
+
+enum First100WaitlistType {
+  FOUNDER
+  EARLY_ADOPTER
+}
