@@ -1,6 +1,6 @@
 # ProofLayer
 
-The launch toolkit for founders. Get your first 100 users, collect testimonials, and display social proof—all in one platform.
+A community marketplace for founders. Connect with early adopters, collect testimonials, and display social proof—all in one platform.
 
 ## What is ProofLayer?
 

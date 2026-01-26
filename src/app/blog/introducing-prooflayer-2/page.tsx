@@ -3,8 +3,8 @@ import Navigation from '@/components/navigation';
 import Footer from '@/components/footer';
 
 export const metadata = {
-  title: 'Introducing ProofLayer 2.0: The All-in-One Launch Toolkit - ProofLayer Blog',
-  description: 'We rebuilt ProofLayer from the ground up. Now it\'s not just about testimonials—it\'s about getting you your first 100 users and proving your product works.',
+  title: 'Introducing ProofLayer 2.0: A Community Marketplace for Founders - ProofLayer Blog',
+  description: 'We rebuilt ProofLayer from the ground up. Now it\'s not just about testimonials—it\'s about connecting you with early adopters and proving your product works.',
 };
 
 export default function BlogPost() {
@@ -43,7 +43,7 @@ export default function BlogPost() {
             </div>
 
             <h1 className="display-text text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">
-              Introducing ProofLayer 2.0: The All-in-One Launch Toolkit
+              Introducing ProofLayer 2.0: A Community Marketplace for Founders
             </h1>
 
             <div className="flex items-center gap-4">
@@ -89,7 +89,7 @@ export default function BlogPost() {
             </h2>
             <p className="text-[#737373] leading-relaxed">
               We've rebuilt ProofLayer from the ground up with one mission:
-              <strong className="text-[#0a0a0b]"> help founders get their first 100 users, then prove it.</strong>
+              <strong className="text-[#0a0a0b]"> help founders get their first users and build social proof.</strong>
             </p>
             <p className="text-[#737373] leading-relaxed">
               Here's how it works:

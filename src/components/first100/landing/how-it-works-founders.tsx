@@ -29,7 +29,7 @@ export function First100HowItWorksFounders() {
       <First100Container>
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900">How it works for founders</h2>
-          <p className="mt-4 text-lg text-gray-500">From zero to your first 100 users in four steps</p>
+          <p className="mt-4 text-lg text-gray-500">From zero to your first users in four steps</p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {steps.map((step) => (

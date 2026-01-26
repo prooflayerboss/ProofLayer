@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
 
             <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
               <p style="font-size: 12px; color: #9ca3af;">
-                Powered by <a href="https://prooflayer.app" style="color: #00d084; text-decoration: none;">ProofLayer</a> - Get your first 100 users
+                Powered by <a href="https://prooflayer.app" style="color: #00d084; text-decoration: none;">ProofLayer</a> - Community marketplace for founders
               </p>
             </div>
           </div>

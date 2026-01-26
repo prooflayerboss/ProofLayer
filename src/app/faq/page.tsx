@@ -86,7 +86,7 @@ const faqs: FAQItem[] = [
   {
     category: 'Support',
     question: 'What makes ProofLayer different?',
-    answer: 'ProofLayer is the all-in-one launch toolkit. Other tools just collect testimonials—we help you GET users first, then collect testimonials, then display them. One platform, one-time payment.',
+    answer: 'ProofLayer is a community marketplace that connects founders with early adopters. Other tools just collect testimonials—we help you GET users first, then collect testimonials, then display them. One platform, one-time payment.',
   },
   {
     category: 'Support',

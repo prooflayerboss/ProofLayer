@@ -10,9 +10,9 @@ import {
 } from '@/components/first100/landing';
 
 export const metadata = {
-  title: 'First100 - Get Your First 100 Users | ProofLayer',
+  title: 'First100 - Get Your First Users | ProofLayer',
   description:
-    'We help pre-traction founders get their first 100 real users. Not vanity metrics, not backlinks—real signups from people who want your product.',
+    'We connect founders with early adopters. Not vanity metrics, not backlinks—real signups from people who want your product.',
 };
 
 export default function First100Landing() {

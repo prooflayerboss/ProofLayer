@@ -3,7 +3,7 @@ import Navigation from '@/components/navigation';
 import Footer from '@/components/footer';
 
 export const metadata = {
-  title: 'About ProofLayer - The Launch Toolkit for Founders',
+  title: 'About ProofLayer - Community Marketplace for Founders',
   description: 'The story of ProofLayer: built by a founder who realized getting your first users shouldn\'t be the hardest part of launching.',
 };
 
@@ -44,7 +44,7 @@ export default function AboutPage() {
 
               {/* Subheadline */}
               <p className="text-xl sm:text-2xl text-gray-400 max-w-2xl leading-relaxed mb-12">
-                That single thought sparked everything. Here&apos;s the story of a founder who got frustrated and decided to build the launch toolkit he wished existed.
+                That single thought sparked everything. Here&apos;s the story of a founder who got frustrated and decided to build the community marketplace he wished existed.
               </p>
 
               {/* Scroll indicator */}

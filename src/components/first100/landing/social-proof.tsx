@@ -6,7 +6,7 @@ export function First100SocialProof() {
       <First100Container size="md">
         <div className="text-center">
           <p className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-8">
-            Trusted by founders building in public
+            Join founders connecting with early adopters
           </p>
           <div className="grid md:grid-cols-3 gap-8">
             {/* Placeholder testimonials - to be filled after manual pilots */}

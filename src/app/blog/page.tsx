@@ -10,8 +10,8 @@ export const metadata = {
 const posts = [
   {
     slug: 'introducing-prooflayer-2',
-    title: 'Introducing ProofLayer 2.0: The All-in-One Launch Toolkit',
-    excerpt: 'We rebuilt ProofLayer from the ground up. Now it\'s not just about testimonials—it\'s about getting you your first 100 users and proving your product works.',
+    title: 'Introducing ProofLayer 2.0: A Community Marketplace for Founders',
+    excerpt: 'We rebuilt ProofLayer from the ground up. Now it\'s not just about testimonials—it\'s about connecting you with early adopters and proving your product works.',
     date: 'January 24, 2026',
     readTime: '5 min read',
     category: 'Announcement',
