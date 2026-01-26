@@ -60,6 +60,10 @@ export async function GET(request: NextRequest) {
         offerDescription: founder.offerDescription,
         status: founder.status,
         createdAt: founder.createdAt,
+        voteCount: founder.voteCount,
+        slug: founder.slug,
+        hasAccount: founder.hasAccount,
+        accessToken: founder.accessToken,
       },
       earlyAdopters,
       stats: {

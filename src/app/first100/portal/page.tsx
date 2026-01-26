@@ -14,7 +14,11 @@ interface Founder {
   lookingForCount: number;
   offerDescription: string;
   status: string;
+  voteCount: number;
+  slug: string;
   createdAt: string;
+  hasAccount: boolean;
+  accessToken: string;
 }
 
 interface EarlyAdopter {
@@ -33,13 +37,17 @@ interface PortalData {
   };
 }
 
+const VOTE_THRESHOLD = 5;
+
 function PortalContent() {
   const searchParams = useSearchParams();
   const token = searchParams?.get('token') ?? null;
+  const upgraded = searchParams?.get('upgraded') === 'true';
 
   const [data, setData] = useState<PortalData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [upgrading, setUpgrading] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -67,6 +75,31 @@ function PortalContent() {
 
     fetchData();
   }, [token]);
+
+  async function handleUpgrade(plan: string) {
+    if (!token) return;
+    setUpgrading(plan);
+
+    try {
+      const res = await fetch('/api/first100/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, plan }),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.error || 'Failed to start checkout');
+      }
+
+      // Redirect to Stripe
+      window.location.href = result.url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Checkout failed');
+      setUpgrading(null);
+    }
+  }
 
   if (loading) {
     return (
@@ -110,6 +143,10 @@ function PortalContent() {
     launched: 'Launched',
   };
 
+  const voteProgress = Math.min((founder.voteCount / VOTE_THRESHOLD) * 100, 100);
+  const isVoting = founder.status === 'voting';
+  const isApproved = founder.status === 'approved' || founder.status === 'active';
+
   return (
     <main className="min-h-screen bg-[#0a0a0b] py-8 px-4">
       {/* Background elements */}
@@ -119,6 +156,21 @@ function PortalContent() {
       </div>
 
       <div className="relative max-w-4xl mx-auto">
+        {/* Upgrade Success Banner */}
+        {upgraded && (
+          <div className="bg-[#00d084]/10 border border-[#00d084]/20 rounded-2xl p-4 mb-6 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#00d084]/20 flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5 text-[#00d084]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-[#00d084] font-semibold">Upgrade successful!</p>
+              <p className="text-white/60 text-sm">Your listing has been upgraded and auto-approved.</p>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <Link href="/" className="flex items-center gap-2.5 group">
@@ -141,16 +193,101 @@ function PortalContent() {
 
           <div className="flex items-center gap-2">
             <span className={`text-xs font-medium px-3 py-1 rounded-full ${
-              founder.status === 'approved' || founder.status === 'active'
+              isApproved
                 ? 'bg-green-500/20 text-green-400'
+                : isVoting
+                ? 'bg-violet-500/20 text-violet-400'
                 : 'bg-amber-500/20 text-amber-400'
             }`}>
-              {founder.status === 'pending' ? 'Pending Review' :
-               founder.status === 'approved' ? 'Approved' :
-               founder.status === 'active' ? 'Active' : founder.status}
+              {isApproved ? 'Approved' :
+               isVoting ? `Voting (${founder.voteCount}/${VOTE_THRESHOLD})` :
+               founder.status === 'pending' ? 'Pending Review' : founder.status}
             </span>
           </div>
         </div>
+
+        {/* Set Up Account Banner */}
+        {!founder.hasAccount && (
+          <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-white font-semibold">Set up your account</p>
+                  <p className="text-white/60 text-sm">Create a password to access your dashboard anytime</p>
+                </div>
+              </div>
+              <Link
+                href={`/first100/login?setup=${founder.accessToken}`}
+                className="inline-flex items-center justify-center gap-2 bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-600 transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                </svg>
+                Set Up Account
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Voting Progress Card (if in voting status) */}
+        {isVoting && (
+          <div className="bg-violet-500/10 border border-violet-500/20 rounded-2xl p-6 mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-violet-500/20 flex items-center justify-center">
+                <svg className="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-white font-semibold">Community Voting</h3>
+                <p className="text-white/50 text-sm">Get {VOTE_THRESHOLD} votes to be approved</p>
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-white/60">{founder.voteCount} votes</span>
+                <span className="text-violet-400">{VOTE_THRESHOLD - founder.voteCount} more needed</span>
+              </div>
+              <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-violet-500 to-violet-400 rounded-full transition-all duration-500"
+                  style={{ width: `${voteProgress}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              {founder.slug && (
+                <Link
+                  href={`/p/${founder.slug}`}
+                  target="_blank"
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-white/10 text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-white/20 transition-all"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                  View Public Page
+                </Link>
+              )}
+              <Link
+                href="/vote"
+                target="_blank"
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-violet-500 text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-violet-600 transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                View Voting Page
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* Product Card */}
         <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl p-6 mb-8">
@@ -192,6 +329,120 @@ function PortalContent() {
           )}
         </div>
 
+        {/* Upgrade Section (show for voting/pending status) */}
+        {!isApproved && (
+          <div className="bg-gradient-to-br from-[#00d084]/5 to-emerald-500/5 border border-[#00d084]/20 rounded-3xl p-6 mb-8">
+            <div className="text-center mb-6">
+              <h2 className="text-xl font-bold text-white mb-2">Skip the Wait - Get Approved Instantly</h2>
+              <p className="text-white/50 text-sm">Upgrade your listing for instant approval + premium features</p>
+            </div>
+
+            <div className="grid sm:grid-cols-3 gap-4">
+              {/* Starter */}
+              <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5">
+                <h3 className="text-white font-bold mb-1">Starter</h3>
+                <div className="text-2xl font-bold text-white mb-2">$49</div>
+                <ul className="text-white/60 text-sm space-y-1.5 mb-4">
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-[#00d084]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Instant approval
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-[#00d084]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Featured listing (1 week)
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-[#00d084]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Weekly digest feature
+                  </li>
+                </ul>
+                <button
+                  onClick={() => handleUpgrade('STARTER')}
+                  disabled={upgrading === 'STARTER'}
+                  className="w-full bg-white/10 text-white py-2.5 rounded-xl font-semibold text-sm hover:bg-white/20 transition-all disabled:opacity-50"
+                >
+                  {upgrading === 'STARTER' ? 'Loading...' : 'Get Starter'}
+                </button>
+              </div>
+
+              {/* Growth (Popular) */}
+              <div className="bg-[#00d084] rounded-2xl p-5 relative">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0a0a0b] text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  POPULAR
+                </div>
+                <h3 className="text-white font-bold mb-1">Growth</h3>
+                <div className="text-2xl font-bold text-white mb-2">$149</div>
+                <ul className="text-white/80 text-sm space-y-1.5 mb-4">
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Everything in Starter
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    &quot;Hot Pick&quot; badge
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Priority matching
+                  </li>
+                </ul>
+                <button
+                  onClick={() => handleUpgrade('GROWTH')}
+                  disabled={upgrading === 'GROWTH'}
+                  className="w-full bg-[#0a0a0b] text-white py-2.5 rounded-xl font-semibold text-sm hover:bg-black transition-all disabled:opacity-50"
+                >
+                  {upgrading === 'GROWTH' ? 'Loading...' : 'Get Growth'}
+                </button>
+              </div>
+
+              {/* Launch */}
+              <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5">
+                <h3 className="text-white font-bold mb-1">Launch</h3>
+                <div className="text-2xl font-bold text-white mb-2">$299</div>
+                <ul className="text-white/60 text-sm space-y-1.5 mb-4">
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-[#00d084]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Everything in Growth
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-[#00d084]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Social post to audience
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-[#00d084]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Founder spotlight email
+                  </li>
+                </ul>
+                <button
+                  onClick={() => handleUpgrade('LAUNCH')}
+                  disabled={upgrading === 'LAUNCH'}
+                  className="w-full bg-white/10 text-white py-2.5 rounded-xl font-semibold text-sm hover:bg-white/20 transition-all disabled:opacity-50"
+                >
+                  {upgrading === 'LAUNCH' ? 'Loading...' : 'Get Launch'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Stats */}
         <div className="grid sm:grid-cols-2 gap-4 mb-8">
           <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-6">
@@ -229,21 +480,26 @@ function PortalContent() {
         <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-white">Early Adopters in Your Category</h2>
-            {founder.status === 'pending' && (
-              <span className="text-amber-400 text-sm">Visible after approval</span>
+            {!isApproved && (
+              <span className="text-violet-400 text-sm">Visible after approval</span>
             )}
           </div>
 
-          {founder.status === 'pending' ? (
+          {!isApproved ? (
             <div className="text-center py-12">
-              <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 bg-violet-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-white font-semibold mb-2">Your application is being reviewed</h3>
+              <h3 className="text-white font-semibold mb-2">
+                {isVoting ? 'Waiting for community votes' : 'Your application is being reviewed'}
+              </h3>
               <p className="text-white/50 text-sm max-w-md mx-auto">
-                Once approved, you&apos;ll see early adopters who are interested in {founder.productCategory} products right here. We typically review applications within 24 hours.
+                {isVoting
+                  ? `Once you get ${VOTE_THRESHOLD} votes from early adopters, you'll be approved and can see matching users here.`
+                  : `Once approved, you'll see early adopters who are interested in ${founder.productCategory} products right here.`
+                }
               </p>
             </div>
           ) : earlyAdopters.length === 0 ? (

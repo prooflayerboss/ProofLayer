@@ -405,13 +405,20 @@ model First100Waitlist {
   status             String?  @default("pending") // "pending" | "voting" | "approved" | "active" | "paused"
   approvedAt         DateTime? @map("approved_at")
 
-  // Voting system
+  // Voting system (legacy - votes on waitlist entry itself)
   voteCount          Int      @default(0) @map("vote_count") // Cached count of votes
   votesReceived      ProductVote[] @relation("ProductVotes") // Votes this product received (for founders)
   votesGiven         ProductVote[] @relation("VoterVotes")   // Votes this user gave (for early adopters)
 
+  // Multiple products per founder
+  products           FounderProduct[] @relation("FounderProducts")
+
   // Founder portal access
   accessToken        String?  @unique @map("access_token") // Unique token for founder portal access
+
+  // Password authentication for founder accounts
+  passwordHash       String?  @map("password_hash")
+  hasAccount         Boolean  @default(false) @map("has_account") // True if they've set up password login
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -450,4 +457,45 @@ model ProductVote {
 enum First100WaitlistType {
   FOUNDER
   EARLY_ADOPTER
+}
+
+// ===========================
+// FOUNDER PRODUCTS (Multiple products per founder)
+// ===========================
+// Allows founders to submit and manage multiple products
+model FounderProduct {
+  id          String   @id @default(uuid())
+
+  // The founder who owns this product
+  founderId   String   @map("founder_id")
+  founder     First100Waitlist @relation("FounderProducts", fields: [founderId], references: [id], onDelete: Cascade)
+
+  // Product details
+  name        String
+  tagline     String?
+  url         String?
+  category    String?
+  stage       String?  // "idea" | "building" | "alpha" | "beta" | "launched"
+  slug        String?  @unique // URL-friendly slug for public product page
+
+  // Deal/offer for early adopters
+  lookingForCount    Int?     @map("looking_for_count") // Number of early adopters wanted
+  offerDescription   String?  @map("offer_description") // What deal/discount they're offering
+
+  // Status tracking
+  status             String   @default("pending") // "pending" | "voting" | "approved" | "active" | "paused"
+  plan               String?  @default("FREE") // "FREE" | "STARTER" | "GROWTH" | "LAUNCH" | "CONCIERGE"
+  approvedAt         DateTime? @map("approved_at")
+
+  // Voting system
+  voteCount          Int      @default(0) @map("vote_count") // Cached count of votes
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([founderId])
+  @@index([status])
+  @@index([category])
+  @@index([voteCount])
+  @@map("founder_products")
 }

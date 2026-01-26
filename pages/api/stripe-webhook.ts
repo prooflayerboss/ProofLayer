@@ -65,12 +65,42 @@ export default async function handler(
     // Handle checkout.session.completed for both one-time and subscription
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
-      const userId = session.metadata?.userId;
-      const plan = session.metadata?.plan as 'MONTHLY' | 'LIFETIME' | 'SOLO' | 'PRO' | 'AGENCY';
+      const purchaseType = session.metadata?.type; // 'first100' or undefined for regular users
+      const plan = session.metadata?.plan as 'STARTER' | 'GROWTH' | 'LAUNCH' | 'CONCIERGE' | 'MONTHLY' | 'LIFETIME' | 'SOLO' | 'PRO' | 'AGENCY';
 
-      console.log('💳 Checkout session completed for userId:', userId);
+      console.log('💳 Checkout session completed');
       console.log('Plan:', plan);
       console.log('Mode:', session.mode);
+      console.log('Type:', purchaseType);
+
+      // Handle First100 founder upgrades
+      if (purchaseType === 'first100') {
+        const founderId = session.metadata?.founderId;
+        const founderEmail = session.metadata?.founderEmail;
+
+        console.log('🚀 First100 founder upgrade:', { founderId, founderEmail, plan });
+
+        if (!founderId || !plan) {
+          console.error('❌ Missing founderId or plan in First100 session metadata');
+          return res.status(400).json({ error: 'Missing First100 metadata' });
+        }
+
+        // Update the founder's record - auto-approve on payment
+        await prisma.first100Waitlist.update({
+          where: { id: founderId },
+          data: {
+            status: 'active', // Auto-approve on payment
+          },
+        });
+
+        console.log(`✅ First100 founder ${founderId} upgraded to ${plan} and auto-approved!`);
+        return res.json({ received: true });
+      }
+
+      // Handle regular user upgrades
+      const userId = session.metadata?.userId;
+
+      console.log('💳 Regular checkout for userId:', userId);
 
       if (!userId || !plan) {
         console.error('❌ Missing userId or plan in session metadata');
