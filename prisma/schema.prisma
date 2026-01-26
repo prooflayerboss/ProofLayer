@@ -24,10 +24,17 @@ model User {
   name      String?
   phone     String?
 
-  // Business profile fields
+  // User type - determines dashboard view
+  userType  UserType? @map("user_type") // null until onboarding completed
+
+  // Business profile fields (for founders)
   businessName String? @map("business_name")
   businessType String? @map("business_type") // e.g., "agency", "freelancer", "saas", "ecommerce"
   website      String?
+
+  // Early adopter profile fields
+  twitterHandle String? @map("twitter_handle")
+  interests     String[] @default([]) // Categories they're interested in
 
   // Onboarding tracking
   onboardingCompleted Boolean @default(false) @map("onboarding_completed")
@@ -37,8 +44,15 @@ model User {
 
   entitlement Entitlement?
   workspaces  Workspace[]
+  products    Product[] // Products owned by this user (if founder)
+  votes       Vote[]    // Votes given by this user (if early adopter)
 
   @@map("users")
+}
+
+enum UserType {
+  FOUNDER
+  EARLY_ADOPTER
 }
 
 // ===========================
@@ -460,7 +474,7 @@ enum First100WaitlistType {
 }
 
 // ===========================
-// FOUNDER PRODUCTS (Multiple products per founder)
+// FOUNDER PRODUCTS (Multiple products per founder) - LEGACY
 // ===========================
 // Allows founders to submit and manage multiple products
 model FounderProduct {
@@ -498,4 +512,124 @@ model FounderProduct {
   @@index([category])
   @@index([voteCount])
   @@map("founder_products")
+}
+
+// ===========================
+// PRODUCTS (New unified model)
+// ===========================
+// Products submitted by founders through unified auth
+model Product {
+  id          String   @id @default(uuid())
+
+  // The founder who owns this product (Supabase Auth user)
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Product details
+  name        String
+  tagline     String?
+  url         String?
+  category    String?
+  stage       String?  // "idea" | "building" | "alpha" | "beta" | "launched"
+  slug        String?  @unique // URL-friendly slug for public product page
+
+  // Deal/offer for early adopters
+  lookingForCount    Int?     @default(25) @map("looking_for_count")
+  offerDescription   String?  @map("offer_description")
+
+  // Status tracking
+  status             ProductStatus @default(PENDING)
+  plan               ProductPlan   @default(FREE)
+  approvedAt         DateTime?     @map("approved_at")
+
+  // Voting system
+  voteCount          Int      @default(0) @map("vote_count")
+  votes              Vote[]
+
+  // Early adopter signups
+  earlyAdopterSignups EarlyAdopterSignup[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([status])
+  @@index([category])
+  @@index([voteCount])
+  @@map("products")
+}
+
+enum ProductStatus {
+  PENDING   // Awaiting review
+  VOTING    // In community voting phase
+  APPROVED  // Approved, ready to go live
+  ACTIVE    // Live and accepting early adopters
+  PAUSED    // Temporarily paused by founder
+}
+
+enum ProductPlan {
+  FREE       // Free listing
+  STARTER    // $49
+  GROWTH     // $149
+  LAUNCH     // $299
+  CONCIERGE  // Custom
+}
+
+// ===========================
+// VOTES (New unified model)
+// ===========================
+// Votes from early adopters on products
+model Vote {
+  id          String   @id @default(uuid())
+
+  // The product being voted on
+  productId   String   @map("product_id")
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  // The early adopter who voted (Supabase Auth user)
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Each user can only vote once per product
+  @@unique([productId, userId])
+  @@index([productId])
+  @@index([userId])
+  @@map("votes")
+}
+
+// ===========================
+// EARLY ADOPTER SIGNUPS
+// ===========================
+// Tracks when early adopters sign up for a product
+model EarlyAdopterSignup {
+  id          String   @id @default(uuid())
+
+  // The product they signed up for
+  productId   String   @map("product_id")
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  // The early adopter (Supabase Auth user ID, or email if not registered)
+  userId      String?  @map("user_id")
+  email       String   // Always stored for contact purposes
+
+  // Status tracking
+  status      SignupStatus @default(PENDING)
+  claimedAt   DateTime?    @map("claimed_at") // When they claimed the deal
+  testimonialId String?    @map("testimonial_id") // Link to submitted testimonial
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([productId, email]) // One signup per product per email
+  @@index([productId])
+  @@index([userId])
+  @@map("early_adopter_signups")
+}
+
+enum SignupStatus {
+  PENDING     // Signed up but hasn't claimed
+  CLAIMED     // Claimed the deal
+  COMPLETED   // Used product and submitted testimonial
 }
