@@ -278,15 +278,19 @@ function LoginForm() {
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="flex gap-12 mt-12">
-            <div>
-              <p className="text-4xl font-bold text-white">2,500+</p>
-              <p className="text-blue-200 text-sm">Happy users</p>
+          {/* Value Props */}
+          <div className="flex gap-8 mt-12">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <p className="text-blue-100 text-sm">One-time payment</p>
             </div>
-            <div>
-              <p className="text-4xl font-bold text-white">50K+</p>
-              <p className="text-blue-200 text-sm">Testimonials collected</p>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <p className="text-blue-100 text-sm">No monthly fees</p>
             </div>
           </div>
         </div>

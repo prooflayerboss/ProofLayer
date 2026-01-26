@@ -148,8 +148,14 @@ export default function Navigation() {
             </Link>
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:flex items-center">
+          {/* CTA Buttons */}
+          <div className="hidden md:flex items-center gap-3">
+            <Link
+              href="/login"
+              className="px-4 py-2 text-[#737373] hover:text-[#0a0a0b] font-medium transition-colors"
+            >
+              Sign In
+            </Link>
             <Link
               href="/founders"
               className="btn-primary flex items-center gap-2 bg-[#0a0a0b] text-white px-5 py-2.5 rounded-full font-semibold text-sm"
@@ -230,7 +236,14 @@ export default function Navigation() {
             </Link>
 
             {/* CTA Section */}
-            <div className="pt-4 mt-4 border-t border-black/5">
+            <div className="pt-4 mt-4 border-t border-black/5 space-y-3">
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-center py-3 px-4 text-[#0a0a0b] font-medium rounded-xl border border-black/10 hover:bg-[#fafafa]"
+              >
+                Sign In
+              </Link>
               <Link
                 href="/founders"
                 onClick={() => setMobileMenuOpen(false)}
