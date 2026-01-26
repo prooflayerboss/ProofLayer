@@ -43,16 +43,30 @@ export default function NewProductPage() {
     offerDescription: '',
   });
 
+  function normalizeUrl(url: string): string {
+    if (!url) return '';
+    url = url.trim();
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      return `https://${url}`;
+    }
+    return url;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
     setLoading(true);
 
+    const submitData = {
+      ...formData,
+      url: normalizeUrl(formData.url),
+    };
+
     try {
       const res = await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submitData),
       });
 
       const data = await res.json();
@@ -136,12 +150,13 @@ export default function NewProductPage() {
                 Website URL
               </label>
               <input
-                type="url"
+                type="text"
                 value={formData.url}
                 onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                placeholder="https://myproduct.com"
+                placeholder="myproduct.com"
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00d084]/50 focus:border-transparent transition-all"
               />
+              <p className="text-xs text-gray-400 mt-1">https:// will be added automatically</p>
             </div>
           </div>
         </div>
