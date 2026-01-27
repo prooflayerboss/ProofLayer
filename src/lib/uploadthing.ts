@@ -28,6 +28,22 @@ export const ourFileRouter = {
       // Return data that will be sent to the client
       return { uploadedBy: metadata.uploadedBy, fileUrl: file.url };
     }),
+
+  // Product images uploader
+  productImageUploader: f({
+    image: {
+      maxFileSize: "4MB",
+      maxFileCount: 5,
+    },
+  })
+    .middleware(async ({ req }) => {
+      // Allow authenticated users to upload product images
+      return { uploadedBy: "user" };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Product image uploaded:", file.url);
+      return { fileUrl: file.url };
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

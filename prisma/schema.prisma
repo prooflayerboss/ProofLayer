@@ -532,6 +532,7 @@ model Product {
   category    String?
   stage       String?  // "idea" | "building" | "alpha" | "beta" | "launched"
   slug        String?  @unique // URL-friendly slug for public product page
+  images      String[] @default([]) // Product screenshots/images
 
   // Deal/offer for early adopters
   lookingForCount    Int?     @default(25) @map("looking_for_count")

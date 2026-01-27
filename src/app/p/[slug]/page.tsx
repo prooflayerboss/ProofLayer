@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ExternalLink, Users, Rocket } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
+import { ProductImageGallery } from '@/components/ProductImageGallery';
 
 interface Props {
   params: { slug: string };
@@ -51,6 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: product.name,
       description: product.tagline || '',
       type: 'website',
+      images: product.images && product.images.length > 0 ? [product.images[0]] : [],
     },
     robots: {
       index: true,
@@ -132,6 +134,13 @@ export default async function ProductPublicPage({ params }: Props) {
                 )}
               </div>
             </div>
+
+            {/* Product Images */}
+            {product.images && product.images.length > 0 && (
+              <div className="mb-8">
+                <ProductImageGallery images={product.images} productName={product.name} />
+              </div>
+            )}
 
             {/* Founder Info */}
             {(product.user.name || product.user.twitterHandle) && (

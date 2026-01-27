@@ -51,7 +51,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { name, tagline, url, category, stage, lookingForCount, offerDescription } = body;
+    const { name, tagline, url, category, stage, lookingForCount, offerDescription, images } = body;
 
     if (!name || !category || !stage || !offerDescription) {
       return NextResponse.json(
@@ -85,6 +85,7 @@ export async function POST(request: Request) {
         slug,
         lookingForCount: lookingForCount || 25,
         offerDescription,
+        images: images || [],
         status: 'PENDING',
         plan: 'FREE',
         voteCount: 0,

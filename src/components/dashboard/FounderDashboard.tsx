@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Rocket, Users, ThumbsUp, MessageSquare, Plus, ArrowRight, Package } from 'lucide-react';
 
 interface Product {
@@ -12,6 +13,7 @@ interface Product {
   status: string;
   voteCount: number;
   slug: string | null;
+  images: string[];
   _count: {
     votes: number;
     earlyAdopterSignups: number;
@@ -125,9 +127,20 @@ export default function FounderDashboard({ data }: FounderDashboardProps) {
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#00d084] to-emerald-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                        {product.name.charAt(0).toUpperCase()}
-                      </div>
+                      {product.images && product.images.length > 0 ? (
+                        <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
+                          <Image
+                            src={product.images[0]}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#00d084] to-emerald-600 flex items-center justify-center text-white font-bold text-xl shadow-lg flex-shrink-0">
+                          {product.name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
                       <div>
                         <h3 className="font-semibold text-gray-900 group-hover:text-[#00d084] transition-colors">
                           {product.name}

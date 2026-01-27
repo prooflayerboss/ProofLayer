@@ -3,7 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Rocket } from 'lucide-react';
+import { ArrowLeft, Rocket, Upload, X } from 'lucide-react';
+import { UploadButton } from '@/lib/uploadthing-utils';
+import Image from 'next/image';
 
 const categories = [
   'SaaS',
@@ -32,6 +34,7 @@ export default function NewProductPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [uploadingImages, setUploadingImages] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -41,6 +44,7 @@ export default function NewProductPage() {
     stage: '',
     lookingForCount: 25,
     offerDescription: '',
+    images: [] as string[],
   });
 
   function normalizeUrl(url: string): string {
@@ -50,6 +54,13 @@ export default function NewProductPage() {
       return `https://${url}`;
     }
     return url;
+  }
+
+  function removeImage(index: number) {
+    setFormData({
+      ...formData,
+      images: formData.images.filter((_, i) => i !== index),
+    });
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -159,6 +170,87 @@ export default function NewProductPage() {
               <p className="text-xs text-gray-400 mt-1">https:// will be added automatically</p>
             </div>
           </div>
+        </div>
+
+        {/* Product Images */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">Product Screenshots</h2>
+          <p className="text-gray-500 text-sm mb-5">
+            Add up to 5 screenshots or images of your product. Great visuals help attract early adopters!
+          </p>
+
+          {/* Uploaded Images Grid */}
+          {formData.images.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
+              {formData.images.map((imageUrl, index) => (
+                <div key={index} className="relative group aspect-video rounded-lg overflow-hidden border border-gray-200">
+                  <Image
+                    src={imageUrl}
+                    alt={`Product screenshot ${index + 1}`}
+                    fill
+                    className="object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                  {index === 0 && (
+                    <div className="absolute bottom-2 left-2 bg-[#00d084] text-white text-xs px-2 py-1 rounded font-medium">
+                      Main
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Upload Button */}
+          {formData.images.length < 5 && (
+            <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center">
+              <Upload className="w-10 h-10 text-gray-400 mx-auto mb-3" />
+              <p className="text-gray-600 text-sm mb-4">
+                {formData.images.length === 0
+                  ? 'Add your first screenshot'
+                  : `Add ${5 - formData.images.length} more screenshot${5 - formData.images.length !== 1 ? 's' : ''}`}
+              </p>
+              <UploadButton
+                endpoint="productImageUploader"
+                onClientUploadComplete={(res) => {
+                  if (res && res.length > 0) {
+                    const newImages = res.map((file) => file.url);
+                    setFormData({
+                      ...formData,
+                      images: [...formData.images, ...newImages].slice(0, 5),
+                    });
+                    setUploadingImages(false);
+                  }
+                }}
+                onUploadBegin={() => {
+                  setUploadingImages(true);
+                }}
+                onUploadError={(error: Error) => {
+                  setError(`Upload failed: ${error.message}`);
+                  setUploadingImages(false);
+                }}
+                appearance={{
+                  button: 'bg-[#00d084] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity',
+                  allowedContent: 'text-gray-500 text-xs mt-2',
+                }}
+              />
+              {uploadingImages && (
+                <p className="text-sm text-gray-500 mt-2">Uploading...</p>
+              )}
+            </div>
+          )}
+
+          {formData.images.length > 0 && (
+            <p className="text-xs text-gray-400 mt-3">
+              The first image will be used as your product's main image
+            </p>
+          )}
         </div>
 
         {/* Category & Stage */}
@@ -271,7 +363,7 @@ export default function NewProductPage() {
           </Link>
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || uploadingImages}
             className="bg-[#00d084] text-white px-8 py-3 rounded-xl font-semibold hover:opacity-90 transition-all disabled:opacity-50 flex items-center gap-2 shadow-lg shadow-emerald-500/20"
           >
             {loading ? (
