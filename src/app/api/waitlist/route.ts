@@ -1,8 +1,21 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { Resend } from 'resend';
+import { apiLogger } from '@/lib/logger';
+import { checkRateLimit, getClientIp, RATE_LIMITS, rateLimitHeaders } from '@/lib/rate-limit';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Rate limit check
+  const clientIp = getClientIp(request.headers);
+  const rateLimitResult = checkRateLimit(`waitlist:${clientIp}`, RATE_LIMITS.strict);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
     const { email } = await request.json();
 
@@ -27,7 +40,7 @@ export async function POST(request: Request) {
       ]);
 
     if (error) {
-      console.error('Supabase insert error:', error);
+      apiLogger.error('Supabase insert error', { error: error.message, code: error.code });
       // If duplicate email, that's okay
       if (error.code === '23505') {
         return NextResponse.json({ message: 'Already subscribed!' });
@@ -63,12 +76,12 @@ export async function POST(request: Request) {
       });
     } catch (emailError) {
       // Log but don't fail the request if email fails
-      console.error('Failed to send notification email:', emailError);
+      apiLogger.error('Failed to send notification email', { error: String(emailError) });
     }
 
     return NextResponse.json({ message: 'Successfully subscribed!' });
   } catch (error) {
-    console.error('Waitlist error:', error);
+    apiLogger.error('Waitlist error', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to subscribe' },
       { status: 500 }
