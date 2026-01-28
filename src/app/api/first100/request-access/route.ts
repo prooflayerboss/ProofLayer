@@ -1,8 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Resend } from 'resend';
+import { apiLogger } from '@/lib/logger';
+import { checkRateLimit, getClientIp, RATE_LIMITS, rateLimitHeaders } from '@/lib/rate-limit';
+import { isValidEmail } from '@/lib/first100-utils';
 
 export async function POST(request: NextRequest) {
+  // Rate limit check
+  const clientIp = getClientIp(request.headers);
+  const rateLimitResult = checkRateLimit(`request-access:${clientIp}`, RATE_LIMITS.strict);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
     const body = await request.json();
     const { email, productId, productSlug, productName } = body;
@@ -12,8 +26,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!isValidEmail(email)) {
       return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
     }
 
@@ -161,7 +174,7 @@ export async function POST(request: NextRequest) {
         `,
       });
     } catch (emailError) {
-      console.error('Failed to send request access emails:', emailError);
+      apiLogger.error('Failed to send request access emails', { error: String(emailError) });
       // Don't fail the request if email fails
     }
 
@@ -170,7 +183,7 @@ export async function POST(request: NextRequest) {
       message: 'Access request sent',
     });
   } catch (error) {
-    console.error('Request access API error:', error);
+    apiLogger.error('Request access API error', { error: String(error) });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

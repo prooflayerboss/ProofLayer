@@ -1,42 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { jwtVerify } from 'jose';
-import { cookies } from 'next/headers';
-
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-change-in-production'
-);
-
-// Helper to generate URL-friendly slug
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .substring(0, 50);
-}
-
-async function getAuthenticatedFounder() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('founder_token')?.value;
-
-  if (!token) {
-    return null;
-  }
-
-  try {
-    const result = await jwtVerify(token, JWT_SECRET);
-    const payload = result.payload as { founderId: string; email: string };
-
-    const founder = await prisma.first100Waitlist.findUnique({
-      where: { id: payload.founderId },
-    });
-
-    return founder;
-  } catch {
-    return null;
-  }
-}
+import { apiLogger } from '@/lib/logger';
+import { getAuthenticatedFounder, generateSlug } from '@/lib/first100-utils';
 
 // GET - List all products for the authenticated founder
 export async function GET() {
@@ -54,7 +19,7 @@ export async function GET() {
 
     return NextResponse.json({ products });
   } catch (error) {
-    console.error('Get products error:', error);
+    apiLogger.error('Get products error', { error: String(error) });
     return NextResponse.json({ error: 'Failed to get products' }, { status: 500 });
   }
 }
@@ -116,7 +81,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Create product error:', error);
+    apiLogger.error('Create product error', { error: String(error) });
     return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
   }
 }

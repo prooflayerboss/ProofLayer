@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { ensureUserExists } from '@/actions/user';
 import { prisma } from '@/lib/prisma';
+import { emailLogger } from '@/lib/logger';
 
 export async function POST(request: Request) {
   try {
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, campaign });
   } catch (error) {
-    console.error('Create campaign error:', error);
+    emailLogger.error('Create campaign error', { error: String(error) });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

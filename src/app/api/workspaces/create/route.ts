@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { ensureUserExists } from '@/actions/user';
 import { canCreateWorkspace } from '@/lib/plan-limits';
+import { apiLogger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error creating workspace:', error);
+    apiLogger.error('Error creating workspace', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to create workspace' },
       { status: 500 }

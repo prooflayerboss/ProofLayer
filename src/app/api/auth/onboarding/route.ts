@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import { apiLogger } from '@/lib/logger';
 
 export async function POST(request: Request) {
   try {
@@ -70,8 +71,9 @@ export async function POST(request: Request) {
         onboardingCompleted: updatedUser.onboardingCompleted,
       }
     });
-  } catch (error: any) {
-    console.error('[Onboarding API] Error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    apiLogger.error('Onboarding error', { error: message });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

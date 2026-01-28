@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
 import { prisma } from '@/lib/prisma';
+import { paymentLogger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -109,17 +110,17 @@ export async function POST(request: NextRequest) {
     }
 
     if (!priceId) {
-      console.error(`Stripe price ID not set for plan: ${plan}`);
+      paymentLogger.error('Stripe price ID not configured', { plan });
       return NextResponse.json(
         { error: 'Stripe price ID not configured' },
         { status: 500 }
       );
     }
 
-    console.log('Creating checkout session with price:', priceId, 'for plan:', plan);
+    paymentLogger.debug('Creating checkout session', { priceId, plan });
 
     // Create Stripe checkout session
-    const sessionConfig: any = {
+    const session = await stripe.checkout.sessions.create({
       mode: plan === 'MONTHLY' ? 'subscription' : 'payment',
       line_items: [
         {
@@ -134,16 +135,12 @@ export async function POST(request: NextRequest) {
         userId: user.id,
         plan: plan,
       },
-    };
-
-    // Allow promotion codes for all plans
-    sessionConfig.allow_promotion_codes = true;
-
-    const session = await stripe.checkout.sessions.create(sessionConfig);
+      allow_promotion_codes: true,
+    });
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
-    console.error('Checkout error:', error);
+    paymentLogger.error('Checkout error', { error: String(error) });
 
     // Return more detailed error for debugging
     const errorMessage = error instanceof Error ? error.message : 'Failed to create checkout session';

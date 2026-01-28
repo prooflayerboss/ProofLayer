@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import { apiLogger } from '@/lib/logger';
 
 export async function GET() {
   try {
@@ -61,8 +62,9 @@ export async function GET() {
         createdAt: user.createdAt,
       }
     });
-  } catch (error: any) {
-    console.error('[Auth Me API] Error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    apiLogger.error('Auth me error', { error: message });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import { authLogger } from '@/lib/logger';
 import { Resend } from 'resend';
 import { render } from '@react-email/render';
 import WelcomeEmail from '../../../../../emails/welcome';
@@ -49,7 +50,7 @@ export async function POST() {
     const userName = user.user_metadata?.name || user.email?.split('@')[0] || '';
     const userEmail = user.email || '';
 
-    console.log('[New User API] isNewUser:', isNewUser, '| userEmail:', userEmail);
+    authLogger.debug('Processing new user', { isNewUser, userEmail });
 
     // Create user in database if they don't exist
     await prisma.user.upsert({
@@ -72,7 +73,6 @@ export async function POST() {
 
     // Send emails for new users only
     if (isNewUser && userEmail && process.env.RESEND_API_KEY) {
-      console.log('[New User API] Starting email send process...');
       const signupTime = new Date().toLocaleString('en-US', {
         weekday: 'short',
         year: 'numeric',
@@ -93,9 +93,9 @@ export async function POST() {
           html: welcomeHtml,
           replyTo: 'curtis@prooflayer.app',
         });
-        console.log('[New User API] Welcome email sent to:', userEmail);
+        authLogger.info('Welcome email sent', { to: userEmail });
       } catch (emailError) {
-        console.error('[New User API] Failed to send welcome email:', emailError);
+        authLogger.error('Failed to send welcome email', { error: String(emailError) });
       }
 
       // Send notification to owner
@@ -115,16 +115,17 @@ export async function POST() {
             subject: `🎉 New signup: ${userEmail}`,
             html: notificationHtml,
           });
-          console.log('[New User API] Signup notification sent to owner');
+          authLogger.info('Signup notification sent to owner');
         } catch (emailError) {
-          console.error('[New User API] Failed to send notification email:', emailError);
+          authLogger.error('Failed to send notification email', { error: String(emailError) });
         }
       }
     }
 
     return NextResponse.json({ success: true, isNewUser });
-  } catch (error: any) {
-    console.error('[New User API] Error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    authLogger.error('New user API error', { error: message });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

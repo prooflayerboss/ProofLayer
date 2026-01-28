@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import { apiLogger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Account update error:', error);
+    apiLogger.error('Account update error', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to update profile' },
       { status: 500 }

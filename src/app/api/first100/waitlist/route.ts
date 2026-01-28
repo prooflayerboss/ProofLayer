@@ -2,38 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Resend } from 'resend';
 import { randomBytes } from 'crypto';
-
-// Generate URL-friendly slug from product name
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '') // Remove special characters
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Remove consecutive hyphens
-    .substring(0, 50); // Limit length
-}
-
-// Ensure slug is unique by checking DB and appending suffix if needed
-async function getUniqueSlug(baseSlug: string): Promise<string> {
-  let slug = baseSlug;
-  let suffix = 0;
-
-  while (true) {
-    const existing = await prisma.first100Waitlist.findUnique({
-      where: { slug },
-    });
-
-    if (!existing) {
-      return slug;
-    }
-
-    suffix++;
-    slug = `${baseSlug}-${suffix}`;
-  }
-}
+import { apiLogger } from '@/lib/logger';
+import { generateSlug, generateUniqueSlug, safeParseInt } from '@/lib/first100-utils';
+import { checkRateLimit, getClientIp, RATE_LIMITS, rateLimitHeaders } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+  // Rate limit check
+  const clientIp = getClientIp(request.headers);
+  const rateLimitResult = checkRateLimit(`first100-waitlist:${clientIp}`, RATE_LIMITS.strict);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: 'Too many signup attempts. Please try again later.' },
+      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
     const body = await request.json();
     const {
@@ -88,7 +72,10 @@ export async function POST(request: NextRequest) {
 
     if (type === 'founder' && productName) {
       const baseSlug = generateSlug(productName);
-      slug = await getUniqueSlug(baseSlug);
+      slug = await generateUniqueSlug(baseSlug, async (s) => {
+        const existing = await prisma.first100Waitlist.findUnique({ where: { slug: s } });
+        return !!existing;
+      });
     }
 
     // Build data object based on type
@@ -133,7 +120,7 @@ export async function POST(request: NextRequest) {
       if (productUrl) createData.productUrl = productUrl;
       if (productCategory) createData.productCategory = productCategory;
       if (productStage) createData.productStage = productStage;
-      if (lookingForCount) createData.lookingForCount = parseInt(lookingForCount);
+      if (lookingForCount) createData.lookingForCount = safeParseInt(lookingForCount) ?? 25;
       if (offerDescription) createData.offerDescription = offerDescription;
     }
 
@@ -392,7 +379,7 @@ export async function POST(request: NextRequest) {
         });
       }
     } catch (emailError) {
-      console.error('Failed to send welcome email:', emailError);
+      apiLogger.error('Failed to send welcome email', { error: String(emailError) });
       // Don't fail the request if email fails
     }
 
@@ -402,7 +389,7 @@ export async function POST(request: NextRequest) {
       data: entry,
     });
   } catch (error) {
-    console.error('First100 Waitlist API error:', error);
+    apiLogger.error('First100 Waitlist API error', { error: String(error) });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

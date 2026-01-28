@@ -67,7 +67,7 @@ export function canAcceptSubmission(currentCount: number, plan: Plan): {
  */
 export function isLayoutAllowed(layout: string, plan: Plan): boolean {
   const limits = getPlanLimits(plan);
-  return limits.allowedLayouts.includes(layout as any);
+  return (limits.allowedLayouts as readonly string[]).includes(layout);
 }
 
 /**
@@ -75,7 +75,7 @@ export function isLayoutAllowed(layout: string, plan: Plan): boolean {
  */
 export function isWidgetTypeAllowed(widgetType: string, plan: Plan): boolean {
   const limits = getPlanLimits(plan);
-  return limits.allowedWidgetTypes.includes(widgetType as any);
+  return (limits.allowedWidgetTypes as readonly string[]).includes(widgetType);
 }
 
 /**

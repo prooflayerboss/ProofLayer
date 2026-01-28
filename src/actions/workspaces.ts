@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { PLAN_LIMITS } from '@/lib/constants';
 import { ensureUserExists } from './user';
+import { apiLogger } from '@/lib/logger';
 
 /**
  * Generate a URL-friendly slug from a workspace name
@@ -95,7 +96,7 @@ export async function createWorkspace(formData: FormData) {
     revalidatePath('/dashboard/workspaces');
     revalidatePath('/dashboard');
   } catch (error) {
-    console.error('Failed to create workspace:', error);
+    apiLogger.error('Failed to create workspace', { error: String(error) });
     return { success: false, error: 'Failed to create workspace. Please try again.' };
   }
 
@@ -196,7 +197,7 @@ export async function deleteWorkspace(formData: FormData) {
     revalidatePath('/dashboard/workspaces');
     revalidatePath('/dashboard');
   } catch (error) {
-    console.error('Failed to delete workspace:', error);
+    apiLogger.error('Failed to delete workspace', { error: String(error) });
     return { success: false, error: 'Failed to delete workspace. Please try again.' };
   }
 
@@ -249,7 +250,7 @@ export async function updateWorkspaceCustomization(formData: FormData) {
 
     return { success: true };
   } catch (error) {
-    console.error('Failed to update workspace customization:', error);
+    apiLogger.error('Failed to update workspace customization', { error: String(error) });
     return { success: false, error: 'Failed to update customization. Please try again.' };
   }
 }

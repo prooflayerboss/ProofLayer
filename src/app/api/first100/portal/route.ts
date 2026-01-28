@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { apiLogger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   try {
@@ -72,7 +73,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Portal API error:', error);
+    apiLogger.error('Portal API error', { error: String(error) });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

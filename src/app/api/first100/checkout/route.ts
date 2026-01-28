@@ -1,8 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
+import { paymentLogger } from '@/lib/logger';
+import { checkRateLimit, getClientIp, RATE_LIMITS, rateLimitHeaders } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+  // Rate limit check
+  const clientIp = getClientIp(request.headers);
+  const rateLimitResult = checkRateLimit(`checkout:${clientIp}`, RATE_LIMITS.strict);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
       apiVersion: '2025-02-24.acacia',
@@ -54,11 +67,9 @@ export async function POST(request: NextRequest) {
     }
 
     if (!priceId) {
-      console.error(`Stripe price ID not set for plan: ${plan}`);
+      paymentLogger.error('Stripe price ID not configured', { plan });
       return NextResponse.json({ error: 'Stripe price ID not configured' }, { status: 500 });
     }
-
-    console.log('Creating First100 checkout session:', { plan, priceId, founderId: founder.id });
 
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
@@ -84,8 +95,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
-    console.error('First100 checkout error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to create checkout session';
+    paymentLogger.error('First100 checkout error', { error: errorMessage });
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyEmailActionToken } from '@/lib/email-token';
+import { apiLogger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   try {
@@ -55,7 +56,7 @@ export async function GET(request: NextRequest) {
       new URL(`/moderation-success?action=${action}&workspace=${workspaceId}`, request.url)
     );
   } catch (error) {
-    console.error('Moderation error:', error);
+    apiLogger.error('Moderation error', { error: String(error) });
     return NextResponse.redirect(new URL('/error?message=Failed to moderate submission', request.url));
   }
 }

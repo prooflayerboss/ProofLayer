@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import { apiLogger } from '@/lib/logger';
 
 export async function POST(request: Request) {
   try {
@@ -94,7 +95,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ product }, { status: 201 });
   } catch (error) {
-    console.error('Error creating product:', error);
+    apiLogger.error('Error creating product', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to create product' },
       { status: 500 }
@@ -149,7 +150,7 @@ export async function GET() {
 
     return NextResponse.json({ products });
   } catch (error) {
-    console.error('Error fetching products:', error);
+    apiLogger.error('Error fetching products', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to fetch products' },
       { status: 500 }

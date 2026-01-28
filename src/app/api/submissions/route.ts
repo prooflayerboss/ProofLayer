@@ -3,8 +3,21 @@ import { prisma } from '@/lib/prisma';
 import { canAcceptSubmission } from '@/lib/plan-limits';
 import { Resend } from 'resend';
 import { generateEmailActionToken } from '@/lib/email-token';
+import { apiLogger } from '@/lib/logger';
+import { checkRateLimit, getClientIp, RATE_LIMITS, rateLimitHeaders } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+  // Rate limit check
+  const clientIp = getClientIp(request.headers);
+  const rateLimitResult = checkRateLimit(`submissions:${clientIp}`, RATE_LIMITS.submissions);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: 'Too many submissions. Please try again later.' },
+      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
     const body = await request.json();
     const { formId, workspaceId, name, company, role, testimonial, rating, submissionType } = body;
@@ -158,12 +171,12 @@ export async function POST(request: NextRequest) {
       }
     } catch (emailError) {
       // Log but don't fail the request if email fails
-      console.error('Failed to send notification email:', emailError);
+      apiLogger.error('Failed to send notification email', { error: String(emailError) });
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Submission error:', error);
+    apiLogger.error('Submission error', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to submit testimonial' },
       { status: 500 }
