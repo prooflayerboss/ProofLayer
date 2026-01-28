@@ -1,8 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { canAcceptSubmission } from '@/lib/plan-limits';
+import { apiLogger } from '@/lib/logger';
+import { safeParseInt } from '@/lib/first100-utils';
+import { checkRateLimit, getClientIp, RATE_LIMITS, rateLimitHeaders } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+  // Rate limit check
+  const clientIp = getClientIp(request.headers);
+  const rateLimitResult = checkRateLimit(`video-submission:${clientIp}`, RATE_LIMITS.submissions);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: 'Too many submissions. Please try again later.' },
+      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
     const body = await request.json();
     const { formId, workspaceId, name, company, role, rating, videoUrl } = body;
@@ -82,7 +96,7 @@ export async function POST(request: NextRequest) {
           company: company || null,
           role: role || null,
           testimonial: `Video testimonial from ${name}`, // Placeholder text for video testimonials
-          rating: rating ? parseInt(rating) : null,
+          rating: safeParseInt(rating),
           videoUrl,
           videoThumbnail, // Uploadthing provides thumbnails
           videoDuration: null, // Can be extracted client-side if needed
@@ -99,7 +113,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, videoUrl });
   } catch (error) {
-    console.error('Video submission error:', error);
+    apiLogger.error('Video submission error', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to submit video testimonial' },
       { status: 500 }

@@ -1,9 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { apiLogger } from '@/lib/logger';
+import { checkRateLimit, getClientIp, RATE_LIMITS, rateLimitHeaders } from '@/lib/rate-limit';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 'placeholder');
 
 export async function POST(request: NextRequest) {
+  // Rate limit check
+  const clientIp = getClientIp(request.headers);
+  const rateLimitResult = checkRateLimit(`concierge:${clientIp}`, RATE_LIMITS.strict);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
     const body = await request.json();
     const { name, email, company, website, description, budget } = body;
@@ -27,7 +40,7 @@ export async function POST(request: NextRequest) {
 
     // Check if Resend is configured
     if (!process.env.RESEND_API_KEY) {
-      console.log('Concierge inquiry (email not configured):', { name, email, company, website, description, budget });
+      apiLogger.warn('Concierge inquiry received but email not configured');
       return NextResponse.json({ success: true, message: 'Inquiry received' });
     }
 
@@ -65,7 +78,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      console.error('Resend error:', error);
+      apiLogger.error('Resend error', { error: String(error) });
       return NextResponse.json(
         { error: 'Failed to send inquiry' },
         { status: 500 }
@@ -74,7 +87,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, message: 'Inquiry sent successfully' });
   } catch (error) {
-    console.error('Concierge API error:', error);
+    apiLogger.error('Concierge API error', { error: String(error) });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

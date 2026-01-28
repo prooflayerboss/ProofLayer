@@ -1,10 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Resend } from 'resend';
+import { apiLogger } from '@/lib/logger';
+import { checkRateLimit, getClientIp, RATE_LIMITS, rateLimitHeaders } from '@/lib/rate-limit';
 
 const VOTE_THRESHOLD = 5; // Number of votes needed for auto-approval
 
 export async function POST(request: NextRequest) {
+  // Rate limit check
+  const clientIp = getClientIp(request.headers);
+  const rateLimitResult = checkRateLimit(`vote:${clientIp}`, RATE_LIMITS.api);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: 'Too many vote requests. Please try again later.' },
+      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
     const body = await request.json();
     const { productId, voterEmail } = body;
@@ -144,7 +157,7 @@ export async function POST(request: NextRequest) {
           `,
         });
       } catch (emailError) {
-        console.error('Failed to send approval email:', emailError);
+        apiLogger.error('Failed to send approval email', { error: String(emailError) });
       }
 
       return NextResponse.json({
@@ -163,7 +176,7 @@ export async function POST(request: NextRequest) {
       approved: false,
     });
   } catch (error) {
-    console.error('Vote API error:', error);
+    apiLogger.error('Vote API error', { error: String(error) });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -201,7 +214,7 @@ export async function GET(request: NextRequest) {
       isEarlyAdopter: voter.type === 'EARLY_ADOPTER',
     });
   } catch (error) {
-    console.error('Vote check API error:', error);
+    apiLogger.error('Vote check API error', { error: String(error) });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

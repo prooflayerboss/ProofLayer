@@ -1,8 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { canAcceptSubmission } from '@/lib/plan-limits';
+import { apiLogger } from '@/lib/logger';
+import { safeParseInt } from '@/lib/first100-utils';
+import { checkRateLimit, getClientIp, RATE_LIMITS, rateLimitHeaders } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+  // Rate limit check
+  const clientIp = getClientIp(request.headers);
+  const rateLimitResult = checkRateLimit(`screenshot-submission:${clientIp}`, RATE_LIMITS.submissions);
+
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: 'Too many submissions. Please try again later.' },
+      { status: 429, headers: rateLimitHeaders(rateLimitResult) }
+    );
+  }
+
   try {
     const body = await request.json();
     const {
@@ -96,7 +110,7 @@ export async function POST(request: NextRequest) {
           company: company || null,
           role: role || null,
           testimonial: testimonialText,
-          rating: rating ? parseInt(rating) : null,
+          rating: safeParseInt(rating),
           photoUrl,
           socialPlatform: socialPlatform || null,
           socialAuthorUrl: socialAuthorUrl || null,
@@ -123,7 +137,7 @@ export async function POST(request: NextRequest) {
       screenshotUrl: photoUrl,
     });
   } catch (error) {
-    console.error('Screenshot submission error:', error);
+    apiLogger.error('Screenshot submission error', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to submit screenshot' },
       { status: 500 }
