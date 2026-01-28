@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { authLogger } from '@/lib/logger';
 
 const SECRET = process.env.EMAIL_ACTION_SECRET || 'change-me-in-production';
 
@@ -37,7 +38,7 @@ export function verifyEmailActionToken(token: string): EmailActionPayload | null
       .digest('base64url');
 
     if (signature !== expectedSignature) {
-      console.error('Invalid token signature');
+      authLogger.warn('Invalid token signature');
       return null;
     }
 
@@ -45,13 +46,13 @@ export function verifyEmailActionToken(token: string): EmailActionPayload | null
 
     // Check expiration
     if (Date.now() > payload.exp) {
-      console.error('Token expired');
+      authLogger.warn('Token expired');
       return null;
     }
 
     return payload;
   } catch (error) {
-    console.error('Token verification failed:', error);
+    authLogger.error('Token verification failed', { error: String(error) });
     return null;
   }
 }
