@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import { apiLogger } from '@/lib/logger';
 
 export async function GET(
   request: Request,
@@ -64,7 +65,7 @@ export async function GET(
 
     return NextResponse.json({ product });
   } catch (error) {
-    console.error('Error fetching product:', error);
+    apiLogger.error('Error fetching product', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to fetch product' },
       { status: 500 }
@@ -124,7 +125,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting product:', error);
+    apiLogger.error('Error deleting product', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to delete product' },
       { status: 500 }

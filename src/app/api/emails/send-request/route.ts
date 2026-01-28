@@ -4,6 +4,7 @@ import { render } from '@react-email/render';
 import { ensureUserExists } from '@/actions/user';
 import { prisma } from '@/lib/prisma';
 import TestimonialRequestEmail from '../../../../../emails/testimonial-request';
+import { emailLogger } from '@/lib/logger';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 'placeholder');
 
@@ -86,7 +87,7 @@ export async function POST(request: Request) {
     });
 
     if (error) {
-      console.error('Resend error:', error);
+      emailLogger.error('Resend error', { error: String(error) });
       return NextResponse.json(
         { error: 'Failed to send email' },
         { status: 500 }
@@ -95,7 +96,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, emailId: data?.id });
   } catch (error) {
-    console.error('Email send error:', error);
+    emailLogger.error('Email send error', { error: String(error) });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
