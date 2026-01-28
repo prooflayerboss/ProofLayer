@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { ensureUserExists } from '@/actions/user';
 import { prisma } from '@/lib/prisma';
+import { apiLogger } from '@/lib/logger';
 
 export async function POST(request: Request) {
   try {
@@ -105,7 +106,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, submission });
   } catch (error) {
-    console.error('Import submission error:', error);
+    apiLogger.error('Import submission error', { error: String(error) });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

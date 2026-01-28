@@ -10,8 +10,6 @@ interface LogContext {
   [key: string]: unknown;
 }
 
-const isDev = process.env.NODE_ENV !== 'production';
-
 function formatMessage(level: LogLevel, prefix: string, message: string, context?: LogContext): string {
   const timestamp = new Date().toISOString();
   const contextStr = context ? ` ${JSON.stringify(context)}` : '';
@@ -19,6 +17,8 @@ function formatMessage(level: LogLevel, prefix: string, message: string, context
 }
 
 function shouldLog(level: LogLevel): boolean {
+  // Check at runtime so tests can modify NODE_ENV
+  const isDev = process.env.NODE_ENV !== 'production';
   if (isDev) return true;
   // In production, only log warnings and errors
   return level === 'warn' || level === 'error';

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { ensureUserExists } from '@/actions/user';
 import { nanoid } from 'nanoid';
+import { apiLogger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -88,7 +89,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Error creating form during onboarding:', error);
+    apiLogger.error('Error creating form during onboarding', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to create form' },
       { status: 500 }

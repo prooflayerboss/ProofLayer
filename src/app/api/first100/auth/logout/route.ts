@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { authLogger } from '@/lib/logger';
 
 export async function POST() {
   try {
@@ -11,7 +12,7 @@ export async function POST() {
       message: 'Logged out successfully',
     });
   } catch (error) {
-    console.error('Logout error:', error);
+    authLogger.error('Logout error', { error: String(error) });
     return NextResponse.json(
       { error: 'Logout failed' },
       { status: 500 }

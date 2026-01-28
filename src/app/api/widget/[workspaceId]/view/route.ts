@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { apiLogger } from '@/lib/logger';
 
 // Handle CORS preflight
 export async function OPTIONS() {
@@ -37,7 +38,7 @@ export async function POST(
     return response;
   } catch (error) {
     // Silently fail - we don't want to break the widget if tracking fails
-    console.error('Widget view tracking error:', error);
+    apiLogger.error('Widget view tracking error', { error: String(error) });
     const response = NextResponse.json({ success: false });
     response.headers.set('Access-Control-Allow-Origin', '*');
     return response;

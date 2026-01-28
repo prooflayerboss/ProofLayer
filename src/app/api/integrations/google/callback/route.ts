@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
+import { apiLogger } from '@/lib/logger';
 
 /**
  * Handles the OAuth callback from Google
@@ -83,7 +82,7 @@ export async function GET(request: NextRequest) {
       `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=google_connected`
     );
   } catch (error) {
-    console.error('Error handling Google OAuth callback:', error);
+    apiLogger.error('Error handling Google OAuth callback', { error: String(error) });
     return NextResponse.redirect(
       `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?error=google_auth_failed`
     );
