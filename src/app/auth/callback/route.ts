@@ -119,7 +119,7 @@ export async function GET(request: Request) {
       }
 
       return NextResponse.redirect(
-        new URL(`/login?error=exchange_failed&message=${encodeURIComponent(error.message)}`, request.url)
+        new URL(`/login?error=exchange_failed&message=${encodeURIComponent(error.message || 'Authentication failed')}`, request.url)
       );
     }
 
