@@ -139,7 +139,8 @@ export async function GET(request: Request) {
       });
 
       const isNewUser = !existingUser;
-      const userName = data.user.user_metadata?.name || data.user.email?.split('@')[0] || '';
+      const rawName = data.user.user_metadata?.name;
+      const userName: string = typeof rawName === 'string' ? rawName : (data.user.email?.split('@')[0] || '');
       const userEmail = data.user.email || '';
 
       authLogger.debug('Processing user', { isNewUser, userEmail });
