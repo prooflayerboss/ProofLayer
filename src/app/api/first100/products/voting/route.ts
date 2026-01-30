@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { apiLogger } from '@/lib/logger';
 
 export async function GET() {
   try {
@@ -43,7 +44,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('Voting products API error:', error);
+    apiLogger.error('Voting products API error', { error: String(error) });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

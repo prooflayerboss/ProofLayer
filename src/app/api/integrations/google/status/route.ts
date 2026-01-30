@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
+import { apiLogger } from '@/lib/logger';
 
 /**
  * Checks if Google Business Profile is connected for a workspace
@@ -35,7 +34,7 @@ export async function GET(request: NextRequest) {
       integration: integration || null,
     });
   } catch (error) {
-    console.error('Error checking Google integration status:', error);
+    apiLogger.error('Error checking Google integration status', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to check connection status' },
       { status: 500 }

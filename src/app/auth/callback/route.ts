@@ -2,6 +2,7 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { authLogger } from '@/lib/logger';
 import { Resend } from 'resend';
 import { render } from '@react-email/render';
 import WelcomeEmail from '../../../../emails/welcome';
@@ -12,12 +13,18 @@ const resend = new Resend(process.env.RESEND_API_KEY || 'placeholder');
 // Helper to wait for a short time (helps with cookie propagation)
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Type for auth exchange result
+interface AuthExchangeResult {
+  data: { user: { id: string; email?: string; user_metadata?: Record<string, unknown> } } | null;
+  error: { message?: string } | null;
+}
+
 // Attempt to exchange code for session with retries
 async function exchangeCodeWithRetry(
   supabase: ReturnType<typeof createServerClient>,
   code: string,
   maxRetries: number = 3
-): Promise<{ data: any; error: any }> {
+): Promise<AuthExchangeResult> {
   let lastError = null;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -38,7 +45,7 @@ async function exchangeCodeWithRetry(
       break;
     }
 
-    console.log(`[Auth Callback] Attempt ${attempt} failed, retrying in ${attempt * 100}ms...`);
+    authLogger.debug(`Attempt ${attempt} failed, retrying in ${attempt * 100}ms...`);
     await delay(attempt * 100); // Progressive backoff: 100ms, 200ms, 300ms
   }
 
@@ -54,18 +61,18 @@ export async function GET(request: Request) {
 
     // Check for OAuth errors from Supabase
     if (error_code) {
-      console.error('[Auth Callback] OAuth error:', error_code, error_description);
+      authLogger.error('OAuth error', { error_code, error_description });
       return NextResponse.redirect(
         new URL(`/login?error=${error_code}&message=${encodeURIComponent(error_description || 'Authentication failed')}`, request.url)
       );
     }
 
     if (!code) {
-      console.warn('[Auth Callback] No code parameter in URL');
+      authLogger.warn('No code parameter in URL');
       return NextResponse.redirect(new URL('/login?error=no_code', request.url));
     }
 
-    console.log('[Auth Callback] Starting OAuth callback');
+    authLogger.debug('Starting OAuth callback');
 
     const cookieStore = await cookies();
 
@@ -90,7 +97,7 @@ export async function GET(request: Request) {
                 response.cookies.set(name, value, options);
               });
             } catch (error) {
-              console.error('[Auth Callback] Error setting cookies:', error);
+              authLogger.error('Error setting cookies', { error: String(error) });
             }
           },
         },
@@ -101,27 +108,27 @@ export async function GET(request: Request) {
     const { data, error } = await exchangeCodeWithRetry(supabase, code);
 
     if (error) {
-      console.error('[Auth Callback] Supabase auth error after retries:', error);
+      authLogger.error('Supabase auth error after retries', { error: error.message });
 
       // Check if this is a PKCE error (usually from domain mismatch or timing)
       if (error.message?.includes('PKCE') || error.message?.includes('code verifier')) {
-        console.error('[Auth Callback] PKCE error - cookies available:', cookieStore.getAll().map(c => c.name));
+        authLogger.error('PKCE error', { availableCookies: cookieStore.getAll().map(c => c.name) });
         return NextResponse.redirect(
           new URL(`/login?error=exchange_failed&retry=true&message=${encodeURIComponent('Session verification failed. Please try signing in again.')}`, request.url)
         );
       }
 
       return NextResponse.redirect(
-        new URL(`/login?error=exchange_failed&message=${encodeURIComponent(error.message)}`, request.url)
+        new URL(`/login?error=exchange_failed&message=${encodeURIComponent(error.message || 'Authentication failed')}`, request.url)
       );
     }
 
     if (!data?.user) {
-      console.error('[Auth Callback] No user data after exchange');
+      authLogger.error('No user data after exchange');
       return NextResponse.redirect(new URL('/login?error=no_user', request.url));
     }
 
-    console.log('[Auth Callback] Session exchange successful:', data.user.email);
+    authLogger.info('Session exchange successful', { email: data.user.email });
 
     // Create user and entitlement in database
     let needsOnboarding = false;
@@ -132,12 +139,11 @@ export async function GET(request: Request) {
       });
 
       const isNewUser = !existingUser;
-      const userName = data.user.user_metadata?.name || data.user.email?.split('@')[0] || '';
+      const rawName = data.user.user_metadata?.name;
+      const userName: string = typeof rawName === 'string' ? rawName : (data.user.email?.split('@')[0] || '');
       const userEmail = data.user.email || '';
 
-      console.log('[Auth Callback] isNewUser:', isNewUser, '| userEmail:', userEmail);
-      console.log('[Auth Callback] RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
-      console.log('[Auth Callback] OWNER_NOTIFICATION_EMAIL:', process.env.OWNER_NOTIFICATION_EMAIL);
+      authLogger.debug('Processing user', { isNewUser, userEmail });
 
       const upsertedUser = await prisma.user.upsert({
         where: { id: data.user.id },
@@ -156,15 +162,13 @@ export async function GET(request: Request) {
           },
         },
       });
-      console.log('[Auth Callback] User created/updated successfully');
+      authLogger.debug('User created/updated successfully');
 
       // Check if user needs to complete onboarding
       needsOnboarding = !upsertedUser.onboardingCompleted || !upsertedUser.userType;
 
       // Send emails for new users only
-      console.log('[Auth Callback] Email conditions - isNewUser:', isNewUser, '| hasEmail:', !!userEmail, '| hasResendKey:', !!process.env.RESEND_API_KEY);
       if (isNewUser && userEmail && process.env.RESEND_API_KEY) {
-        console.log('[Auth Callback] Starting email send process...');
         const signupTime = new Date().toLocaleString('en-US', {
           weekday: 'short',
           year: 'numeric',
@@ -185,9 +189,9 @@ export async function GET(request: Request) {
             html: welcomeHtml,
             replyTo: 'curtis@prooflayer.app',
           });
-          console.log('[Auth Callback] Welcome email sent to:', userEmail);
+          authLogger.info('Welcome email sent', { to: userEmail });
         } catch (emailError) {
-          console.error('[Auth Callback] Failed to send welcome email:', emailError);
+          authLogger.error('Failed to send welcome email', { error: String(emailError) });
         }
 
         // Send notification to owner
@@ -207,14 +211,14 @@ export async function GET(request: Request) {
               subject: `🎉 New signup: ${userEmail}`,
               html: notificationHtml,
             });
-            console.log('[Auth Callback] Signup notification sent to owner');
+            authLogger.info('Signup notification sent to owner');
           } catch (emailError) {
-            console.error('[Auth Callback] Failed to send notification email:', emailError);
+            authLogger.error('Failed to send notification email', { error: String(emailError) });
           }
         }
       }
-    } catch (dbError: any) {
-      console.error('[Auth Callback] Database error:', dbError);
+    } catch (dbError) {
+      authLogger.error('Database error', { error: String(dbError) });
       // Continue with redirect - user is authenticated even if DB fails
       // Default to onboarding on error to be safe
       needsOnboarding = true;
@@ -222,7 +226,7 @@ export async function GET(request: Request) {
 
     // If user needs onboarding, redirect there instead of dashboard
     if (needsOnboarding) {
-      console.log('[Auth Callback] User needs onboarding, redirecting...');
+      authLogger.debug('User needs onboarding, redirecting');
       redirectUrl = new URL('/onboarding', request.url);
       response = NextResponse.redirect(redirectUrl);
       // Re-copy cookies to the new response
@@ -234,10 +238,11 @@ export async function GET(request: Request) {
 
     // Success - redirect to appropriate page (using response that has cookies set)
     return response;
-  } catch (error: any) {
-    console.error('[Auth Callback] Unexpected error:', error);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    authLogger.error('Unexpected error', { error: errorMessage });
     return NextResponse.redirect(
-      new URL(`/login?error=callback_failed&message=${encodeURIComponent(error?.message || 'Unknown error')}`, request.url)
+      new URL(`/login?error=callback_failed&message=${encodeURIComponent(errorMessage)}`, request.url)
     );
   }
 }

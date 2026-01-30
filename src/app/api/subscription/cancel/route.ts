@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { ensureUserExists } from '@/actions/user';
 import { prisma } from '@/lib/prisma';
+import { paymentLogger } from '@/lib/logger';
 
 export async function POST() {
   try {
@@ -35,7 +36,7 @@ export async function POST() {
       message: 'Subscription will be canceled at the end of the billing period'
     });
   } catch (error) {
-    console.error('Error canceling subscription:', error);
+    paymentLogger.error('Error canceling subscription', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to cancel subscription' },
       { status: 500 }

@@ -1,4 +1,5 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { apiLogger } from '@/lib/logger';
 
 const f = createUploadthing();
 
@@ -14,7 +15,7 @@ export const ourFileRouter = {
       return { uploadedBy: "public" };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Video upload complete:", file.url);
+      apiLogger.info('Video upload complete', { url: file.url });
       return { fileUrl: file.url };
     }),
 
@@ -29,7 +30,7 @@ export const ourFileRouter = {
       return { uploadedBy: "public" };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Screenshot upload complete:", file.url);
+      apiLogger.info('Screenshot upload complete', { url: file.url });
       return { fileUrl: file.url };
     }),
 
@@ -44,7 +45,7 @@ export const ourFileRouter = {
       return { uploadedBy: "user" };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Logo upload complete:", file.url);
+      apiLogger.info('Logo upload complete', { url: file.url });
       return { fileUrl: file.url };
     }),
 
@@ -59,7 +60,7 @@ export const ourFileRouter = {
       return { uploadedBy: "user" };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Product image uploaded:", file.url);
+      apiLogger.info('Product image uploaded', { url: file.url });
       return { fileUrl: file.url };
     }),
 } satisfies FileRouter;

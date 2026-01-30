@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
+import { apiLogger } from '@/lib/logger';
 
 /**
  * Initiates the Google OAuth flow
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
     // Redirect to Google OAuth consent screen
     return NextResponse.redirect(authUrl);
   } catch (error) {
-    console.error('Error initializing Google OAuth:', error);
+    apiLogger.error('Error initializing Google OAuth', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to initialize Google OAuth' },
       { status: 500 }

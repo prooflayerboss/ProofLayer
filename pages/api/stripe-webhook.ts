@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 import { prisma } from '@/lib/prisma';
+import { webhookLogger } from '@/lib/logger';
 
 // Disable body parsing so we can verify the webhook signature
 export const config = {
@@ -21,12 +22,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log('🔥🔥🔥 PAGES API WEBHOOK HIT - This is the legacy API route');
-  console.log('Method:', req.method);
-  console.log('URL:', req.url);
+  webhookLogger.debug('Webhook hit', { method: req.method, url: req.url });
 
   if (req.method !== 'POST') {
-    console.log('❌ Method not allowed:', req.method);
+    webhookLogger.warn('Method not allowed', { method: req.method });
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
@@ -37,11 +36,8 @@ export default async function handler(
   const buf = await buffer(req);
   const sig = req.headers['stripe-signature'];
 
-  console.log('Buffer length:', buf.length);
-  console.log('Signature present:', !!sig);
-
   if (!sig) {
-    console.error('❌ Missing stripe-signature header');
+    webhookLogger.error('Missing stripe-signature header');
     return res.status(400).json({ error: 'Missing stripe-signature header' });
   }
 
@@ -53,14 +49,14 @@ export default async function handler(
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
-    console.log('✅ Webhook signature verified successfully');
+    webhookLogger.debug('Webhook signature verified');
   } catch (err) {
-    console.error('❌ Webhook signature verification failed:', err);
+    webhookLogger.error('Webhook signature verification failed', { error: String(err) });
     return res.status(400).json({ error: 'Invalid signature' });
   }
 
   try {
-    console.log('📦 Webhook event received:', event.type);
+    webhookLogger.info('Webhook event received', { type: event.type });
 
     // Handle checkout.session.completed for both one-time and subscription
     if (event.type === 'checkout.session.completed') {
@@ -68,20 +64,17 @@ export default async function handler(
       const purchaseType = session.metadata?.type; // 'first100' or undefined for regular users
       const plan = session.metadata?.plan as 'STARTER' | 'GROWTH' | 'LAUNCH' | 'CONCIERGE' | 'MONTHLY' | 'LIFETIME' | 'SOLO' | 'PRO' | 'AGENCY';
 
-      console.log('💳 Checkout session completed');
-      console.log('Plan:', plan);
-      console.log('Mode:', session.mode);
-      console.log('Type:', purchaseType);
+      webhookLogger.info('Checkout session completed', { plan, mode: session.mode, type: purchaseType });
 
       // Handle First100 founder upgrades
       if (purchaseType === 'first100') {
         const founderId = session.metadata?.founderId;
         const founderEmail = session.metadata?.founderEmail;
 
-        console.log('🚀 First100 founder upgrade:', { founderId, founderEmail, plan });
+        webhookLogger.info('First100 founder upgrade', { founderId, founderEmail, plan });
 
         if (!founderId || !plan) {
-          console.error('❌ Missing founderId or plan in First100 session metadata');
+          webhookLogger.error('Missing founderId or plan in First100 session metadata');
           return res.status(400).json({ error: 'Missing First100 metadata' });
         }
 
@@ -93,23 +86,20 @@ export default async function handler(
           },
         });
 
-        console.log(`✅ First100 founder ${founderId} upgraded to ${plan} and auto-approved!`);
+        webhookLogger.info('First100 founder upgraded and auto-approved', { founderId, plan });
         return res.json({ received: true });
       }
 
       // Handle regular user upgrades
       const userId = session.metadata?.userId;
 
-      console.log('💳 Regular checkout for userId:', userId);
-
       if (!userId || !plan) {
-        console.error('❌ Missing userId or plan in session metadata');
+        webhookLogger.error('Missing userId or plan in session metadata');
         return res.status(400).json({ error: 'Missing metadata' });
       }
 
       if (session.mode === 'subscription') {
         // Monthly subscription
-        console.log('⏳ Setting up MONTHLY subscription...');
 
         const updated = await prisma.entitlement.update({
           where: { userId },
@@ -121,11 +111,9 @@ export default async function handler(
           },
         });
 
-        console.log(`✅ User ${userId} subscribed to MONTHLY plan!`);
-        console.log('Updated plan:', updated.plan);
+        webhookLogger.info('User subscribed to MONTHLY plan', { userId });
       } else {
         // One-time payment (LIFETIME, SOLO, PRO, or AGENCY)
-        console.log(`⏳ Upgrading user to ${plan}...`);
 
         const updated = await prisma.entitlement.update({
           where: { userId },
@@ -136,8 +124,7 @@ export default async function handler(
           },
         });
 
-        console.log(`✅ User ${userId} upgraded to ${plan}!`);
-        console.log('Updated plan:', updated.plan);
+        webhookLogger.info('User upgraded', { userId, plan });
       }
     }
 
@@ -146,11 +133,8 @@ export default async function handler(
       const subscription = event.data.object as Stripe.Subscription;
       const userId = subscription.metadata?.userId;
 
-      console.log('🔄 Subscription updated for userId:', userId);
-      console.log('Status:', subscription.status);
-
       if (!userId) {
-        console.error('❌ No userId in subscription metadata');
+        webhookLogger.error('No userId in subscription metadata');
         return res.status(400).json({ error: 'Missing userId' });
       }
 
@@ -162,7 +146,7 @@ export default async function handler(
         },
       });
 
-      console.log(`✅ Subscription status updated for user ${userId}`);
+      webhookLogger.info('Subscription status updated', { userId, status: subscription.status });
     }
 
     // Handle subscription deletions/cancellations
@@ -170,10 +154,8 @@ export default async function handler(
       const subscription = event.data.object as Stripe.Subscription;
       const userId = subscription.metadata?.userId;
 
-      console.log('❌ Subscription deleted for userId:', userId);
-
       if (!userId) {
-        console.error('❌ No userId in subscription metadata');
+        webhookLogger.error('No userId in subscription metadata for deletion');
         return res.status(400).json({ error: 'Missing userId' });
       }
 
@@ -186,12 +168,12 @@ export default async function handler(
         },
       });
 
-      console.log(`✅ User ${userId} downgraded to TRIAL after subscription cancellation`);
+      webhookLogger.info('User downgraded to TRIAL after cancellation', { userId });
     }
 
     return res.json({ received: true });
   } catch (error) {
-    console.error('❌ Webhook processing error:', error);
+    webhookLogger.error('Webhook processing error', { error: String(error) });
     return res.status(500).json({ error: 'Webhook processing failed' });
   }
 }

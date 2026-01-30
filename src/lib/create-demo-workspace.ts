@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { nanoid } from 'nanoid';
+import { apiLogger } from '@/lib/logger';
 
 const DEMO_TESTIMONIALS = [
   {
@@ -71,7 +72,7 @@ export async function createDemoWorkspace(userId: string) {
     });
 
     if (existingDemo) {
-      console.log('Demo workspace already exists for user:', userId);
+      apiLogger.info('Demo workspace already exists for user', { userId });
       return existingDemo;
     }
 
@@ -118,10 +119,10 @@ export async function createDemoWorkspace(userId: string) {
       });
     }
 
-    console.log('✅ Demo workspace created successfully:', workspace.id);
+    apiLogger.info('Demo workspace created successfully', { workspaceId: workspace.id });
     return workspace;
   } catch (error) {
-    console.error('❌ Error creating demo workspace:', error);
+    apiLogger.error('Error creating demo workspace', { error: String(error) });
     throw error;
   }
 }

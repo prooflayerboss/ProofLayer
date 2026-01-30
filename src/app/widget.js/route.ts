@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { apiLogger } from '@/lib/logger';
 
 export async function GET() {
   try {
@@ -15,7 +16,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('Error serving widget.js:', error);
+    apiLogger.error('Error serving widget.js', { error: String(error) });
     return new NextResponse('Widget not found', { status: 404 });
   }
 }

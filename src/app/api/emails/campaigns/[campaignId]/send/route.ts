@@ -3,6 +3,7 @@ import { Resend } from 'resend';
 import { render } from '@react-email/render';
 import { ensureUserExists } from '@/actions/user';
 import { prisma } from '@/lib/prisma';
+import { emailLogger } from '@/lib/logger';
 import TestimonialRequestEmail from '../../../../../../../emails/testimonial-request';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 'placeholder');
@@ -127,13 +128,14 @@ export async function POST(
 
         // Rate limit: wait 500ms between emails (2/second)
         await sleep(RATE_LIMIT_MS);
-      } catch (error: any) {
-        console.error(`Failed to send to ${recipient.email}:`, error);
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        emailLogger.error('Failed to send email', { email: recipient.email, error: errorMessage });
         await prisma.emailRecipient.update({
           where: { id: recipient.id },
           data: {
             status: 'FAILED',
-            errorMessage: error.message || 'Unknown error',
+            errorMessage: errorMessage,
           },
         });
         failureCount++;
@@ -157,7 +159,7 @@ export async function POST(
       total: campaign.recipients.length,
     });
   } catch (error) {
-    console.error('Campaign send error:', error);
+    emailLogger.error('Campaign send error', { error: String(error) });
 
     // Update campaign status to failed
     try {
@@ -166,7 +168,7 @@ export async function POST(
         data: { status: 'FAILED' },
       });
     } catch (e) {
-      console.error('Failed to update campaign status:', e);
+      emailLogger.error('Failed to update campaign status', { error: String(e) });
     }
 
     return NextResponse.json(

@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { nanoid } from 'nanoid';
 import { ensureUserExists } from './user';
+import { apiLogger } from '@/lib/logger';
 
 export async function getForms(workspaceId: string) {
   const user = await ensureUserExists();
@@ -142,7 +143,7 @@ export async function createForm(formData: FormData) {
 
     revalidatePath(`/dashboard/workspaces/${workspaceId}`);
   } catch (error) {
-    console.error('Failed to create form:', error);
+    apiLogger.error('Failed to create form', { error: String(error) });
     return { success: false, error: 'Failed to create form. Please try again.' };
   }
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { PLAN_LIMITS } from '@/lib/constants';
+import { apiLogger } from '@/lib/logger';
 
 // Handle CORS preflight
 export async function OPTIONS() {
@@ -84,7 +85,7 @@ export async function GET(
 
     return response;
   } catch (error) {
-    console.error('Widget API error:', error);
+    apiLogger.error('Widget API error', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to fetch testimonials' },
       { status: 500 }

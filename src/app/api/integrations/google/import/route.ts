@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
+import { apiLogger } from '@/lib/logger';
 
 /**
  * Imports reviews from Google Business Profile
@@ -60,7 +59,7 @@ export async function POST(request: NextRequest) {
 
         oauth2Client.setCredentials(credentials);
       } catch (error) {
-        console.error('Error refreshing Google token:', error);
+        apiLogger.error('Error refreshing Google token', { error: String(error) });
         return NextResponse.json(
           { error: 'Failed to refresh Google authorization. Please reconnect.' },
           { status: 401 }
@@ -118,12 +117,19 @@ export async function POST(request: NextRequest) {
 
     // Fetch reviews for this location using REST API
     // Note: The Google Business Profile API requires direct REST calls for reviews
-    let reviews: any[] = [];
+    interface GoogleReview {
+      reviewId?: string;
+      name?: string;
+      reviewer?: { displayName?: string; profilePhotoUrl?: string };
+      comment?: string;
+      starRating?: 'ONE' | 'TWO' | 'THREE' | 'FOUR' | 'FIVE';
+    }
+    let reviews: GoogleReview[] = [];
     try {
       // Get access token for direct API call
       const accessToken = oauth2Client.credentials.access_token;
 
-      console.log('[Google Import] Fetching reviews for location:', locationName);
+      apiLogger.info('Fetching reviews for location', { locationName });
 
       // Make direct REST API call to Google Business Profile API
       const reviewsResponse = await fetch(
@@ -136,11 +142,11 @@ export async function POST(request: NextRequest) {
         }
       );
 
-      console.log('[Google Import] Reviews API response status:', reviewsResponse.status);
+      apiLogger.info('Reviews API response', { status: reviewsResponse.status });
 
       if (!reviewsResponse.ok) {
         const errorText = await reviewsResponse.text();
-        console.error('[Google Import] Reviews API error response:', errorText);
+        apiLogger.error('Reviews API error response', { errorText });
 
         let errorData;
         try {
@@ -177,16 +183,17 @@ export async function POST(request: NextRequest) {
       const reviewsData = await reviewsResponse.json();
       reviews = reviewsData.reviews || [];
 
-      console.log('[Google Import] Successfully fetched reviews, count:', reviews.length);
-    } catch (error: any) {
+      apiLogger.info('Successfully fetched reviews', { count: reviews.length });
+    } catch (error: unknown) {
       // API might not be available or account doesn't have access
-      console.error('[Google Import] Error fetching reviews:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      apiLogger.error('Error fetching reviews', { error: errorMessage });
 
       // If we already returned a response in the if block above, this won't execute
       return NextResponse.json(
         {
           error: 'Unable to fetch reviews from Google Business Profile.',
-          details: error.message,
+          details: errorMessage,
           hint: 'Make sure the Google My Business API is enabled in your Google Cloud project.'
         },
         { status: 500 }
@@ -249,7 +256,7 @@ export async function POST(request: NextRequest) {
 
         imported++;
       } catch (error) {
-        console.error('Error importing individual review:', error);
+        apiLogger.error('Error importing individual review', { error: String(error) });
         // Continue with other reviews
       }
     }
@@ -269,10 +276,11 @@ export async function POST(request: NextRequest) {
       location: locationTitle,
     });
 
-  } catch (error: any) {
-    console.error('Error importing Google reviews:', error);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    apiLogger.error('Error importing Google reviews', { error: errorMessage });
     return NextResponse.json(
-      { error: 'Failed to import reviews', details: error.message },
+      { error: 'Failed to import reviews', details: errorMessage },
       { status: 500 }
     );
   }

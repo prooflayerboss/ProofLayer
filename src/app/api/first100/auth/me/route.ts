@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
+import { authLogger } from '@/lib/logger';
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'your-secret-key-change-in-production'
@@ -92,7 +93,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('Auth check error:', error);
+    authLogger.error('Auth check error', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to get user' },
       { status: 500 }

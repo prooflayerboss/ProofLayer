@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import { apiLogger } from '@/lib/logger';
 
 export async function POST(request: Request) {
   try {
@@ -88,7 +89,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ signup }, { status: 201 });
   } catch (error) {
-    console.error('Error claiming offer:', error);
+    apiLogger.error('Error claiming offer', { error: String(error) });
     return NextResponse.json(
       { error: 'Failed to claim offer' },
       { status: 500 }
