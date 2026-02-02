@@ -70,7 +70,8 @@ export async function GET(request: Request) {
     const cookieStore = await cookies();
 
     // Build the response early so we can set cookies on it
-    const redirectUrl = new URL('/dashboard', request.url);
+    // We'll update the redirect URL later based on onboarding status
+    let redirectUrl = new URL('/dashboard', request.url);
     let response = NextResponse.redirect(redirectUrl);
 
     const supabase = createServerClient(
@@ -123,6 +124,7 @@ export async function GET(request: Request) {
     console.log('[Auth Callback] Session exchange successful:', data.user.email);
 
     // Create user and entitlement in database
+    let needsOnboarding = false;
     try {
       // Check if user already exists (to detect new signups)
       const existingUser = await prisma.user.findUnique({
@@ -137,7 +139,7 @@ export async function GET(request: Request) {
       console.log('[Auth Callback] RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
       console.log('[Auth Callback] OWNER_NOTIFICATION_EMAIL:', process.env.OWNER_NOTIFICATION_EMAIL);
 
-      await prisma.user.upsert({
+      const upsertedUser = await prisma.user.upsert({
         where: { id: data.user.id },
         update: {
           email: userEmail,
@@ -149,12 +151,15 @@ export async function GET(request: Request) {
           name: userName,
           entitlement: {
             create: {
-              plan: 'TRIAL',
+              plan: 'FREE',
             },
           },
         },
       });
       console.log('[Auth Callback] User created/updated successfully');
+
+      // Check if user needs to complete onboarding
+      needsOnboarding = !upsertedUser.onboardingCompleted || !upsertedUser.userType;
 
       // Send emails for new users only
       console.log('[Auth Callback] Email conditions - isNewUser:', isNewUser, '| hasEmail:', !!userEmail, '| hasResendKey:', !!process.env.RESEND_API_KEY);
@@ -211,9 +216,23 @@ export async function GET(request: Request) {
     } catch (dbError: any) {
       console.error('[Auth Callback] Database error:', dbError);
       // Continue with redirect - user is authenticated even if DB fails
+      // Default to onboarding on error to be safe
+      needsOnboarding = true;
     }
 
-    // Success - redirect to dashboard (using response that has cookies set)
+    // If user needs onboarding, redirect there instead of dashboard
+    if (needsOnboarding) {
+      console.log('[Auth Callback] User needs onboarding, redirecting...');
+      redirectUrl = new URL('/onboarding', request.url);
+      response = NextResponse.redirect(redirectUrl);
+      // Re-copy cookies to the new response
+      const allCookies = cookieStore.getAll();
+      allCookies.forEach(cookie => {
+        response.cookies.set(cookie.name, cookie.value);
+      });
+    }
+
+    // Success - redirect to appropriate page (using response that has cookies set)
     return response;
   } catch (error: any) {
     console.error('[Auth Callback] Unexpected error:', error);

@@ -19,9 +19,9 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { plan } = body; // 'MONTHLY', 'LIFETIME', 'SOLO', 'PRO', or 'AGENCY'
+    const { plan } = body; // 'STARTER', 'GROWTH', 'LAUNCH', or legacy plans
 
-    const validPlans = ['MONTHLY', 'LIFETIME', 'SOLO', 'PRO', 'AGENCY'];
+    const validPlans = ['STARTER', 'GROWTH', 'LAUNCH', 'MONTHLY', 'LIFETIME', 'SOLO', 'PRO', 'AGENCY'];
     if (!plan || !validPlans.includes(plan)) {
       return NextResponse.json(
         { error: 'Invalid plan selected' },
@@ -78,6 +78,17 @@ export async function POST(request: NextRequest) {
     let priceId: string | undefined;
 
     switch (plan) {
+      // New plans
+      case 'STARTER':
+        priceId = process.env.STRIPE_PRICE_STARTER;
+        break;
+      case 'GROWTH':
+        priceId = process.env.STRIPE_PRICE_GROWTH;
+        break;
+      case 'LAUNCH':
+        priceId = process.env.STRIPE_PRICE_LAUNCH;
+        break;
+      // Legacy plans
       case 'MONTHLY':
         priceId = process.env.STRIPE_MONTHLY_PRICE_ID;
         break;

@@ -82,8 +82,15 @@ export function isWidgetTypeAllowed(widgetType: string, plan: Plan): boolean {
  * Get upgrade message based on limit type
  */
 export function getUpgradeMessage(limitType: 'workspace' | 'form' | 'submission' | 'widget', currentPlan: Plan): string {
-  const messages = {
+  const messages: Record<string, Record<string, string>> = {
     workspace: {
+      // New plans
+      FREE: 'Upgrade to Starter for more features',
+      STARTER: 'Upgrade to Growth for more workspaces',
+      GROWTH: 'Upgrade to Launch for more workspaces',
+      LAUNCH: 'You\'ve reached the maximum workspaces for your plan',
+      CONCIERGE: 'Contact us for custom limits',
+      // Legacy plans
       TRIAL: 'Upgrade to create more workspaces',
       SOLO: 'Upgrade to PRO or AGENCY tier for more workspaces',
       PRO: 'Upgrade to AGENCY tier for more workspaces',
@@ -92,6 +99,13 @@ export function getUpgradeMessage(limitType: 'workspace' | 'form' | 'submission'
       LIFETIME: 'You\'ve reached the maximum workspaces for your plan',
     },
     form: {
+      // New plans
+      FREE: 'Upgrade to Starter for unlimited forms',
+      STARTER: 'All forms are unlocked',
+      GROWTH: 'All forms are unlocked',
+      LAUNCH: 'All forms are unlocked',
+      CONCIERGE: 'All forms are unlocked',
+      // Legacy plans
       TRIAL: 'Upgrade to create more forms',
       SOLO: 'Upgrade to PRO or AGENCY tier for more forms',
       PRO: 'Upgrade to AGENCY tier for more forms',
@@ -100,6 +114,13 @@ export function getUpgradeMessage(limitType: 'workspace' | 'form' | 'submission'
       LIFETIME: 'You\'ve reached the maximum forms for your plan',
     },
     submission: {
+      // New plans
+      FREE: 'Upgrade to Starter for unlimited testimonials',
+      STARTER: 'Unlimited testimonials available',
+      GROWTH: 'Unlimited testimonials available',
+      LAUNCH: 'Unlimited testimonials available',
+      CONCIERGE: 'Unlimited testimonials available',
+      // Legacy plans
       TRIAL: 'Upgrade to accept more testimonials',
       SOLO: 'Upgrade to PRO or AGENCY tier for more testimonials',
       PRO: 'Upgrade to AGENCY tier for more testimonials',
@@ -108,6 +129,13 @@ export function getUpgradeMessage(limitType: 'workspace' | 'form' | 'submission'
       LIFETIME: 'You\'ve reached the maximum testimonials for your plan',
     },
     widget: {
+      // New plans
+      FREE: 'Upgrade to Starter for all widget styles',
+      STARTER: 'All widget styles are unlocked',
+      GROWTH: 'All widget styles are unlocked',
+      LAUNCH: 'All widget styles are unlocked',
+      CONCIERGE: 'All widget styles are unlocked',
+      // Legacy plans
       TRIAL: 'Upgrade to unlock more widget styles',
       SOLO: 'Upgrade to PRO or AGENCY tier to unlock more widget styles',
       PRO: 'Upgrade to AGENCY tier to unlock all widget styles',
@@ -117,7 +145,7 @@ export function getUpgradeMessage(limitType: 'workspace' | 'form' | 'submission'
     },
   };
 
-  return messages[limitType][currentPlan];
+  return messages[limitType][currentPlan] || 'Upgrade for more features';
 }
 
 /**

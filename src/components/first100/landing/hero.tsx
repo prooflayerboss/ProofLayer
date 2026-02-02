@@ -11,7 +11,7 @@ export function First100Hero() {
             <span className="text-emerald-500">We do.</span>
           </h1>
           <p className="mt-6 text-lg md:text-xl text-gray-500 max-w-2xl mx-auto">
-            We help you get your first 100 real users—not vanity metrics, not backlinks, real signups.
+            We help you get your first real users—not vanity metrics, not backlinks, real signups from people who want your product.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/first100/founders/signup">

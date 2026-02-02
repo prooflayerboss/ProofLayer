@@ -49,7 +49,7 @@ export function First100Packages() {
     <section className="py-20 bg-gray-50">
       <First100Container size="xl">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Choose your path to 100 users</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Choose your path to early adopters</h2>
           <p className="mt-4 text-lg text-gray-500">Start free, upgrade when you&apos;re ready</p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">

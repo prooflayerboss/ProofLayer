@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useRef } from 'react';
-import { ChevronDown, Menu, X, Rocket, Users, MessageSquare, LayoutGrid, Sparkles } from 'lucide-react';
+import { ChevronDown, Menu, X, Rocket, Users, MessageSquare, LayoutGrid, Sparkles, Vote } from 'lucide-react';
 
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -124,6 +124,23 @@ export default function Navigation() {
             </Link>
 
             <Link
+              href="/vote"
+              className="px-4 py-2 text-[#737373] hover:text-[#0a0a0b] font-medium transition-colors rounded-lg hover:bg-black/5 flex items-center gap-1.5"
+            >
+              <Vote className="w-4 h-4" />
+              Vote
+              <span className="text-[10px] font-semibold bg-[#00d084]/10 text-[#00d084] px-1.5 py-0.5 rounded-full">New</span>
+            </Link>
+
+            <Link
+              href="/directory"
+              className="px-4 py-2 text-[#737373] hover:text-[#0a0a0b] font-medium transition-colors rounded-lg hover:bg-black/5 flex items-center gap-1.5"
+            >
+              Directory
+              <span className="text-[10px] font-semibold bg-violet-100 text-violet-600 px-1.5 py-0.5 rounded-full">Soon</span>
+            </Link>
+
+            <Link
               href="/#pricing"
               className="px-4 py-2 text-[#737373] hover:text-[#0a0a0b] font-medium transition-colors rounded-lg hover:bg-black/5"
             >
@@ -131,8 +148,14 @@ export default function Navigation() {
             </Link>
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:flex items-center">
+          {/* CTA Buttons */}
+          <div className="hidden md:flex items-center gap-3">
+            <Link
+              href="/login"
+              className="px-4 py-2 text-[#737373] hover:text-[#0a0a0b] font-medium transition-colors"
+            >
+              Sign In
+            </Link>
             <Link
               href="/founders"
               className="btn-primary flex items-center gap-2 bg-[#0a0a0b] text-white px-5 py-2.5 rounded-full font-semibold text-sm"
@@ -185,6 +208,26 @@ export default function Navigation() {
             </Link>
 
             <Link
+              href="/vote"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-[#fafafa] transition-colors"
+            >
+              <Vote className="w-5 h-5 text-[#00d084]" />
+              <span className="font-medium text-[#0a0a0b]">Vote on Products</span>
+              <span className="text-[10px] font-semibold bg-[#00d084]/10 text-[#00d084] px-1.5 py-0.5 rounded-full">New</span>
+            </Link>
+
+            <Link
+              href="/directory"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-[#fafafa] transition-colors"
+            >
+              <Sparkles className="w-5 h-5 text-[#8b5cf6]" />
+              <span className="font-medium text-[#0a0a0b]">Directory</span>
+              <span className="text-[10px] font-semibold bg-violet-100 text-violet-600 px-1.5 py-0.5 rounded-full">Soon</span>
+            </Link>
+
+            <Link
               href="/#pricing"
               onClick={() => setMobileMenuOpen(false)}
               className="block py-2.5 px-3 text-[#737373] hover:text-[#0a0a0b] font-medium rounded-xl hover:bg-[#fafafa]"
@@ -193,7 +236,14 @@ export default function Navigation() {
             </Link>
 
             {/* CTA Section */}
-            <div className="pt-4 mt-4 border-t border-black/5">
+            <div className="pt-4 mt-4 border-t border-black/5 space-y-3">
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-center py-3 px-4 text-[#0a0a0b] font-medium rounded-xl border border-black/10 hover:bg-[#fafafa]"
+              >
+                Sign In
+              </Link>
               <Link
                 href="/founders"
                 onClick={() => setMobileMenuOpen(false)}

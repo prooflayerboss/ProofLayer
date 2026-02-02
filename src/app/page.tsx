@@ -24,7 +24,7 @@ export default async function HomePage() {
           <div className="animate-slide-up delay-1 flex items-center gap-3 mb-8">
             <div className="line-accent" />
             <span className="text-sm font-semibold tracking-wide uppercase text-[#00d084]">
-              Launch toolkit for founders
+              Community marketplace for founders
             </span>
           </div>
 
@@ -32,15 +32,15 @@ export default async function HomePage() {
           <h1 className="display-text text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-[#0a0a0b] mb-6 animate-slide-up delay-2">
             Get your first
             <br />
-            <span className="text-gradient">100 users.</span>
+            <span className="text-gradient">real users.</span>
             <br />
-            <span className="text-[#737373]">Then prove it.</span>
+            <span className="text-[#737373]">Get real feedback.</span>
           </h1>
 
           {/* Subheadline */}
           <p className="text-xl sm:text-2xl text-[#737373] max-w-2xl mb-12 animate-slide-up delay-3 leading-relaxed">
-            We connect you with early adopters who want to try new products.
-            They become your first users—and your first testimonials.
+            The community marketplace where founders connect with early adopters.
+            Get real users, real human feedback, and build social proof together.
           </p>
 
           {/* CTA Buttons */}
@@ -63,26 +63,26 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          {/* Social proof - minimal */}
-          <div className="flex items-center gap-6 animate-slide-up delay-5">
-            <div className="flex -space-x-3">
-              {[
-                'bg-gradient-to-br from-amber-400 to-orange-500',
-                'bg-gradient-to-br from-emerald-400 to-teal-500',
-                'bg-gradient-to-br from-violet-400 to-purple-500',
-                'bg-gradient-to-br from-rose-400 to-pink-500',
-              ].map((gradient, i) => (
-                <div
-                  key={i}
-                  className={`w-10 h-10 rounded-full ${gradient} border-3 border-white shadow-lg`}
-                  style={{ animationDelay: `${i * 0.1}s` }}
-                />
-              ))}
-            </div>
-            <div className="h-8 w-px bg-black/10" />
-            <p className="text-sm text-[#737373]">
-              <span className="font-semibold text-[#0a0a0b]">100+</span> founders already joined
-            </p>
+          {/* Value prop badges */}
+          <div className="flex flex-wrap items-center gap-3 animate-slide-up delay-5">
+            <span className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full text-sm font-medium text-[#0a0a0b] border border-black/5 shadow-sm">
+              <svg className="w-4 h-4 text-[#00d084]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              One-time payment
+            </span>
+            <span className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full text-sm font-medium text-[#0a0a0b] border border-black/5 shadow-sm">
+              <svg className="w-4 h-4 text-[#00d084]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Free to start
+            </span>
+            <span className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full text-sm font-medium text-[#0a0a0b] border border-black/5 shadow-sm">
+              <svg className="w-4 h-4 text-[#00d084]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Testimonials included
+            </span>
           </div>
         </div>
       </section>
@@ -467,7 +467,7 @@ export default async function HomePage() {
               Everything you need.
             </h2>
             <p className="text-xl text-[#737373] max-w-2xl mx-auto">
-              The all-in-one launch toolkit that takes you from zero users to social proof—without juggling multiple tools
+              A community marketplace that connects founders with early adopters and helps you build social proof—all in one place
             </p>
           </div>
 
@@ -589,11 +589,11 @@ export default async function HomePage() {
           <h2 className="display-text text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-8">
             Ready to get your
             <br />
-            <span className="text-gradient">first 100 users?</span>
+            <span className="text-gradient">first real users?</span>
           </h2>
 
           <p className="text-xl text-white/60 mb-12 max-w-xl mx-auto">
-            List your product for free. Start getting matched with early adopters today.
+            Join the community marketplace. Connect with early adopters who want to try your product.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -25,7 +25,7 @@ function LoginForm() {
       options: {
         redirectTo: redirectUrl,
         queryParams: {
-          prompt: 'select_account', // Always show account picker for cleaner flow
+          prompt: 'select_account',
         },
       },
     });
@@ -43,14 +43,10 @@ function LoginForm() {
     const messageParam = searchParams.get('message');
     const retryParam = searchParams.get('retry');
 
-    // Auto-retry on PKCE errors (these are usually transient)
-    // Only auto-retry once to prevent infinite loops
     if (errorParam === 'exchange_failed' && retryParam === 'true' && !hasAutoRetried.current) {
       hasAutoRetried.current = true;
       setRetrying(true);
-      // Clear the URL params and auto-retry Google login
       window.history.replaceState({}, '', '/login');
-      // Small delay to ensure cookies are cleared
       setTimeout(() => {
         handleGoogleLogin();
       }, 100);
@@ -88,7 +84,6 @@ function LoginForm() {
       return;
     }
 
-    // Ensure user exists in database (handles users who signed up with email confirmation)
     try {
       await fetch('/api/auth/new-user', { method: 'POST' });
     } catch (err) {
@@ -99,7 +94,6 @@ function LoginForm() {
     router.refresh();
   };
 
-  // Show retrying state
   if (retrying) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -123,12 +117,13 @@ function LoginForm() {
       <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:px-20 xl:px-24 bg-white">
         <div className="mx-auto w-full max-w-sm">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 mb-12">
+          <Link href="/" className="flex items-center gap-2.5 mb-12 group">
             <Image
               src="/logos/prooflayer-icon-only.svg"
               alt="ProofLayer"
               width={32}
               height={32}
+              className="transition-transform group-hover:scale-105"
             />
             <span className="text-xl font-bold text-gray-900">ProofLayer</span>
           </Link>
@@ -137,7 +132,7 @@ function LoginForm() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Welcome back</h1>
             <p className="mt-2 text-gray-600">
-              Sign in to manage your testimonials
+              Sign in to your community marketplace
             </p>
           </div>
 
@@ -239,61 +234,101 @@ function LoginForm() {
         </div>
       </div>
 
-      {/* Right Panel - Visual */}
+      {/* Right Panel - Marketplace Showcase */}
       <div className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+        {/* Animated Background Pattern */}
+        <div className="absolute inset-0">
+          <svg className="w-full h-full opacity-[0.07]" viewBox="0 0 100 100" preserveAspectRatio="none">
             <defs>
-              <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5"/>
+              <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
+                <circle cx="4" cy="4" r="1" fill="white" />
               </pattern>
             </defs>
             <rect width="100" height="100" fill="url(#grid)" />
           </svg>
         </div>
 
+        {/* Floating Gradient Orbs */}
+        <div className="absolute top-20 right-16 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-32 left-8 w-48 h-48 bg-indigo-400/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 right-1/3 w-32 h-32 bg-cyan-400/10 rounded-full blur-2xl"></div>
+
         {/* Content */}
-        <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
-          {/* Testimonial Card */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 max-w-md">
-            <div className="flex gap-1 mb-4">
-              {[...Array(5)].map((_, i) => (
-                <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-            </div>
-            <p className="text-white text-lg leading-relaxed mb-6">
-              "ProofLayer completely transformed how we collect testimonials. The one-time payment model means no more subscription fatigue."
-            </p>
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold">
-                JM
+        <div className="relative z-10 flex flex-col justify-center px-12 xl:px-16 w-full">
+          {/* Headline */}
+          <div className="mb-10">
+            <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-blue-200 text-sm font-medium mb-4">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+              Community Marketplace
+            </span>
+            <h2 className="text-3xl xl:text-4xl font-bold text-white leading-tight">
+              Where founders find
+              <br />
+              their first users
+            </h2>
+          </div>
+
+          {/* Two-sided value prop cards */}
+          <div className="space-y-4 max-w-md">
+            {/* Founder Card */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20 hover:bg-white/[0.15] transition-all group">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/30 group-hover:scale-105 transition-transform">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold text-lg">For Founders</h3>
+                  <p className="text-blue-200 text-sm mt-1">Get real users who want to try your product. Collect testimonials automatically.</p>
+                </div>
               </div>
-              <div>
-                <p className="text-white font-semibold">Jake Morrison</p>
-                <p className="text-blue-200 text-sm">Agency Owner</p>
+            </div>
+
+            {/* Early Adopter Card */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20 hover:bg-white/[0.15] transition-all group">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-violet-500/30 group-hover:scale-105 transition-transform">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold text-lg">For Early Adopters</h3>
+                  <p className="text-blue-200 text-sm mt-1">Discover new products first. Get exclusive deals and lifetime discounts.</p>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="flex gap-12 mt-12">
-            <div>
-              <p className="text-4xl font-bold text-white">2,500+</p>
-              <p className="text-blue-200 text-sm">Happy users</p>
+          {/* Stats/Social Proof */}
+          <div className="mt-10 flex items-center gap-8">
+            <div className="flex items-center gap-3">
+              <div className="flex -space-x-2">
+                {['bg-emerald-400', 'bg-blue-400', 'bg-violet-400', 'bg-amber-400'].map((color, i) => (
+                  <div key={i} className={`w-8 h-8 rounded-full ${color} border-2 border-blue-700 flex items-center justify-center text-white text-xs font-bold`}>
+                    {String.fromCharCode(65 + i)}
+                  </div>
+                ))}
+              </div>
+              <span className="text-blue-200 text-sm">Join the community</span>
             </div>
-            <div>
-              <p className="text-4xl font-bold text-white">50K+</p>
-              <p className="text-blue-200 text-sm">Testimonials collected</p>
-            </div>
+          </div>
+
+          {/* Value Pills */}
+          <div className="flex flex-wrap gap-3 mt-8">
+            {[
+              { icon: '✓', text: 'Free to start' },
+              { icon: '✓', text: 'One-time payment' },
+              { icon: '✓', text: 'No subscriptions' },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full">
+                <span className="text-emerald-400 text-sm">{item.icon}</span>
+                <span className="text-blue-100 text-sm">{item.text}</span>
+              </div>
+            ))}
           </div>
         </div>
-
-        {/* Floating Elements */}
-        <div className="absolute top-20 right-20 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-10 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl"></div>
       </div>
     </div>
   );
