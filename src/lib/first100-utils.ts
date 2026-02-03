@@ -6,9 +6,13 @@ import { prisma } from '@/lib/prisma';
 import { jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
-// JWT Secret - should be set via environment variable
+// JWT Secret - must be set via environment variable in production
+const jwtSecretValue = process.env.JWT_SECRET;
+if (!jwtSecretValue && process.env.NODE_ENV === 'production') {
+  throw new Error('JWT_SECRET environment variable is required in production');
+}
 export const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-change-in-production'
+  jwtSecretValue || 'dev-only-secret-do-not-use-in-production'
 );
 
 // Email validation regex

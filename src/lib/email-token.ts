@@ -1,7 +1,12 @@
 import crypto from 'crypto';
 import { authLogger } from '@/lib/logger';
 
-const SECRET = process.env.EMAIL_ACTION_SECRET || 'change-me-in-production';
+// Email action secret - must be set via environment variable in production
+const secretValue = process.env.EMAIL_ACTION_SECRET;
+if (!secretValue && process.env.NODE_ENV === 'production') {
+  throw new Error('EMAIL_ACTION_SECRET environment variable is required in production');
+}
+const SECRET = secretValue || 'dev-only-secret-do-not-use-in-production';
 
 interface EmailActionPayload {
   submissionId: string;
